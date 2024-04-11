@@ -1,8 +1,8 @@
-from django.test import TestCase
+import django.test
 from UserAbstactClass import UserAbstractClass
 from djangoProject1.ta_app.models import User, Role
 
-class UserAbstractClassTest(TestCase):
+class UserAbstractClassTest(django.test.TestCase):
     def setUp(self):
         self.testRole = Role(name='Supervisor')
         self.testAbstractUser = UserAbstractClass(self.testRole)
@@ -24,7 +24,7 @@ class UserAbstractClassTest(TestCase):
         with self.assertRaises(TypeError, msg="The role given was not a supervisor"):
             a = UserAbstractClass(TA)
 
-class TestCreateUser(TestCase):
+class TestCreateUser(django.test.TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
@@ -66,7 +66,7 @@ class TestCreateUser(TestCase):
         self.assertTrue(User.objects.filter(email=self.user_Email).exists())
 
 
-class TestDeleteAccount(TestCase):
+class TestDeleteAccount(django.test.TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
@@ -85,11 +85,16 @@ class TestDeleteAccount(TestCase):
         self.assertFalse(User.objects.filter(user_ID=self.user).exists())
 
 
+class TestUpdateAccount(django.test.TestCase):
+    def setUp(self):
+        self.role = Role(name='Supervisor')
+        self.abstractUser = UserAbstractClass(self.role)
+        self.updateFName = "Jose"
+        self.updateLName = "Joe"
 
 
-
-
-
-
+class MyTestCase(django.test.TestCase):
+    def test_something(self):
+        self.assertEqual(True, False)  # add assertion here
 
 
