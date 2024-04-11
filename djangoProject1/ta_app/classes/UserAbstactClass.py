@@ -19,7 +19,7 @@ class UserAbstractClass:
         pass
 
 
-    def edit_account(self, user_ID, email, password, role, phoneNumber, address, firstName, lastName):
+    def edit_user(self, user_ID, email, password, role, phoneNumber, address, firstName, lastName):
         pass
 
 

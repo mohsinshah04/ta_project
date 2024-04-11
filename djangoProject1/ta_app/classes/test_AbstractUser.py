@@ -34,14 +34,15 @@ class TestCreateUser(django.test.TestCase):
         self.user_LName = "User"
         self.user_Password = "<PASSWORD>"
         self.user_Home_Address = "123, Ridgeview Ct, Portage WI"
+        self.user_Phone_Number = "1+(608)654-2321"
 
 
     def test_create_user(self):
-        self.assertTrue(self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Password,
+        self.assertTrue(self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                       self.user_Home_Address, self.user_FName, self.user_LName))
 
     def test_create_existing_user(self):
-        self.assertFalse(self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Password,
+        self.assertFalse(self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                        self.user_Home_Address, self.user_FName, self.user_LName))
 
     def test_create_bad_user(self):
@@ -57,11 +58,11 @@ class TestCreateUser(django.test.TestCase):
 
     def test_password_verification(self):
         bad_Password = "<PASSWORD123>"
-        self.assertFalse(self.abstractUser.create_user(self.user_Email, bad_Password, self.user_Role, self.user_Password,
+        self.assertFalse(self.abstractUser.create_user(self.user_Email, bad_Password, self.user_Role, self.user_Phone_Number,
                                                        self.user_Home_Address, self.user_FName, self.user_LName))
 
     def test_user_in_database(self):
-        self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Password,
+        self.abstractUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                       self.user_Home_Address, self.user_FName, self.user_LName)
         self.assertTrue(User.objects.filter(email=self.user_Email).exists())
 
@@ -85,16 +86,21 @@ class TestDeleteAccount(django.test.TestCase):
         self.assertFalse(User.objects.filter(user_ID=self.user).exists())
 
 
-class TestUpdateAccount(django.test.TestCase):
+class TestEditUser(django.test.TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
+        self.user = User.objects.create("genericUser@uwm.edu", "<PASSWORD", self.role,
+                                      "123, Ridgeview Ct, Portage WI", "Generic", "User", "1+(608)654-2321", User_ID=12321)
+        self.updateEmail = "joseJoe@uwm.edu"
+        self.updateRole = Role(name='Supervisor')
         self.updateFName = "Jose"
         self.updateLName = "Joe"
+        self.updatePassword = "<PASS124>"
+        self.updateAddress = "456, Ridgeview Ct, Portage WI"
+        self.updatePhoneNumber = "1+(608)554-2321"
 
-
-class MyTestCase(django.test.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
-
+    def test_edit_user(self):
+        self.assertTrue(self.abstractUser.edit_user(self.user.User_ID, self.updateEmail, self.updatePassword, self.updateRole,
+                                                      self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
 
