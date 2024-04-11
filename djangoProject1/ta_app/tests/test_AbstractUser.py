@@ -1,8 +1,9 @@
-import django.test
-from UserAbstactClass import UserAbstractClass
+import unittest
+from django.test import TestCase
+from djangoProject1.ta_app.classes.UserAbstractClass import UserAbstractClass
 from djangoProject1.ta_app.models import User, Role
 
-class UserAbstractClassTest(django.test.TestCase):
+class UserAbstractClassTest(TestCase):
     def setUp(self):
         self.testRole = Role(name='Supervisor')
         self.testAbstractUser = UserAbstractClass(self.testRole)
@@ -24,7 +25,7 @@ class UserAbstractClassTest(django.test.TestCase):
         with self.assertRaises(TypeError, msg="The role given was not a supervisor"):
             a = UserAbstractClass(TA)
 
-class TestCreateUser(django.test.TestCase):
+class TestCreateUser(TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
@@ -67,7 +68,7 @@ class TestCreateUser(django.test.TestCase):
         self.assertTrue(User.objects.filter(email=self.user_Email).exists())
 
 
-class TestDeleteAccount(django.test.TestCase):
+class TestDeleteAccount(TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
@@ -86,7 +87,7 @@ class TestDeleteAccount(django.test.TestCase):
         self.assertFalse(User.objects.filter(user_ID=self.user).exists())
 
 
-class TestEditUser(django.test.TestCase):
+class TestEditUser(TestCase):
     def setUp(self):
         self.role = Role(name='Supervisor')
         self.abstractUser = UserAbstractClass(self.role)
@@ -102,5 +103,65 @@ class TestEditUser(django.test.TestCase):
 
     def test_edit_user(self):
         self.assertTrue(self.abstractUser.edit_user(self.user.User_ID, self.updateEmail, self.updatePassword, self.updateRole,
-                                                      self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+        self.assertTrue(User.objects.filter(User_ID=self.user.User_ID, email=self.updateEmail).exists())
+
+    def test_edit_user_does_not_exist(self):
+        self.assertFalse(self.abstractUser.edit_user(1234, self.updateEmail, self.updatePassword, self.updateRole,
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+
+    def test_edit_user_bad_password(self):
+        self.assertFalse(self.abstractUser.edit_user(self.user.User_ID, self.updateEmail, "<Password1232>", self.updateRole,
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+
+    def test_edit_user_bad_email(self):
+        self.assertFalse(self.abstractUser.edit_user(self.user.User_ID, "nothing", self.updatePassword, self.updateRole,
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+
+    def test_edit_user_bad_phoneNumber(self):
+        self.assertFalse(self.abstractUser.edit_user(self.user.User_ID, self.updateEmail, self.updatePassword, self.updateRole,
+                                                     "123+(312)-1232", self.updateAddress, self.updateFName, self.updateLName))
+
+    def test_edit_user_bad_fName_lName(self):
+        self.assertFalse(
+            self.abstractUser.edit_user(self.user.User_ID, self.updateEmail, self.updatePassword, self.updateRole,
+                                        self.updatePassword, self.updateAddress, "", ""))
+
+class TestAccountRole(TestCase):
+    def setUp(self):
+        self.TARole = Role(name="TA")
+        self.InstRole = Role(name="Instructor")
+        self.SuperRole = Role(name="Supervisor")
+        self.TAuser = User(User_ID=1234)
+        self.INuser = User(User_ID=4567)
+        self.TAuser.User_Role = self.TARole
+        self.InstRole.User_Role = self.InstRole
+        self.SuperRole.User_Role = self.SuperRole
+        self.abstractUser = UserAbstractClass(Role(name="Supervisor"))
+
+    def test_account_roleTA(self):
+        self.assertTrue(self.abstractUser.account_role(self.TAuser.User_ID))
+
+    def test_account_roleIN(self):
+        self.assertFalse(self.abstractUser.account_role(self.INuser.User_ID))
+
+    def test_account_roleNone(self):
+        self.assertFalse(self.abstractUser.account_role())
+
+
+ class TestViewAccount(TestCase):
+     def setUp(self):
+         self.TARole = Role(name="TA")
+         self.InstRole = Role(name="Instructor")
+         self.SuperRole = Role(name="Supervisor")
+         self.TAuser = User(User_ID=1234)
+         self.INuser = User(User_ID=4567)
+         self.SUPERuser = User(User_ID=7890)
+         self.TAuser.User_Role = self.TARole
+         self.InstRole.User_Role = self.InstRole
+         self.SuperRole.User_Role = self.SuperRole
+         self.abstractUser = UserAbstractClass(Role(name="Supervisor"))
+
+     def test_viewAccount_TA(self):
+
 
