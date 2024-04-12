@@ -7,7 +7,7 @@ class UserAbstractClass:
     def __init__(self, role):
         self.role = role
 
-    def create_user(self, email, password, role, phoneNumber, address, firstName, lastName, Role):
+    def create_user(self, email, password, role, phoneNumber, address, firstName, lastName):
         if self.role != "Supervisor":
             return False
         if email is None or password is None or role is None or phoneNumber is None or address is None or firstName is None or lastName is None or email is None:
