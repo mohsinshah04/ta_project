@@ -7,12 +7,12 @@ class Role(models.Model):
     def __str__(self):
         return "Role: " + self.Role_Name
 class User(models.Model):
-    User_Password = models.CharField(max_length=50)
-    User_Email = models.CharField(max_length=50)
-    User_FName = models.CharField(max_length=50)
-    User_LName = models.CharField(max_length=50)
-    User_Home_Address = models.CharField(max_length=50)
-    User_Phone_Number = models.CharField(max_length=15)
+    User_Password = models.CharField(max_length=50, default="null")
+    User_Email = models.CharField(max_length=50, default="null")
+    User_FName = models.CharField(max_length=50, default="null")
+    User_LName = models.CharField(max_length=50, default="null")
+    User_Home_Address = models.CharField(max_length=50, default="null")
+    User_Phone_Number = models.CharField(max_length=15, default="null")
     User_Role = models.ForeignKey(Role,on_delete=models.CASCADE)
 
     def __str__(self):
@@ -34,8 +34,7 @@ class Course(models.Model):
     Course_Semester_ID = models.ForeignKey(Semester, on_delete=models.CASCADE)
     def __str__(self):
         return ("Course Name: " + self.Course_Name +
-                " \n Description: " + self.Course_Description +
-                "\n Semester ID: " + self.Course_Semester_ID)
+                " \n Description: " + self.Course_Description)
 class Section(models.Model):
     Is_Lab = models.BooleanField()
     Section_Meet = models.DateTimeField()
@@ -48,11 +47,10 @@ class Section(models.Model):
 class Assign_User_Junction(models.Model):
     User_ID = models.ForeignKey(User, on_delete=models.CASCADE)
     Course_ID = models.ForeignKey(Course, on_delete=models.CASCADE)
-    Section_ID = models.ForeignKey(Section, on_delete=models.CASCADE)
+    Section_ID = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         unique_together = ('User_ID', 'Course_ID')
 
     def __str__(self):
-        return ("User ID: " + self.User_ID +
-                " \nCourse ID: " + self.Course_ID +
-                "\nSection ID: " + self.Section_ID )
+        return("User Email: " + str(self.User_ID.User_Email) + " ---> To Course Name: " + str(self.Course_ID.Course_Name) + " ---> For Semester: " + str(self.Section_ID))
+
