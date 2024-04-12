@@ -12,6 +12,7 @@ class User(models.Model):
     User_FName = models.CharField(max_length=50)
     User_LName = models.CharField(max_length=50)
     User_Home_Address = models.CharField(max_length=50)
+    User_Phone_Number = models.CharField(max_length=15)
     User_Role = models.ForeignKey(Role,on_delete=models.CASCADE)
 
     def __str__(self):
@@ -19,6 +20,7 @@ class User(models.Model):
                 "\n LName: " + self.User_LName +
                 "\n Home Address: " + self.User_Home_Address +
                 "\n Email: " + self.User_Email +
+                "\n Phone Number: " + self.User_Phone_Number +
                 "\n Password: " + self.User_Password)
 
 
