@@ -1,6 +1,5 @@
-import unittest
 from django.test import TestCase
-from djangoProject1.ta_app.classes.UserAbstractClass import UserAbstractClass
+from djangoProject1.classes.UserAbstractClass import UserAbstractClass
 from djangoProject1.ta_app.models import User, Role
 
 class UserAbstractClassTest(TestCase):
