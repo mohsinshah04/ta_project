@@ -1,4 +1,3 @@
-import unittest
 from django.test import TestCase
 from classes.UserAbstractClass import UserAbstractClass
 from ta_app.models import User, Role, Assign_User_Junction
