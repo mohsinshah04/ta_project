@@ -1,7 +1,7 @@
 """
 This class is an abstract class that is used to create all of the variations of a user that can be found on the app
 """
-from ta_app.models import User, Role
+from ta_app.models import User, Role, Assign_User_Junction
 class UserAbstractClass:
 
     def __init__(self, role):
@@ -45,9 +45,17 @@ class UserAbstractClass:
             return False
         if len(password) < 7 or len(phoneNumber) < 15:
             return False
-        User.objects.filter(User_ID=user_ID, email=email, password=password, phoneNumber=phoneNumber, address=address,
-                            firstName=firstName, lastName=lastName).update()
-        toReturn = User.objects.filter(User_ID=user_ID).exists()
+        if not User.objects.filter(User_ID=user_ID).exists():
+            return False
+        user = User.objects.get(User_ID=user_ID)
+        user.User_Email = email
+        user.User_Password = password
+        user.User_Phone_Number = phoneNumber
+        user.User_Home_Address = address
+        user.User_FName = firstName
+        user.User_LName = lastName
+        user.save()
+        toReturn = User.objects.filter(User_Email=email).exists()
         return toReturn
 
     def account_role(self, user_ID):
@@ -58,13 +66,16 @@ class UserAbstractClass:
         toReturn = User.objects.filter(User_ID=user_ID).exists()
         return toReturn
 
+    #Waiting for course class to be complete and tested, then will add list of sections later
     def view_account(self, user_ID):
-        if not (User.objects.filter(User_ID=user_ID).exists()):
+        if not User.objects.filter(User_ID=user_ID).exists():
             return "INVALID"
-        user = User.objects.filter(User_ID=user_ID)
-        if self.role == "Supervisor":
-            return user.User_FName + ", " + user.User_LName + ": " + user.User_Role
-        if (self.role == "Instructor" and user.User_Role == "Supervisor") or (self.role == "TA" and user.User_Role == "Instrctor"):
+        user = User.objects.get(User_ID=user_ID)
+        if self.role.Role_Name == "Supervisor":
+            return user.User_FName + ", " + user.User_LName + ": " + user.User_Role.Role_Name
+        if self.role.Role_Name == "Instructor" and user.User_Role.Role_Name == "Supervisor":
             return "INVALID"
-
-        return user.User_FName + ", " + user.User_LName + ": " + user.User_Role
+        if self.role.Role_Name == "TA" and (user.User_Role.Role_Name == "Instructor" or user.User_Role.Role_Name =="Supervisor"):
+            return "INVALID"
+        #sectionsList = list(Assign_User_Junction.objects.filter(User_ID=user_ID))
+        return user.User_FName + ", " + user.User_LName + ": " + user.User_Role.Role_Name
