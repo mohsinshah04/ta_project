@@ -1,3 +1,4 @@
+"""Currently Skeleton Class for Courses"""
 from djangoProject1.ta_app.models import Course, Section, Semester, Assign_User_Junction
 
 

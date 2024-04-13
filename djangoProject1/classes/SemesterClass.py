@@ -1,3 +1,4 @@
+"""Currently Skeleton Class for Semesters"""
 from djangoProject1.ta_app.models import Semester
 
 
