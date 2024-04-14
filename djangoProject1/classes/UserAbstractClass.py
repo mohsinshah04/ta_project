@@ -26,15 +26,15 @@ class UserAbstractClass:
         return toReturn
 
 
-    def delete_user(self, user_ID):
+    def delete_user(self, user_id):
         if self.role.Role_Name != "Supervisor":
             return False
-        if user_ID is None:
+        if user_id is None:
             return False
-        if not User.objects.filter(User_ID=user_ID).exists():
+        if not User.objects.filter(id=user_id).exists():
             return False
-        User.objects.filter(User_ID=user_ID).delete()
-        toReturn = not(User.objects.filter(User_ID=user_ID).exists())
+        User.objects.filter(id=user_id).delete()
+        toReturn = not User.objects.filter(id=user_id).exists()
         return toReturn
 
 
