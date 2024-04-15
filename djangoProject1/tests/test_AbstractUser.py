@@ -92,17 +92,24 @@ class TestCreateUser(TestCase):
 
 class TestDeleteAccount(TestCase):
     def setUp(self):
-        self.role = Role(Role_Name='Supervisor')
-        self.abstractUser = UserAbstractClass(self.role)
-        self.SUuser_ID = 1234
-        self.SUuser_Role = Role(Role_Name='Supervisor')
+        self.SUuser_Role = Role(Role_Name="Supervisor")
         self.SUuser_Role.save()
-        User.objects.create(User_ID=self.SUuser_ID, User_Role=self.SUuser_Role, User_Email="Super@uwm.edu", User_FName="John", User_LName="Johnson",
-                            User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
+        self.test_user = User.objects.create(User_Role = self.SUuser_Role, User_Email= "Super@uwm.edu", User_FName = "John", User_LName = "Johnson",User_Phone_Number = "1+(608)542-2343",User_Home_Address = "123, Ridgeview Ct")
+        self.abstractUser = UserAbstractClass(self.SUuser_Role)
+
+       # self.role = Role(Role_Name='Supervisor')
+       # self.abstractUser = UserAbstractClass(self.role)
+       # self.SUuser_ID = 1234
+       # self.SUuser_Role = Role(Role_Name='Supervisor')
+       # self.SUuser_Role.save()
+       # User.objects.create(User_ID=self.SUuser_ID, User_Role=self.SUuser_Role, User_Email="Super@uwm.edu", User_FName="John", User_LName="Johnson",
+       #                     User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
 
 
     def test_delete_user(self):
-        self.assertTrue(self.abstractUser.delete_user(self.SUuser_ID))
+        result = self.abstractUser.delete_user(self.test_user.id)
+        self.assertTrue(result, "User in database should have been deleted from table.")
+        #self.assertTrue(self.abstractUser.delete_user(self.SUuser_ID))
 
     def test_user_does_not_exist(self):
         self.assertFalse(self.abstractUser.delete_user(1111))
