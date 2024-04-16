@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from ta_app.models import Role, User
 
+
 class TestLogin(TestCase, Client):
 
     def setUp(self):
@@ -12,5 +13,5 @@ class TestLogin(TestCase, Client):
         self.user.save()
 
     def test_login(self):
-        response = self.client.post("login", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        response = self.client.post("/login/", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
         self.assertRedirects(response, "home.html")
