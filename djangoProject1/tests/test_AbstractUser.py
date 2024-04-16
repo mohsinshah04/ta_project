@@ -199,6 +199,69 @@ class TestAccountRole(TestCase):
     def test_account_roleInstructor(self):
         self.assertFalse(self.userI.account_role(self.test_user_su.id))
 
+    def test_changeRoleSup_supervisorToInstructor(self):
+        self.assertTrue(self.userS.account_role(self, self.userS, self.userI))
+
+    def test_changeRoleSup_supervisorToTA(self):
+        self.assertTrue(self.userS.account_role(self, self.userS, self.userT))
+
+    def test_changeRoleSup_InstructorToTA(self):
+        self.assertTrue(self.userS.account_role(self, self.userI, self.userT))
+
+    def test_changeRoleSup_instructorToSupervisor(self):
+        self.assertTrue(self.userS.account_role(self, self.userI, self.userS))
+
+    def test_changeRoleSup_TAToInstructor(self):
+        self.assertTrue(self.userS.account_role(self, self.userT, self.userI))
+
+    def test_changeRoleSup_TAToSupervisor(self):
+        self.assertTrue(self.userS.account_role(self, self.userT, self.userS))
+
+    def test_changeRoleIns_TAToInstructor(self):
+        self.assertTrue(self.userI.account_role(self, self.userT, self.userI))
+
+    def test_changeRoleIns_InstructorToTA(self):
+        self.assertFalse(self.userI.account_role(self, self.userI, self.userT))
+
+    def test_changeRoleIns_TAToSupervisor(self):
+        self.assertFalse(self.userI.account_role(self, self.userT, self.userS))
+
+    def test_changeRoleIns_InstructorToSupervisor(self):
+        self.assertFalse(self.userI.account_role(self, self.userI, self.userS))
+
+    def test_changeRoleIns_SupervisorToInstructor(self):
+        self.assertFalse(self.userI.account_role(self, self.userS, self.userI))
+
+    def test_changeRoleIns_SupervisorToTA(self):
+        self.assertFalse(self.userI.account_role(self, self.userS, self.userT))
+
+    def test_changeRoleTA_TAToInstructor(self):
+        self.assertFalse(self.userT.account_role(self, self.userT, self.userI))
+
+    def test_changeRoleTA_InstructorToTA(self):
+        self.assertFalse(self.userT.account_role(self, self.userI, self.userT))
+
+    def test_changeRoleTA_TAToSupervisor(self):
+        self.assertFalse(self.userT.account_role(self, self.userT, self.userS))
+
+    def test_changeRoleTA_InstructorToSupervisor(self):
+        self.assertFalse(self.userT.account_role(self, self.userI, self.userS))
+
+    def test_changeRoleTA_SupervisorToInstructor(self):
+        self.assertFalse(self.userT.account_role(self, self.userS, self.userI))
+
+    def test_changeRoleTA_SupervisorToTA(self):
+        self.assertFalse(self.userT.account_role(self, self.userS, self.userT))
+
+    def test_changeRole_unexistantAccount(self):
+        self.assertTrue(self.userE.account_role(self, self.userI, self.userT))
+    def test_changeRole_unexistantAccount2(self):
+        self.assertTrue(self.userI.account_role(self, self.userE, self.userT))
+    def test_changeRole_unexistantAccount3(self):
+        self.assertTrue(self.userI.account_role(self, self.userT, self.userE))
+
+
+
 #Waiting for course ID
 class TestViewAccount(TestCase):
     def setUp(self):
