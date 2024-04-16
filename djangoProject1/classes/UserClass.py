@@ -60,7 +60,7 @@ class UserObject:
         toReturn = User.objects.filter(User_Email=email).exists()
         return toReturn
 
-    def account_role(self, user_ID):
+    def account_role(self, user_ID, changed_role):
         if not User.objects.filter(id=user_ID).exists():
             return False
         if self.role.Role_Name != "TA":
