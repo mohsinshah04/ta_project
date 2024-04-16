@@ -19,22 +19,25 @@ class CourseTestCase(TestCase):
         self.junctionUserTAToCourse2 = Assign_User_Junction.objects.create(User_ID=self.userTA2, Course_ID=self.course2)
         self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID=self.course)
         self.mockHandleAssignments = MockHandleAssignments()
+        """self.course = CourseClass()"""
 
     def test_CreateAddCorrectAssignment(self):
         assignmentMock = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Description stuff.", self.user
+            "MATH - 240", "Statistical Math", "Description stuff.", self.semester.id,self.user
         )
-        self.assertTrue(assignmentMock, "Valid Format Course Creation Must Be [COURSE CODE (COURSE - NUMBER), COURSE NAME, COURSE DESCRIPTION)")
+        """createdCourse = CourseClass.createAssignment("MATH - 240", "Statistical Math", "Description stuff.", self.semester.id, self.user)
+        """
+        self.assertTrue(assignmentMock, "Valid Format Course Creation Must Be [COURSE CODE (COURSE - NUMBER), COURSE NAME, COURSE DESCRIPTION, SEMESTER_ID, user)")
 
     def test_CreateAddInvalidCodeAssignment(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "240 - Math", "Statistical Math", "Description stuff.", self.user
+            "240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
         assignmentMock2 = self.mockHandleAssignments.createAssignment(
-            "MATH240", "Statistical Math", "Description stuff.", self.user
+            "MATH240", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
         assignmentMock3 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240 - Math", "Statistical Math", "Description stuff.", self.user
+            "MATH - 240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
         self.assertFalse(assignmentMock1, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
         self.assertFalse(assignmentMock2, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
@@ -42,37 +45,37 @@ class CourseTestCase(TestCase):
 
     def test_CreateNullNameAssignment(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            None, "Statistical Math", "Description stuff.", self.user
+            None, "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
         self.assertFalse(assignmentMock1, "Must Input Valid Course Code")
 
     def test_CreateCourseDescriptionTooShort(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Descr.", self.user
+            "MATH - 240", "Statistical Math", "Descr.", self.semester.id, self.user
         )
         self.assertFalse(assignmentMock1, "Description must be at least 10 characters.")
 
     def test_CreateNullCourseDescriptionAssignment(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", None, self.user
+            "MATH - 240", "Statistical Math", None, self.semester.id, self.user
         )
         self.assertFalse(assignmentMock1, "Course Description must exist.")
 
     def test_CreateNullCourseNameAssignment(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", None, "Here is a descirption.", self.user
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.user
         )
         self.assertFalse(assignmentMock1, "Course Name must exist")
 
     def test_CreateIsNotASupervisor(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", None, "Here is a descirption.", self.userTA
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.userTA
         )
         self.assertFalse(assignmentMock1, "Must be a Supervisor/Admin to create a course.")
 
     def test_CreateUserCallNull(self):
         assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Here is a descirption.", None
+            "MATH - 240", "Statistical Math", "Here is a descirption.",self.semester.id, None
         )
         self.assertFalse(assignmentMock1, "Must be a valid and existing User to create a course.")
 

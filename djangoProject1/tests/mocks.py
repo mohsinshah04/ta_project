@@ -1,8 +1,10 @@
 import re
 from ta_app.models import User, Role, Assign_User_Junction, Course, Semester
 class MockHandleAssignments:
-    def createAssignment(self, courseCode, courseName, courseDescription, user):
-        #based on the internet, you got to use re for format checking
+    def createAssignment(self, courseCode, courseName, courseDescription, semester, user):
+        # based on the internet, you got to use re for format checking
+        if (semester == None):
+            return False
         if (courseCode == None):
             return False
         if (courseName == None):
@@ -10,7 +12,9 @@ class MockHandleAssignments:
         if (user == None):
             return False
         if (User.objects.filter(id=user.id).exists() == False):
-            return "INVALID"
+            return False
+        if (Semester.objects.filter(id=semester).exists() == False):
+            return False
         if (courseDescription == None):
             return False
         if not re.match(r"^[A-Z]+ - \d+$", courseCode):
