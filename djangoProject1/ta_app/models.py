@@ -1,7 +1,5 @@
-
-
 from django.db import models
-import uuid
+
 # Create your models here.
 
 class Role(models.Model):
@@ -9,7 +7,6 @@ class Role(models.Model):
     def __str__(self):
         return "Role: " + self.Role_Name
 class User(models.Model):
-
     User_Password = models.CharField(max_length=50, default="null")
     User_Email = models.CharField(max_length=50, default="null")
     User_FName = models.CharField(max_length=50, default="null")

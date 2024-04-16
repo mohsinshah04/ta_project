@@ -1,12 +1,5 @@
 from django.test import TestCase, Client
-import tests.test_AbstractUser
-from models import User, Role
-
-
-class TestAbstractUser(TestCase):
-    def test_all(self):
-        self.assertTrue(tests.test_AbstractUser)
-
+from ta_app.models import Role, User
 
 class TestLogin(TestCase, Client):
 
@@ -19,7 +12,5 @@ class TestLogin(TestCase, Client):
         self.user.save()
 
     def test_login(self):
-        response = self.client.post("/", data={"Email": self.user.User_Email, "Password": self.user.User_Password})
-        self.assertEqual(response["Location"], "/home/")
-
-
+        response = self.client.post("login", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        self.assertRedirects(response, "home.html")

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from classes.UserAbstractClass import UserAbstractClass
+from classes.UserClass import UserObject
 from ta_app.models import User, Role, Assign_User_Junction
 
 class UserAbstractClassTest(TestCase):
@@ -10,21 +10,21 @@ class UserAbstractClassTest(TestCase):
 
     def test_no_parameters(self):
         with self.assertRaises(TypeError, msg="Please specify a valid role"):
-            a = UserAbstractClass(None)
+            a = UserObject(None)
 
     def test_no_role(self):
         with self.assertRaises(TypeError, msg="Please specify a valid role"):
-            a = UserAbstractClass("Teach")
+            a = UserObject("Teach")
     def test_role_supervisor(self):
-        a = UserAbstractClass(Role(Role_Name='Supervisor'))
+        a = UserObject(Role(Role_Name='Supervisor'))
         self.assertEqual('Supervisor', a.role.Role_Name)
 
     def test_role_instructor(self):
-        a = UserAbstractClass(Role(Role_Name='Instructor'))
+        a = UserObject(Role(Role_Name='Instructor'))
         self.assertEqual('Instructor', a.role.Role_Name)
 
     def test_role_TA(self):
-        a = UserAbstractClass(Role(Role_Name='TA'))
+        a = UserObject(Role(Role_Name='TA'))
         self.assertEqual('TA', a.role.Role_Name)
 
 
@@ -32,7 +32,7 @@ class UserAbstractClassTest(TestCase):
 class TestCreateUser(TestCase):
     def setUp(self):
         self.role = Role(Role_Name='Supervisor')
-        self.abstractUser = UserAbstractClass(self.role)
+        self.abstractUser = UserObject(self.role)
         self.user_Email = "genericUser@uwm.edu"
         self.user_Role = self.role
         self.user_FName = "Generic"
@@ -80,12 +80,12 @@ class TestCreateUser(TestCase):
         self.assertTrue(User.objects.filter(User_Email=self.user_Email).exists())
 
     def test_create_with_instructor(self):
-        a = UserAbstractClass(Role(Role_Name="Instructor"))
+        a = UserObject(Role(Role_Name="Instructor"))
         self.assertFalse(a.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                        self.user_Home_Address, self.user_FName, self.user_LName))
 
     def test_create_with_TA(self):
-        a = UserAbstractClass(Role(Role_Name="TA"))
+        a = UserObject(Role(Role_Name="TA"))
         self.assertFalse(a.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                        self.user_Home_Address, self.user_FName, self.user_LName))
 
@@ -94,47 +94,37 @@ class TestDeleteAccount(TestCase):
     def setUp(self):
         self.SUuser_Role = Role(Role_Name="Supervisor")
         self.SUuser_Role.save()
-        self.test_user = User.objects.create(User_Role = self.SUuser_Role, User_Email= "Super@uwm.edu", User_FName = "John", User_LName = "Johnson",User_Phone_Number = "1+(608)542-2343",User_Home_Address = "123, Ridgeview Ct")
-        self.abstractUser = UserAbstractClass(self.SUuser_Role)
-
-       # self.role = Role(Role_Name='Supervisor')
-       # self.abstractUser = UserAbstractClass(self.role)
-       # self.SUuser_ID = 1234
-       # self.SUuser_Role = Role(Role_Name='Supervisor')
-       # self.SUuser_Role.save()
-       # User.objects.create(User_ID=self.SUuser_ID, User_Role=self.SUuser_Role, User_Email="Super@uwm.edu", User_FName="John", User_LName="Johnson",
-       #                     User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
-
+        self.test_user = User.objects.create(User_Role=self.SUuser_Role, User_Email= "Super@uwm.edu", User_FName = "John", User_LName = "Johnson",User_Phone_Number = "1+(608)542-2343",User_Home_Address = "123, Ridgeview Ct")
+        self.user = UserObject(self.SUuser_Role)
 
     def test_delete_user(self):
-        result = self.abstractUser.delete_user(self.test_user.id)
+        result = self.user.delete_user(self.test_user.id)
         self.assertTrue(result, "User in database should have been deleted from table.")
         #self.assertTrue(self.abstractUser.delete_user(self.SUuser_ID))
 
     def test_user_does_not_exist(self):
-        self.assertFalse(self.abstractUser.delete_user(1111))
+        self.assertFalse(self.user.delete_user(1111))
 
     def test_user_in_database(self):
-        self.abstractUser.delete_user(self.SUuser_ID)
-        self.assertFalse(User.objects.filter(User_ID=self.SUuser_ID).exists())
+        self.user.delete_user(self.test_user.id)
+        self.assertFalse(User.objects.filter(id=self.test_user.id).exists())
 
     def test_delete_user_instructor(self):
-        a = UserAbstractClass(Role(Role_Name='Instructor'))
-        self.assertFalse(a.delete_user(self.SUuser_ID))
+        a = UserObject(Role(Role_Name='Instructor'))
+        self.assertFalse(a.delete_user(self.test_user.id))
 
     def test_delete_user_TA(self):
-        a = UserAbstractClass(Role(Role_Name='TA'))
-        self.assertFalse(a.delete_user(self.SUuser_ID))
+        a = UserObject(Role(Role_Name='TA'))
+        self.assertFalse(a.delete_user(self.test_user.id))
 
 
 class TestEditUser(TestCase):
     def setUp(self):
         self.role = Role(Role_Name='Supervisor')
-        self.abstractUser = UserAbstractClass(self.role)
+        self.abstractUser = UserObject(self.role)
         self.role.save()
-        self.user_ID = 12321
-        User.objects.create(User_Email="genericUser@uwm.edu", User_Password="<PASSWORD", User_Role=self.role, User_Home_Address="123, Ridgeview Ct, Portage WI",
-                            User_FName="Generic", User_LName="User", User_Phone_Number="1+(608)654-2321", User_ID=12321)
+        self.test_user = User.objects.create(User_Email="genericUser@uwm.edu", User_Password="<PASSWORD", User_Role=self.role, User_Home_Address="123, Ridgeview Ct, Portage WI",
+                            User_FName="Generic", User_LName="User", User_Phone_Number="1+(608)654-2321")
         self.updateEmail = "joseJoe@uwm.edu"
         self.updateRole = Role(Role_Name='Supervisor')
         self.updateRole.save()
@@ -145,124 +135,121 @@ class TestEditUser(TestCase):
         self.updatePhoneNumber = "1+(608)554-2321"
 
     def test_edit_user(self):
-        self.assertTrue(self.abstractUser.edit_user(self.user_ID, self.updateEmail, self.updatePassword,
+        self.assertTrue(self.abstractUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
-        self.assertTrue(User.objects.filter(User_ID=self.user_ID, User_Email=self.updateEmail).exists())
+        self.assertTrue(User.objects.filter(id=self.test_user.id, User_Email=self.updateEmail).exists())
 
     def test_edit_user_does_not_exist(self):
         self.assertFalse(self.abstractUser.edit_user(1234, self.updateEmail, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
 
     def test_edit_user_bad_password(self):
-        self.assertFalse(self.abstractUser.edit_user(self.user_ID, self.updateEmail, "HEAVEN",
+        self.assertFalse(self.abstractUser.edit_user(self.test_user.id, self.updateEmail, "HEAVEN",
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
 
     def test_edit_user_bad_email(self):
-        self.assertFalse(self.abstractUser.edit_user(self.user_ID, None, self.updatePassword,
+        self.assertFalse(self.abstractUser.edit_user(self.test_user.id, None, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
 
     def test_edit_user_bad_phoneNumber(self):
-        self.assertFalse(self.abstractUser.edit_user(self.user_ID, self.updateEmail, self.updatePassword,
+        self.assertFalse(self.abstractUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                                      "123+(312)-1232", self.updateAddress, self.updateFName, self.updateLName))
 
     def test_edit_user_bad_fName_lName(self):
-        self.assertFalse(self.abstractUser.edit_user(self.user_ID, self.updateEmail, self.updatePassword,
+        self.assertFalse(self.abstractUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                         self.updatePassword, self.updateAddress, None, None))
 
     def test_delete_user_instructor(self):
-        a = UserAbstractClass(Role(Role_Name='Instructor'))
-        self.assertFalse(a.edit_user(self.user_ID, self.updateEmail, self.updatePassword,
+        a = UserObject(Role(Role_Name='Instructor'))
+        self.assertFalse(a.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                      self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
 
     def test_delete_user_TA(self):
-        a = UserAbstractClass(Role(Role_Name='TA'))
-        self.assertFalse(a.edit_user(self.user_ID, self.updateEmail, self.updatePassword,
+        a = UserObject(Role(Role_Name='TA'))
+        self.assertFalse(a.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName))
+
+
 class TestAccountRole(TestCase):
     def setUp(self):
-        self.SUuser_ID = 1234
-        self.INuser_ID = 4567
-        self.TAuser_ID = 7890
         self.SUuser_Role = Role(Role_Name='Supervisor')
         self.INuser_Role = Role(Role_Name='Instructor')
         self.TAuser_Role = Role(Role_Name='TA')
         self.SUuser_Role.save()
         self.INuser_Role.save()
         self.TAuser_Role.save()
-        User.objects.create(User_ID=self.SUuser_ID, User_Role=self.SUuser_Role, User_Email="Super@uwm.edu", User_FName="John", User_LName="Johnson",
+        self.test_user_su = User.objects.create(User_Role=self.SUuser_Role, User_Email="Super@uwm.edu", User_FName="John", User_LName="Johnson",
                             User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
-        User.objects.create(User_ID=self.INuser_ID, User_Role=self.INuser_Role, User_Email="Instrc@uwm.edu", User_FName="Jose", User_LName="Johnson",
+        self.test_user_in = User.objects.create(User_Role=self.INuser_Role, User_Email="Instrc@uwm.edu", User_FName="Jose", User_LName="Johnson",
                             User_Phone_Number="1+(608)532-2343", User_Home_Address="123, Ridgeview Ct")
-        User.objects.create(User_ID=self.TAuser_ID, User_Role=self.TAuser_Role, User_Email="TA@uwm.edu", User_FName="Joann", User_LName="Johnson",
+        self.test_user_ta = User.objects.create(User_Role=self.TAuser_Role, User_Email="TA@uwm.edu", User_FName="Joann", User_LName="Johnson",
                             User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct")
-        self.abstractUserS = UserAbstractClass(Role(Role_Name="Supervisor"))
-        self.abstractUserT = UserAbstractClass(Role(Role_Name="TA"))
-        self.abstractUserI = UserAbstractClass(Role(Role_Name="Instructor"))
+        self.userS = UserObject(Role(Role_Name="Supervisor"))
+        self.userT = UserObject(Role(Role_Name="TA"))
+        self.userI = UserObject(Role(Role_Name="Instructor"))
     def test_account_roleNone(self):
-        self.assertFalse(self.abstractUserS.account_role(None))
+        self.assertFalse(self.userS.account_role(None))
 
     def test_account_roleTA(self):
-        self.assertTrue(self.abstractUserT.account_role(self.INuser_ID))
+        self.assertTrue(self.userT.account_role(self.test_user_in.id))
 
     def test_account_roleSupervisor(self):
-        self.assertFalse(self.abstractUserS.account_role(self.SUuser_ID))
+        self.assertFalse(self.userS.account_role(self.test_user_su.id))
 
     def test_account_roleInstructor(self):
-        self.assertFalse(self.abstractUserI.account_role(self.SUuser_ID))
+        self.assertFalse(self.userI.account_role(self.test_user_su.id))
 
 #Waiting for course ID
 class TestViewAccount(TestCase):
     def setUp(self):
-        self.SUuser_ID = 1234
-        self.INuser_ID = 4567
-        self.TAuser_ID = 7890
         self.SUuser_Role = Role(Role_Name='Supervisor')
         self.INuser_Role = Role(Role_Name='Instructor')
         self.TAuser_Role = Role(Role_Name='TA')
         self.SUuser_Role.save()
         self.INuser_Role.save()
         self.TAuser_Role.save()
-        User.objects.create(User_ID=self.SUuser_ID, User_Role=self.SUuser_Role, User_Email="Super@uwm.edu",
+        self.test_user_su = User.objects.create(User_Role=self.SUuser_Role, User_Email="Super@uwm.edu",
                             User_FName="John", User_LName="Johnson",
                             User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
-        User.objects.create(User_ID=self.INuser_ID, User_Role=self.INuser_Role, User_Email="Instrc@uwm.edu",
+        self.test_user_in = User.objects.create(User_Role=self.INuser_Role, User_Email="Instrc@uwm.edu",
                             User_FName="Jose", User_LName="Johnson",
                             User_Phone_Number="1+(608)532-2343", User_Home_Address="123, Ridgeview Ct")
-        User.objects.create(User_ID=self.TAuser_ID, User_Role=self.TAuser_Role, User_Email="TA@uwm.edu",
+        self.test_user_ta = User.objects.create(User_Role=self.TAuser_Role, User_Email="TA@uwm.edu",
                             User_FName="Joann", User_LName="Johnson",
                             User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct")
-        self.abstractSU = UserAbstractClass(Role(Role_Name="Supervisor"))
-        self.abstractIN = UserAbstractClass(Role(Role_Name="Instructor"))
-        self.abstractTA = UserAbstractClass(Role(Role_Name="TA"))
+        self.userSU = UserObject(Role(Role_Name="Supervisor"))
+        self.userIN = UserObject(Role(Role_Name="Instructor"))
+        self.userTA = UserObject(Role(Role_Name="TA"))
+
 
     def test_user_doesnt_exist(self):
-        self.assertEqual("INVALID", self.abstractSU.view_account(1111))
+        self.assertEqual("INVALID", self.userSU.view_account(1111))
 
     def test_view_account_SU_to_IN(self):
-        self.assertEqual("Jose, Johnson: Instructor", self.abstractSU.view_account(self.INuser_ID))
+        self.assertEqual("Jose, Johnson: Instructor", self.userSU.view_account(self.test_user_in.id))
 
     def test_view_account_SU_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", self.abstractSU.view_account(self.TAuser_ID))
+        self.assertEqual("Joann, Johnson: TA", self.userSU.view_account(self.test_user_ta.id))
 
     def test_view_account_SU_to_SU(self):
-        self.assertEqual("John, Johnson: Supervisor", self.abstractSU.view_account(self.SUuser_ID))
+        self.assertEqual("John, Johnson: Supervisor", self.userSU.view_account(self.test_user_su.id))
 
     def test_view_account_IN_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", self.abstractIN.view_account(self.TAuser_ID))
+        self.assertEqual("Joann, Johnson: TA", self.userIN.view_account(self.test_user_ta.id))
 
     def test_view_account_IN_to_IN(self):
-        self.assertEqual("Jose, Johnson: Instructor", self.abstractIN.view_account(self.INuser_ID))
+        self.assertEqual("Jose, Johnson: Instructor", self.userIN.view_account(self.test_user_in.id))
 
     def test_view_account_TA_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", self.abstractTA.view_account(self.TAuser_ID))
+        self.assertEqual("Joann, Johnson: TA", self.userTA.view_account(self.test_user_ta.id))
 
     def test_view_account_TA_to_IN(self):
-        self.assertEqual("INVALID", self.abstractTA.view_account(self.INuser_ID))
+        self.assertEqual("INVALID", self.userTA.view_account(self.test_user_in.id))
 
     def test_view_account_TA_to_SU(self):
-        self.assertEqual("INVALID", self.abstractTA.view_account(self.SUuser_ID))
+        self.assertEqual("INVALID", self.userTA.view_account(self.test_user_su.id))
 
     def test_view_account_IN_to_SU(self):
-        self.assertEqual("INVALID", self.abstractIN.view_account(self.SUuser_ID))
+        self.assertEqual("INVALID", self.userIN.view_account(self.test_user_su.id))
 
 
