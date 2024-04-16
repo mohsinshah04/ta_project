@@ -26,6 +26,12 @@ class LoginPage(View):
         else:
             request.session["email"] = m.User_Email
             return redirect("/home.html/")
+class LogOutPage(View):
+    def get(self, request):
+        return render(request, 'logOutPage.html', {})
+
+    def post(self, request):
+        return render(request, 'logOutPage.html', {})
 class Home(View):
     def get(self, request):
         return render(request, 'home.html', {})
@@ -44,15 +50,39 @@ class accounts(View):
 
     def post(self, request):
         return render(request, 'acctsView.html', {})
+class accountCreate(View):
+    def get(self, request):
+        return render(request, 'acctsCreate.html', {})
+
+    def post(self, request):
+        return render(request, 'acctsCreate.html', {})
+class accountEdit(View):
+    def get(self, request):
+        return render(request, 'acctsEdit.html', {})
+
+    def post(self, request):
+        return render(request, 'acctsEdit.html', {})
+class accountEditOther(View):
+    def get(self, request):
+        return render(request, 'acctsOtherEdit.html', {})
+
+    def post(self, request):
+        return render(request, 'acctsOtherEdit.html', {})
 class courses(View):
     def get(self, request):
         return render(request, 'courseView.html', {})
 
     def post(self, request):
         return render(request, 'courseView.html', {})
-class LogOutPage(View):
+class courseCreate(View):
     def get(self, request):
-        return render(request, 'logOutPage.html', {})
+        return render(request, 'courseCreate.html', {})
 
     def post(self, request):
-        return render(request, 'logOutPage.html', {})
+        return render(request, 'courseCreate.html', {})
+class courseEdit(View):
+    def get(self, request):
+        return render(request, 'courseEdit.html', {})
+
+    def post(self, request):
+        return render(request, 'courseEdit.html', {})
