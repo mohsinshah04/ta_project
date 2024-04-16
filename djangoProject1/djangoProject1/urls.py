@@ -16,10 +16,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from ta_app.views import Home, LoginPage
+from ta_app.views import (Home, LoginPage, LogOutPage, announcements,
+                          accounts, accountCreate, accountEdit, accountEditOther,
+                          courses, courseCreate, courseEdit,
+                          sections, sectionCreate, sectionEdit)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home.as_view()),
-    path('login/', LoginPage.as_view(), name='login')
+    path('login/', LoginPage.as_view(), name='login'),
+    path('logout/', LogOutPage.as_view(), name='logout'),
+    path('announcements/', announcements.as_view(), name='announcements'),
+    path('accounts/', accounts.as_view(), name='accounts'),
+    path('accountCreate/', accountCreate.as_view(), name='accountCreate'),
+    path('accountEdit/', accountEdit.as_view(), name='accountEdit'),
+    path('accountEditOther/', accountEditOther.as_view(), name='accountEditOther'),
+    path('courses/', courses.as_view(), name='courses'),
+    path('courseCreate/', courseCreate.as_view(), name='courseCreate'),
+    path('courseEdit/', courseEdit.as_view(), name='courseEdit'),
+    path('sections/', sections.as_view(), name='sections'),
+    path('sectionCreate/', sectionCreate.as_view(), name='sectionCreate'),
+    path('sectionEdit/', sectionEdit.as_view(), name='sectionEdit'),
+
 ]
