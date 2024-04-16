@@ -23,8 +23,8 @@ from ta_app.views import (Home, LoginPage, LogOutPage, announcements,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Home.as_view()),
-    path('login/', LoginPage.as_view(), name='login'),
+    path('', LoginPage.as_view()),
+    path('home/', Home.as_view(), name='login'),
     path('logout/', LogOutPage.as_view(), name='logout'),
     path('announcements/', announcements.as_view(), name='announcements'),
     path('accounts/', accounts.as_view(), name='accounts'),
