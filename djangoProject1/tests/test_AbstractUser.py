@@ -171,6 +171,7 @@ class TestEditUser(TestCase):
 
 
 class TestAccountRole(TestCase):
+
     def setUp(self):
         self.SUuser_Role = Role(Role_Name='Supervisor')
         self.INuser_Role = Role(Role_Name='Instructor')
