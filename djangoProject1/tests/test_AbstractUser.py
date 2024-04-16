@@ -255,12 +255,21 @@ class TestAccountRole(TestCase):
 
     def test_changeRole_unexistantAccount(self):
         self.assertTrue(self.userE.account_role(self, self.userI, self.userT))
+
     def test_changeRole_unexistantAccount2(self):
         self.assertTrue(self.userI.account_role(self, self.userE, self.userT))
+
     def test_changeRole_unexistantAccount3(self):
         self.assertTrue(self.userI.account_role(self, self.userT, self.userE))
 
+    def test_changeRole_SupervisorToSupervisor(self):
+        self.assertFalse(self.userS.account_role(self, self.userS, self.userS))
 
+    def test_changeRole_InstructorToInstructor(self):
+        self.assertFalse(self.userS.account_role(self, self.userI, self.userI))
+
+    def test_changeRole_TAToTA(self):
+        self.assertFalse(self.userS.account_role(self, self.userT, self.userT))
 
 #Waiting for course ID
 class TestViewAccount(TestCase):
@@ -314,5 +323,4 @@ class TestViewAccount(TestCase):
 
     def test_view_account_IN_to_SU(self):
         self.assertEqual("INVALID", self.userIN.view_account(self.test_user_su.id))
-
 
