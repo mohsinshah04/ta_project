@@ -86,3 +86,22 @@ class courseEdit(View):
 
     def post(self, request):
         return render(request, 'courseEdit.html', {})
+class sections(View):
+    def get(self, request):
+        return render(request, 'sectionView.html', {})
+
+    def post(self, request):
+        return render(request, 'sectionView.html', {})
+class sectionCreate(View):
+    def get(self, request):
+        return render(request, 'sectionCreate.html', {})
+
+    def post(self, request):
+        return render(request, 'sectionCreate.html', {})
+class sectionEdit(View):
+    def get(self, request):
+        return render(request, 'sectionEdit.html', {})
+
+    def post(self, request):
+        return render(request, 'sectionEdit.html', {})
+
