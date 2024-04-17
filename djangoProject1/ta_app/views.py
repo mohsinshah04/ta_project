@@ -15,8 +15,8 @@ class LoginPage(View):
         user_doesnt_exist = False
         bad_password = False
         try:
-            m = User.objects.get(User_Email=request.POST['email'])
-            bad_password = (m.password != request.POST['password'])
+            m = User.objects.get(User_Email=request.POST['Email'])
+            bad_password = (m.User_Password != request.POST['Password'])
         except:
             user_doesnt_exist = True
         if user_doesnt_exist:
@@ -25,7 +25,7 @@ class LoginPage(View):
             return render(request, "loginPage.html", {"message": "bad password"})
         else:
             request.session["email"] = m.User_Email
-            return redirect("/home.html/")
+            return redirect("/")
 class LogOutPage(View):
     def get(self, request):
         return render(request, 'logOutPage.html', {})
