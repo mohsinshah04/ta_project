@@ -5,20 +5,19 @@ class AccountsTest(TestCase, Client):
 
     def setUp(self):
         self.client = Client()
-        self.SUuser_Role = Role(Role_Name="Supervisor")
         self.role = Role.objects.create(Role_Name="Supervisor")
         self.test_role = Role(Role_Name='Instructor')
         self.test_role_ta = Role(Role_Name='TA')
         self.test_role.save()
         self.test_role_ta.save()
         self.role.save()
-        self.SUuser_Role.save()
-        self.user = User.objects.create(User_Email="genericUser@uwm.edu", User_Password="<PASSWORD>", User_Role=self.role, User_Home_Address="123, Ridgeview Ct, Portage WI", User_FName="Generic", User_LName="User",
-                                            User_Phone_Number="1+(608)654-2321")
+        self.user = User.objects.create(User_Email="genericUser@uwm.edu", User_Password="<PASSWORD>", User_Role=self.role,
+                                        User_Home_Address="123, Ridgeview Ct, Portage WI", User_FName="Generic",
+                                        User_LName="User", User_Phone_Number="1+(608)654-2321")
         self.user.save()
-        self.test_user = User.objects.create(User_Role=self.SUuser_Role, User_Email= "Super@uwm.edu", User_FName = "John",
-                                             User_LName = "Johnson", User_Phone_Number = "1+(608)542-2343",
-                                             User_Home_Address = "123, Ridgeview Ct")
+        self.test_user = User.objects.create(User_Role=self.role, User_Email="Super@uwm.edu", User_FName="John",
+                                             User_LName="Johnson", User_Phone_Number="1+(608)542-2343",
+                                             User_Home_Address="123, Ridgeview Ct")
 
         self.test_user_in = User.objects.create(User_Role=self.test_role, User_Email="Instrc@uwm.edu",
                                                 User_FName="Jose", User_LName="Johnson",
@@ -30,6 +29,7 @@ class AccountsTest(TestCase, Client):
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
                                                 User_Home_Address="123, Ridgeview Ct")
+
         self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
 
     def test_view_account(self):
@@ -75,7 +75,9 @@ class AccountCreationTests(TestCase, Client):
         self.user_Home_Address = "123, Ridgeview Ct, Portage WI"
         self.user_Phone_Number = "1+(608)654-2321"
         self.test_user = User.objects.create(User_Role=self.role, User_Email="Super@uwm.edu", User_Password="<PASSWORD>", User_FName="John",
-                                             User_LName="Johnson", User_Phone_Number="1+(608)542-2343", User_Home_Address="123, Ridgeview Ct")
+                                             User_LName="Johnson", User_Phone_Number="1+(608)542-2343",
+                                             User_Home_Address="123, Ridgeview Ct")
+
         self.test_user_in = User.objects.create(User_Role=self.test_role, User_Email="Instrc@uwm.edu",
                                                 User_FName="Jose", User_LName="Johnson",
                                                 User_Phone_Number="1+(608)532-2343",
