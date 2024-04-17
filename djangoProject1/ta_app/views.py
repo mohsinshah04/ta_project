@@ -20,11 +20,11 @@ class LoginPage(View):
         except:
             user_doesnt_exist = True
         if user_doesnt_exist:
-            return render(request, "loginPage.html", {"message": "email and password do not exists. Please contact supervisor to get shit this done"})
+            return render(request, "loginPage.html", {"message": "Email and password do not exists. Please contact your supervisor to get your account created"})
         elif bad_password:
             return render(request, "loginPage.html", {"message": "bad password"})
         else:
-            request.session["email"] = m.User_Email
+            request.session["id"] = m.id
             return redirect("/home/")
 class LogOutPage(View):
     def get(self, request):
