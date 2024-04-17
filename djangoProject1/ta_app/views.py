@@ -25,7 +25,7 @@ class LoginPage(View):
             return render(request, "loginPage.html", {"message": "bad password"})
         else:
             request.session["email"] = m.User_Email
-            return redirect("/")
+            return redirect("/home/")
 class LogOutPage(View):
     def get(self, request):
         return render(request, 'logOutPage.html', {})

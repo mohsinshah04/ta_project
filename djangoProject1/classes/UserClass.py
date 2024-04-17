@@ -7,12 +7,6 @@ from classes import CourseClass
 
 class UserObject:
 
-    """
-        def __init__(self, role):
-        if not isinstance(role, Role):
-            raise TypeError("Please specify a valid role")
-        self.role = role
-    """
     @classmethod
     def create_user(cls, email, password, role, phoneNumber, address, firstName, lastName, own_id):
         if not User.objects.filter(id=own_id).exists():

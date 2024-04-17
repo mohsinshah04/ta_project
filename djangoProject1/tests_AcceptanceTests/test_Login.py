@@ -13,5 +13,5 @@ class TestLogin(TestCase, Client):
         self.user.save()
 
     def test_login(self):
-        response = self.client.post("/login/", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
-        self.assertRedirects(response, "home.html")
+        response = self.client.post("/", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        self.assertRedirects(response, "/home/")
