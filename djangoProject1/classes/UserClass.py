@@ -16,7 +16,11 @@ class UserObject:
             return False
         if email is None or password is None or role is None or phoneNumber is None or address is None or firstName is None or lastName is None or email is None:
             return False
-        if len(password) < 7 or len(phoneNumber) < 15:
+        if email == "" or password == "" or role == "" or phoneNumber == "" or address == "" or firstName == "" or lastName == "" or email == "":
+            return False
+        if role.Role_Name != "Supervisor" and role.Role_Name != "Instructor" and role.Role_Name != "TA":
+            return False
+        if len(password) < 7 or len(phoneNumber) > 15:
             return False
         if User.objects.filter(User_Email=email).exists():
             return False
@@ -89,7 +93,7 @@ class UserObject:
     @classmethod
     def view_account(cls, user_ID, own_id):
         if not User.objects.filter(id=own_id).exists():
-            return False
+            return "INVALID"
         checked_user = User.objects.get(id=own_id)
         if not User.objects.filter(id=user_ID).exists():
             return "INVALID"
