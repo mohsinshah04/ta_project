@@ -13,23 +13,28 @@ class TestLogin(TestCase, Client):
         self.user.save()
 
     def test_login(self):
-        response = self.client.post("/", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        response = self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
         self.assertRedirects(response, "/home/")
 
     def test_login_wrong_password(self):
-        response = self.client.post("/", data={"Email": self.user.User_Email, "Password": "WrongPassword"}, follow=True)
-        self.assertEqual(response.context["message"], "bad password")
+        response = self.client.post("/", {"Email": self.user.User_Email, "Password": "WrongPassword"}, follow=True)
+        self.assertEqual(response.context['message'], "bad password")
 
     def test_login_wrong_email(self):
-        response = response = self.client.post("/", data={"Email": "self.user.User_Email", "Password": self.user.User_Password}, follow=True)
-        self.assertEqual(response.context["message"], "Email and password do not exists. Please contact your supervisor to get your account created")
+        response = response = self.client.post("/", {"Email": "self.user.User_Email", "Password": self.user.User_Password}, follow=True)
+        self.assertEqual(response.context['message'], "Email and password do not exists. Please contact your supervisor to get your account created")
 
     def test_login_user_doesnt_exist(self):
-        response = response = self.client.post("/", data={"Email": "thisUserDoesntExist@uwm.edu", "Password": "thisIsNotAPassowrd"}, follow=True)
-        self.assertEqual(response.context["message"], "Email and password do not exists. Please contact your supervisor to get your account created")
+        response = response = self.client.post("/", {"Email": "thisUserDoesntExist@uwm.edu", "Password": "thisIsNotAPassowrd"}, follow=True)
+        self.assertEqual(response.context['message'], "Email and password do not exists. Please contact your supervisor to get your account created")
 
     def test_session_is_active(self):
-        response = self.client.post("/", data={"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        response = self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
         session = self.client.session
         check_session = session.get("id")
         self.assertNotEqual(check_session, None)
+
+    def test_user_is_active(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        response = self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        self.assertEqual(response.context['message'], "User already logged in")

@@ -13,6 +13,8 @@ class LoginPage(View):
     def get(self,request):
         return render(request,"loginPage.html",{})
     def post(self, request):
+        if request.session.get('id') is not None:
+            return render(request,"loginPage.html",{"message": "User already logged in"})
         user_doesnt_exist = False
         bad_password = False
         try:
