@@ -1,11 +1,11 @@
 from django.test import TestCase, Client
-import tests.test_AbstractUser
+import tests_UnitTests.test_UserClass
 from models import User, Role
 
 
 class TestAbstractUser(TestCase):
     def test_all(self):
-        self.assertTrue(tests.test_AbstractUser)
+        self.assertTrue(tests_UnitTests.test_AbstractUser)
 
 
 class TestLogin(TestCase, Client):

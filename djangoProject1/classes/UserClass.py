@@ -1,7 +1,8 @@
 """
 This class is an abstract class that is used to create all of the variations of a user that can be found on the app
 """
-from ta_app.models import User, Role, Assign_User_Junction
+from ta_app.models import User
+from classes import CourseClass
 
 
 class UserObject:
