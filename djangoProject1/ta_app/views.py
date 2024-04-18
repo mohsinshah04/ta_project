@@ -33,9 +33,11 @@ class LoginPage(View):
 
 class LogOutPage(View):
     def get(self, request):
+        request.session.clear()
         return render(request, 'logOutPage.html', {})
 
     def post(self, request):
+        request.session.clear()
         return render(request, 'logOutPage.html', {})
 
 
