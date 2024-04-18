@@ -26,7 +26,7 @@ class CourseClass:
             return False
         if not courseName or not courseDescription or len(courseDescription) < 10:
             return False
-        if user.User_Role.Role_Name != 'Admin':
+        if user.User_Role.Role_Name != 'Supervisor':
             return False
         course = Course.objects.create(Course_Name="CS 351", Course_Description="Course Test.",Course_Semester_ID_id=semester)
 
@@ -35,18 +35,150 @@ class CourseClass:
 
         return True
 
+    @classmethod
+    def editAssignment(self, courseID, courseDescription, user):
+        if (courseID == None):
+            return False
+        if (user == None):
+            return False
+        if (User.objects.filter(id=user.id).exists() == False):
+            return "INVALID"
+        if (courseDescription == None):
+            return False
+        if len(courseDescription) < 10:
+            return False
+        if (Course.objects.filter(id=courseID).exists() == False):
+            return False
+        if user.User_Role.Role_Name != 'Supervisor':
+            return False
+        course = Course.objects.get(id=courseID)
+        course.Course_Description = courseDescription
 
-    def edit_assignment(self, course_id, course_description):
-        pass
+        return True
 
-    def user_assignment(self, course_id, user_id):
-        pass
+    @classmethod
+    def userAssignment(self, courseID, userID, user):
+        if (courseID == None):
+            return False
+        if (userID == None):
+            return False
+        if (user == None):
+            return False
+        if (User.objects.filter(id=user.id).exists() == False):
+            return "INVALID"
+        if (Course.objects.filter(id=courseID).exists() == False):
+            return False
+        if (User.objects.filter(id=userID).exists() == False):
+            return False
+        if ((User.objects.get(id=userID).User_Role.Role_Name != 'TA')
+                and (User.objects.get(id=userID).User_Role.Role_Name != 'Instructor')):
+            return False
+        if user.User_Role.Role_Name != 'Supervisor':
+            return False
 
-    def delete_course(self, course_id):
-        pass
+        if(Assign_User_Junction.objects.filter(Course_ID=Course.objects.get(id=courseID), User_ID=User.objects.get(id=userID)).exists()):
+            return True
 
-    def view_all_assignments(self, course_id):
-        pass
+        assigned = Assign_User_Junction.objects.create(Course_ID=Course.objects.get(id=courseID), User_ID=User.objects.get(id=userID))
 
-    def view_user_assignments(self, course_id, user_id):
-        pass
+        if(assigned == None):
+            return False
+
+        return True
+
+    @classmethod
+    def deleteAssignment(self, courseID, user):
+        if (courseID == None):
+            return False
+        if (user == None):
+            return False
+        if (User.objects.filter(id=user.id).exists() == False):
+            return "INVALID"
+        if (Course.objects.filter(id=courseID).exists() == False):
+            return False
+        if user.User_Role.Role_Name != 'Supervisor':
+            return False
+
+        Course.objects.filter(id=courseID).delete()
+
+        return True
+
+    @classmethod
+    def viewAllAssignments(self, user):
+        if (user == None):
+            return "INVALID"
+        if(type(user) != User):
+            return "INVALID"
+        if (User.objects.filter(id=user.id).exists() == False):
+            return "INVALID"
+
+        courses = Course.objects.all()
+        results = ""
+
+        for course in courses:
+            courseDetails = course.Course_Name + " - " + course.Course_Description + "\nAssigned Users: "
+            junctions = Assign_User_Junction.objects.filter(Course_ID=course).select_related('User_ID', 'User_ID__User_Role')
+            userDetails = ""
+            first_user = True
+
+            for junction in junctions:
+                if user.User_Role.Role_Name == 'TA' and junction.User_ID.User_Role.Role_Name == 'Instructor':
+                    if not Assign_User_Junction.objects.filter(Course_ID=course, User_ID=user).exists():
+                        continue
+                indDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
+                if not first_user:
+                    userDetails += ", "
+                userDetails += indDetail
+                first_user = False
+
+            if userDetails:
+                courseDetails += userDetails
+            else:
+                courseDetails += "No assigned users"
+            if results:
+                results += "\n\n"
+            results += courseDetails
+        return results if results else "No courses found"
+
+    @classmethod
+    def viewUserAssignments(self, tuser, user):
+        if tuser == None:
+            return "INVALID"
+        if user == None:
+            return "INVALID"
+        if (type(user) != User):
+            return "INVALID"
+        if (type(tuser) != User):
+            return "INVALID"
+        if not User.objects.filter(id=user.id).exists() or not User.objects.filter(id=tuser.id).exists():
+            return "INVALID"
+
+        # this check btw is for if a ta is calling a professor that they are never assigned to
+        if ((user.User_Role.Role_Name != 'Supervisor') and (user.User_Role.Role_Name != 'Instructor')) and (user.User_Role.Role_Name == 'TA' and tuser.User_Role.Role_Name == 'Instructor'):
+            #if you do __ you can move through tables attributes, cool!
+            if not Assign_User_Junction.objects.filter(User_ID=tuser, Course_ID__assign_user_junction__User_ID=user).exists():
+                return "INVALID"
+
+        courses = Course.objects.filter(assign_user_junction__User_ID=tuser)
+        results = ""
+        for course in courses:
+            if results:
+                results += "\n\n"
+
+            courseDetails = course.Course_Name + " - " + course.Course_Description + "\nAssigned Users: "
+            userDetails = ""
+            junctions = Assign_User_Junction.objects.filter(Course_ID=course).select_related('User_ID', 'User_ID__User_Role')
+            first_user = True
+
+            for junction in junctions:
+                userDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
+                if not first_user:
+                    userDetails += ", "
+                userDetails += userDetail
+                first_user = False
+
+            courseDetails += userDetails if userDetails else "No assigned users"
+            results += courseDetails
+
+        return results if results else "No courses found for user"
+
