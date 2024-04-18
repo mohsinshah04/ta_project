@@ -6,317 +6,505 @@ from ta_app.models import User, Role, Assign_User_Junction, Course, Semester
 class CourseTestCase(TestCase):
     def setUp(self):
         self.semester = Semester.objects.create(Semester_Name="Fall 2024")
-        self.Role = Role.objects.create(Role_Name="Admin")
         self.RoleTA = Role.objects.create(Role_Name="TA")
-        self.RoleProf = Role.objects.create(Role_Name="Professor")
-        self.course2 = Course.objects.create(Course_Name="CS 444", Course_Description="Course Test.", Course_Semester_ID_id=self.semester.id)
-        self.course = Course.objects.create(Course_Name="CS 351", Course_Description="Course Test.", Course_Semester_ID_id=self.semester.id)
-        self.user = User.objects.create(User_FName="Admin", User_Email="admin@uwm.edu", User_Password="admin", User_Role=self.Role)
-        self.userTA = User.objects.create(User_FName="TA", User_Email="ta@uwm.edu", User_Password="ta", User_Role=self.RoleTA)
-        self.userTA2 = User.objects.create(User_FName="TA2", User_Email="ta2@uwm.edu", User_Password="ta2",User_Role=self.RoleTA)
-        self.userProf = User.objects.create(User_FName="TA", User_Email="ta@uwm.edu", User_Password="ta", User_Role=self.RoleProf)
-        self.junctionUserTAToCourse = Assign_User_Junction.objects.create(User_ID=self.userTA, Course_ID=self.course)
-        self.junctionUserTAToCourse2 = Assign_User_Junction.objects.create(User_ID=self.userTA2, Course_ID=self.course2)
-        self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID=self.course)
-        self.mockHandleAssignments = MockHandleAssignments()
+        self.Role = Role.objects.create(Role_Name="Supervisor")
+        self.RoleProf = Role.objects.create(Role_Name="Instructor")
+        self.user = User.objects.create(User_FName="Supervisor", User_LName="User", User_Email="admin@uwm.edu",
+                                        User_Password="admin", User_Role=self.Role)
+
+        self.course = Course.objects.create(Course_Name="MATH - 201", Course_Description="Calculus",
+                                            Course_Semester_ID_id=self.semester.id)
+        self.course2 = Course.objects.create(Course_Name="CS - 351", Course_Description="Data Structures and Algos",
+                                             Course_Semester_ID_id=self.semester.id)
+        self.userTA = User.objects.create(User_FName="John", User_LName="Pork", User_Email="ta@uwm.edu",
+                                          User_Password="ta", User_Role=self.RoleTA)
+        self.userTA2 = User.objects.create(User_FName="Davis", User_LName="Clark", User_Email="ta@uwm.edu",
+                                           User_Password="ta", User_Role=self.RoleTA)
+
+        Assign_User_Junction.objects.create(Course_ID=self.course, User_ID=self.userTA)
+        Assign_User_Junction.objects.create(Course_ID=self.course, User_ID=self.userTA2)
+        Assign_User_Junction.objects.create(Course_ID=self.course2, User_ID=self.userTA)
+
+        self.userProf = User.objects.create(User_FName="Himmithy", User_LName="Him", User_Email="prof@uwm.edu", User_Password="prof", User_Role=self.RoleProf)
+        self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu",
+                                            User_Password="prof", User_Role=self.RoleProf)
+
+        self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf,
+                                                                            Course_ID=self.course2)
+
 
     def test_CreateAddCorrectAssignment(self):
-        assignmentMock = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Description stuff.", self.user
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", "Statistical Math", "Description stuff.", self.semester.id,self.user
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
-        self.assertTrue(assignmentMock, "Valid Format Course Creation Must Be [COURSE CODE (COURSE - NUMBER), COURSE NAME, COURSE DESCRIPTION)")
+        self.assertTrue(createdCourse, "Valid Format Course Creation Must Be [COURSE CODE (COURSE - NUMBER), COURSE NAME, COURSE DESCRIPTION, SEMESTER_ID, user)")
 
     def test_CreateAddInvalidCodeAssignment(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "240 - Math", "Statistical Math", "Description stuff.", self.user
+        """assignmentMock1 = MockHandleAssignments.createAssignment(
+            "240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
-        assignmentMock2 = self.mockHandleAssignments.createAssignment(
-            "MATH240", "Statistical Math", "Description stuff.", self.user
+        assignmentMock2 = MockHandleAssignments.createAssignment(
+            "MATH240", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
-        assignmentMock3 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240 - Math", "Statistical Math", "Description stuff.", self.user
+        assignmentMock3 = MockHandleAssignments.createAssignment(
+            "MATH - 240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
+        )"""
+        createdCourse1 = CourseClass.createAssignment(
+            "240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
-        self.assertFalse(assignmentMock1, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
-        self.assertFalse(assignmentMock2, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
-        self.assertFalse(assignmentMock3, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
+        createdCourse2 = CourseClass.createAssignment(
+            "MATH240", "Statistical Math", "Description stuff.", self.semester.id, self.user
+        )
+        createdCourse3 = CourseClass.createAssignment(
+            "MATH - 240 - Math", "Statistical Math", "Description stuff.", self.semester.id, self.user
+        )
+
+        self.assertFalse(createdCourse1, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
+        self.assertFalse(createdCourse2, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
+        self.assertFalse(createdCourse3, "Invalid Course Code: Format [Course code (COURSE - NUMBER)")
 
     def test_CreateNullNameAssignment(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            None, "Statistical Math", "Description stuff.", self.user
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            None, "Statistical Math", "Description stuff.", self.semester.id, self.user
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            None, "Statistical Math", "Description stuff.", self.semester.id, self.user
         )
-        self.assertFalse(assignmentMock1, "Must Input Valid Course Code")
+        self.assertFalse(createdCourse, "Must Input Valid Course Code")
 
     def test_CreateCourseDescriptionTooShort(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Descr.", self.user
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", "Statistical Math", "Descr.", self.semester.id, self.user
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", "Statistical Math", "Descr.", self.semester.id, self.user
         )
-        self.assertFalse(assignmentMock1, "Description must be at least 10 characters.")
+        self.assertFalse(createdCourse, "Description must be at least 10 characters.")
 
     def test_CreateNullCourseDescriptionAssignment(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", None, self.user
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", "Statistical Math", None, self.semester.id, self.user
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", "Statistical Math", None, self.semester.id, self.user
         )
-        self.assertFalse(assignmentMock1, "Course Description must exist.")
+        self.assertFalse(createdCourse, "Course Description must exist.")
 
     def test_CreateNullCourseNameAssignment(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", None, "Here is a descirption.", self.user
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.user
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.user
         )
-        self.assertFalse(assignmentMock1, "Course Name must exist")
+        self.assertFalse(createdCourse, "Course Name must exist")
 
     def test_CreateIsNotASupervisor(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", None, "Here is a descirption.", self.userTA
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.userTA
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", None, "Here is a descirption.", self.semester.id, self.userTA
         )
-        self.assertFalse(assignmentMock1, "Must be a Supervisor/Admin to create a course.")
+        self.assertFalse(createdCourse, "Must be a Supervisor/Admin to create a course.")
 
     def test_CreateUserCallNull(self):
-        assignmentMock1 = self.mockHandleAssignments.createAssignment(
-            "MATH - 240", "Statistical Math", "Here is a descirption.", None
+        """assignmentMock = MockHandleAssignments.createAssignment(
+            "MATH - 240", "Statistical Math", "Here is a descirption.",self.semester.id, None
+        )"""
+        createdCourse = CourseClass.createAssignment(
+            "MATH - 240", "Statistical Math", "Here is a descirption.",self.semester.id, None
         )
-        self.assertFalse(assignmentMock1, "Must be a valid and existing User to create a course.")
+        self.assertFalse(createdCourse, "Must be a valid and existing User to create a course.")
 
     def test_EditCourseValid(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            self.course.id, "Here is a valid desciption change", self.user
+        )"""
+        editCourse = CourseClass.editAssignment(
             self.course.id, "Here is a valid desciption change", self.user
         )
-        self.assertTrue(editMock1, "Valid Course Edit Successfull, with exsiting course id, course description, and user.")
+        self.assertTrue(editCourse, "Valid Course Edit Successfull, with exsiting course id, course description, and user.")
 
     def test_EditCourseNonExistingCourse(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            1111, "Here is a valid desciption change", self.user
+        )"""
+        editCourse = CourseClass.editAssignment(
             1111, "Here is a valid desciption change", self.user
         )
-        self.assertFalse(editMock1, "Must be an existing course id to edit a course.")
+        self.assertFalse(editCourse, "Must be an existing course id to edit a course.")
 
     def test_EditCourseDescriptionTooSmallIfExists(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
             self.course.id, "Here is ", self.user
+        )"""
+        editCourse = CourseClass.editAssignment(
+            1111, "Here is a valid desciption change", self.user
         )
-        self.assertFalse(editMock1, "Must be a description of at least 10 characters during edit.")
+        self.assertFalse(editCourse, "Must be a description of at least 10 characters during edit.")
 
     def test_EditCourseWithNoDescription(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            self.course.id, None, self.user
+        )"""
+        editCourse = CourseClass.editAssignment(
             self.course.id, None, self.user
         )
-        self.assertFalse(editMock1, "A description must exist to edit.")
+        self.assertFalse(editCourse, "A description must exist to edit.")
 
     def test_EditCourseInvalidPermission(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            self.course.id, "Here is a valid description", self.userTA
+        )"""
+        editCourse = CourseClass.editAssignment(
             self.course.id, "Here is a valid description", self.userTA
         )
-        self.assertFalse(editMock1, "Must be a Supervisor/Admin to edit a course.")
+        self.assertFalse(editCourse, "Must be a Supervisor/Admin to edit a course.")
 
     def test_EditCourseUserCallNull(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            self.course.id, "Here is a valid description", None
+        )"""
+        editCourse = CourseClass.editAssignment(
             self.course.id, "Here is a valid description", None
         )
-        self.assertFalse(editMock1, "Must be a valid and existing user to edit a course.")
+        self.assertFalse(editCourse, "Must be a valid and existing user to edit a course.")
 
     def test_EditCourseCourseNull(self):
-        editMock1 = self.mockHandleAssignments.editAssignment(
+        """editMock = MockHandleAssignments.editAssignment(
+            None, "Here is a valid description", self.user
+        )"""
+        editCourse = CourseClass.editAssignment(
             None, "Here is a valid description", self.user
         )
-        self.assertFalse(editMock1, "Must be a valid and existing Course to edit a course.")
+        self.assertFalse(editCourse, "Must be a valid and existing Course to edit a course.")
 
     def test_UserAssignmentTAValid(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, self.userTA.id, self.user
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, self.userTA.id, self.user
         )
-        self.assertTrue(userAssignMock1, "Valid assignment of existing Course to existing user of TA role, from a valid user.")
+        self.assertTrue(userAssign, "Valid assignment of existing Course to existing user of TA role, from a valid user.")
 
     def test_UserAssignmentProfessorValid(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
             self.course.id, self.userProf.id, self.user
+        )"""
+        userAssign = CourseClass.userAssignment(
+            self.course.id, self.userProf1.id, self.user
         )
-        self.assertTrue(userAssignMock1, "Valid assignment of existing Course to existing user of Professor role, from a valid user.")
+        self.assertTrue(userAssign, "Valid assignment of existing Course to existing user of Professor role, from a valid user.")
 
     def test_UserAssignmentCourseNotExist(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            11111, self.userProf.id, self.user
+        )"""
+        userAssign = CourseClass.userAssignment(
             11111, self.userProf.id, self.user
         )
-        self.assertFalse(userAssignMock1, "Must be an existing Course to assign a user.")
+        self.assertFalse(userAssign, "Must be an existing Course to assign a user.")
 
     def test_UserAssignmentUserNotExist(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, 33333, self.user
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, 33333, self.user
         )
-        self.assertFalse(userAssignMock1, "Must be an existing User to assign to a course.")
+        self.assertFalse(userAssign, "Must be an existing User to assign to a course.")
 
     def test_UserAssignmentUserIncorrectRole(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, self.user.id, self.user
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, self.user.id, self.user
         )
-        self.assertFalse(userAssignMock1, "Must be of a TA or a Professor role to be assigned to a course.")
+        self.assertFalse(userAssign, "Must be of a TA or a Professor role to be assigned to a course.")
 
     def test_UserAssignmentUserIncorrectRole(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, self.userProf.id, self.userTA
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, self.userProf.id, self.userTA
         )
-        self.assertFalse(userAssignMock1, "Must be of a Supervisor/Admin permission user to assign.")
+        self.assertFalse(userAssign, "Must be of a Supervisor/Admin permission user to assign.")
 
     def test_UserAssignmentNullCourse(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            None, self.userProf.id, self.userTA
+        )"""
+        userAssign = CourseClass.userAssignment(
             None, self.userProf.id, self.userTA
         )
-        self.assertFalse(userAssignMock1, "Course must exist and not null")
+        self.assertFalse(userAssign, "Course must exist and not null")
 
     def test_UserAssignmentNullUserID(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, None, self.userTA
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, None, self.userTA
         )
-        self.assertFalse(userAssignMock1, "User must exit and not null")
+        self.assertFalse(userAssign, "User must exit and not null")
 
     def test_UserAssignmentNullUserCall(self):
-        userAssignMock1 = self.mockHandleAssignments.userAssignment(
+        """userAssignMock = MockHandleAssignments.userAssignment(
+            self.course.id, self.userProf.id, None
+        )"""
+        userAssign = CourseClass.userAssignment(
             self.course.id, self.userProf.id, None
         )
-        self.assertFalse(userAssignMock1, "User doing the assignment must exist.")
+        self.assertFalse(userAssign, "User doing the assignment must exist.")
 
     def test_DeleteAssignmentValid(self):
-        courseDeleteMock1 = self.mockHandleAssignments.deleteAssignment(
+        """courseDeleteMock = MockHandleAssignments.deleteAssignment(
+            self.course.id, self.user
+        )"""
+        courseDelete = CourseClass.deleteAssignment(
             self.course.id, self.user
         )
-        self.assertTrue(courseDeleteMock1, "Valid Delete Assignment, existing course and existing/correct permission user.")
+        self.assertTrue(courseDelete, "Valid Delete Assignment, existing course and existing/correct permission user.")
 
     def test_DeleteAssignmentCourseNotExist(self):
-        courseDeleteMock1 = self.mockHandleAssignments.deleteAssignment(
+        """courseDeleteMock = MockHandleAssignments.deleteAssignment(
+            1234, self.user
+        )"""
+        courseDelete = CourseClass.deleteAssignment(
             1234, self.user
         )
-        self.assertFalse(courseDeleteMock1, "Must be a existing course to delete")
+        self.assertFalse(courseDelete, "Must be a existing course to delete")
 
     def test_DeleteAssignmentNotPermission(self):
-        courseDeleteMock1 = self.mockHandleAssignments.deleteAssignment(
+        """courseDeleteMock = MockHandleAssignments.deleteAssignment(
             self.course.id, self.userTA
+        )"""
+        courseDelete = CourseClass.deleteAssignment(
+            1234, self.user
         )
-        self.assertFalse(courseDeleteMock1, "Must be of a Supervisor/Admin permission to delete")
+        self.assertFalse(courseDelete, "Must be of a Supervisor/Admin permission to delete")
 
     def test_DeleteAssignmentCourseNull(self):
-        courseDeleteMock1 = self.mockHandleAssignments.deleteAssignment(
+        """courseDeleteMock = MockHandleAssignments.deleteAssignment(
+            None, self.user
+        )"""
+        courseDelete = CourseClass.deleteAssignment(
             None, self.user
         )
-        self.assertFalse(courseDeleteMock1, "Must be a non null course to delete.")
+        self.assertFalse(courseDelete, "Must be a non null course to delete.")
 
     def test_DeleteAssignmentUserCallNull(self):
-        courseDeleteMock1 = self.mockHandleAssignments.deleteAssignment(
+        """courseDeleteMock = MockHandleAssignments.deleteAssignment(
+            self.course.id, None
+        )"""
+        courseDelete = CourseClass.deleteAssignment(
             self.course.id, None
         )
-        self.assertFalse(courseDeleteMock1, "Must be a user non null to delete")
+        self.assertFalse(courseDelete, "Must be a user non null to delete")
+
+
+
 
     def test_viewAllAssignments(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, self.userTA.id, self.user
-        )
-        self.assertEqual(viewAllMock1, "CS 351 - Course Test.",
-                         "Valid View All Assignments, requires valid courses, users, and correct user call permission level. "
-                         "Output COURSE CODE - COURSE NAME")
+        """result = MockHandleAssignments.viewAllAssignments(
+            self.user
+        )"""
+        result = CourseClass.viewAllAssignments(self.user)
 
-    def test_viewAllAssignmentsNotPermissionTA(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, self.userTA.id, self.userTA
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be of Supervisor/Admin permission to view all assignments.")
+        self.assertIn("MATH - 201", result)
+        self.assertIn("John Pork (TA), Davis Clark (TA)", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
+        self.assertIn("Instructor", result)
 
-    def test_viewAllAssignmentsNotPermissionProfessor(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, self.userTA.id, self.userProf
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be of Supervisor/Admin permission to view all assignments.")
 
-    def test_viewAllAssignmentsCourseNotExist(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            1234, self.userTA.id, self.user
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be an existing courses to view assignments.")
+    def test_viewAllAssignmentsPermissionTA(self):
+        """result = MockHandleAssignments.viewAllAssignments(
+            self.userTA
+        )"""
+        result = CourseClass.viewAllAssignments(self.userTA2)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("John Pork (TA), Davis Clark (TA)", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
+        self.assertNotIn("Instructor", result)
+
+
+    def test_viewAllAssignmentsPermissionProfessor(self):
+        """result = MockHandleAssignments.viewAllAssignments(
+            self.userProf
+        )"""
+        result = CourseClass.viewAllAssignments(self.userProf)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("John Pork (TA), Davis Clark (TA)", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
+        self.assertIn("Instructor", result)
+
 
     def test_viewAllAssignmentsUserNotExist(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, 4313, self.user
+        result = MockHandleAssignments.viewAllAssignments(
+            44444
         )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be existing user to view assignments.")
+        result = CourseClass.viewAllAssignments(44444)
+        self.assertEqual(result, "INVALID", "Must be existing user to view assignments.")
 
     def test_viewAllAssignmentsUserNull(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, None, self.user
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be a non null user to view assignments")
+        """result = MockHandleAssignments.viewAllAssignments(
+            None
+        )"""
+        result = CourseClass.viewAllAssignments(None)
+        self.assertEqual(result, "INVALID", "Must be a non null user to view assignments")
 
-    def test_viewAllAssignmentsCourseNull(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            None, self.userTA.id, self.user
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Must be a non null course to view assignments")
 
-    def test_viewAllAssignmentsUserCallNull(self):
-        viewAllMock1 = self.mockHandleAssignments.viewAllAssignments(
-            self.course.id, self.userTA.id, None
-        )
-        self.assertEqual(viewAllMock1, "INVALID", "Mustbe a none null user calling to view assignments")
 
-    def test_viewUserAssignmentAsSamePermission(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userTA.id, self.userTA
-        )
-        self.assertEqual(viewUserAllMock1, "TA, null, CS 351",
-                         "Valid User Viewing Assignments, valid course, valid user (of any permission), "
-                         "calling user TA can view themselves, Supervisor/TA can view more")
 
-    def test_viewUserAssignmentAsSupervisor(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userTA.id, self.user
-        )
-        self.assertEqual(viewUserAllMock1, "TA, null, CS 351", "Valid Supervisor viewing TA assignments.")
+    def test_viewUserAssignmentAsAdminOnTA(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+                    self.userTA, self.user
+        )"""
 
-    def test_viewUserAssignmentAsWrongPermission(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userTA.id, self.userTA2
+        result = CourseClass.viewUserAssignments(
+            self.userTA, self.user
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "TA cannot view other TA course assignments.")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("Instructor", result)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
 
-    def test_viewUserAssignmentAsProfessor(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userProf.id, self.userProf
+    def test_viewUserAssignmentAsAdminOnProf(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userProf, self.user
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userProf, self.user
         )
-        self.assertEqual(viewUserAllMock1, "TA, null, CS 351", "Professor can view themeselves assignments")
 
-    def test_viewUserAssignmentAsProfessorAssignedTAs(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userTA.id, self.userProf
-        )
-        self.assertEqual(viewUserAllMock1, "TA, null, CS 351", "Professor can view TA assignments to course")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("Himmithy Him (Instructor)", result)
 
-    def test_viewUserAssignmentAsProfessorNotAssignedTAs(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userTA2.id, self.userProf
+    def test_viewUserAssignmentAsTAOnSelf(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA, self.userTA
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userTA, self.userTA
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Professor cannot view not assigned course TA")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("Instructor", result)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
 
-    def test_viewUserAssignmentUserIDNotExist(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, 33333, self.userProf
+    def test_viewUserAssignmentAsTAOnDifferentTA(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA2, self.userTA
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userTA2, self.userTA
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Must be a valid existing userID")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("Davis Clark (TA)", result)
 
-    def test_viewUserAssignmentCourseIDNotExist(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            3333, self.userProf.id, self.userProf
+    def test_viewUserAssignmentAsTAOnProfessorInSameCourse(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userProf, self.userTA
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userProf, self.userTA
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Must be a valid existing courseID")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("John Pork (TA)", result)
 
-    def test_viewUserAssignmentNullCourse(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            None, self.userProf.id, self.userProf
+    def test_viewUserAssignmentAsProfOnProfessorInNotCourse(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userProf, self.userTA2
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userProf, self.userTA2
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Must be a non null courseID")
+        self.assertIn("INVALID", result)
 
-    def test_viewUserAssignmentNullUserID(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, None, self.userProf
+    def test_viewUserAssignmentAsProfOnSelf(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userProf, self.userProf
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userProf, self.userProf
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Must be a non null userID")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("Instructor", result)
+        self.assertNotIn("MATH - 201", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("Himmithy Him (Instructor)", result)
 
-    def test_viewUserAssignmentNullUser(self):
-        viewUserAllMock1 = self.mockHandleAssignments.viewUserAssignments(
-            self.course.id, self.userProf.id, None
+    def test_viewUserAssignmentAsProfOnTA(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA, self.userProf
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userTA, self.userProf
         )
-        self.assertEqual(viewUserAllMock1, "INVALID", "Must be a non null call user")
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("Instructor", result)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("Himmithy Him (Instructor)", result)
+        self.assertIn("John Pork (TA)", result)
+
+    def test_viewUserAssignmentAsProfOnProf(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA, self.userProf
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userTA, self.userProf
+        )
+        self.assertIn("Assigned Users:", result)
+        self.assertIn("Instructor", result)
+        self.assertIn("MATH - 201", result)
+        self.assertIn("CS - 351", result)
+        self.assertIn("Himmithy Him (Instructor)", result)
+        self.assertIn("John Pork (TA)", result)
+
+
+    def test_viewUserAssignmentUserNotExist(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            3333, self.user
+        )"""
+        result = CourseClass.viewUserAssignments(
+            3333, self.user
+        )
+        self.assertIn(result, "INVALID", "Must be a valid existing userID")
+
+    def test_viewUserAssignmentCallingUserNotExist(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA, 33333
+        )"""
+        result = CourseClass.viewUserAssignments(
+            self.userTA, 33333
+        )
+        self.assertIn(result, "INVALID", "Must be a valid existing userID")
+
+
+    def test_viewUserAssignmentNullCallingUser(self):
+        """result = MockHandleAssignments.viewUserAssignments(
+            self.userTA, None
+        )"""
+        viewUserAll = CourseClass.viewUserAssignments(
+            self.userTA, None
+        )
+        self.assertEqual(viewUserAll, "INVALID", "Must be a non null userID")
+
+
 
