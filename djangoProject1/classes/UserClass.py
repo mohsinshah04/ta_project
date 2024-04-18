@@ -54,8 +54,9 @@ class UserObject:
         user = User.objects.get(id=own_id)
         if user.User_Role.Role_Name != "Supervisor" and user_id != own_id:
             return False
-        if (user_id is None or email is None or password is None or phoneNumber is None or address is None or firstName
-            is None or lastName is None):
+        if user_id is None or email is None or password is None or phoneNumber is None or address is None or firstName is None or lastName is None:
+            return False
+        if email == "" or password == "" or phoneNumber == "" or address == "" or firstName == "" or lastName == "":
             return False
         if len(password) < 7 or len(phoneNumber) < 15:
             return False

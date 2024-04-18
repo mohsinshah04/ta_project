@@ -159,8 +159,6 @@ class TestEditUser(TestCase):
                                                 User_Home_Address="123, Ridgeview Ct")
 
         self.updateEmail = "joseJoe@uwm.edu"
-        self.updateRole = Role(Role_Name='Supervisor')
-        self.updateRole.save()
         self.updateFName = "Jose"
         self.updateLName = "Joe"
         self.updatePassword = "<PASS124>"

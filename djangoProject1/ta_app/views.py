@@ -13,8 +13,8 @@ class LoginPage(View):
     def get(self,request):
         return render(request,"loginPage.html",{})
     def post(self, request):
-        if request.session.get('id') is not None:
-            return render(request,"loginPage.html",{"message": "User already logged in"})
+        #if request.session.get('id') is not None:
+            #return render(request,"loginPage.html",{"message": "User already logged in"})
         user_doesnt_exist = False
         bad_password = False
         try:
@@ -62,9 +62,8 @@ class Accounts(View):
     def post(self, request):
         own_id = request.session.get("id")
         user_id = request.POST.get('id')
-        user_id = int(user_id)
         if not User.objects.filter(id=user_id).exists():
-            return render(request, 'acctsView.html', {"message": "Invalid account id: " + str(user_id)})
+            return render(request, 'acctsView.html', {"message": "Invalid account id: " + user_id})
         own_user = User.objects.get(id=own_id)
         user = User.objects.get(id=user_id)
         if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
@@ -75,7 +74,7 @@ class Accounts(View):
 
         account_string = UserObject.view_account(user_id, own_id)
         if account_string == "INVALID":
-            return render(request, "acctsView.html", {"message": "Invalid account id: " + str(user_id)})
+            return render(request, "acctsView.html", {"message": "Invalid account id: " + user_id})
         name = account_string.split(":")
         return render(request, 'acctsView.html', {"name": name[0], "role": name[1]})
 
@@ -119,7 +118,30 @@ class AccountEdit(View):
         return render(request, 'acctsEdit.html', {})
 
     def post(self, request):
-        return render(request, 'acctsEdit.html', {})
+        get_all_info = False
+        try:
+            own_id = request.session.get('id')
+            user_id = int(request.POST.get('id'))
+            if own_id is not user_id:
+                return render(request, 'acctsEdit.html', {"message": "Account ids do not match"})
+            f_name = request.POST.get('First Name')
+            l_name = request.POST.get('Last Name')
+            email = request.POST.get('Email')
+            password = request.POST.get('Password')
+            address = request.POST.get('Address')
+            phone = request.POST.get('Phone Number')
+        except:
+            get_all_info = True
+
+        if get_all_info:
+            return render(request, 'acctsEdit.html', {"message": "Please enter all information correctly"})
+
+        toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
+
+        if not toReturn:
+            return render(request, 'acctsEdit.html', {"message": "Account was not updated successfully"})
+
+        return render(request, 'acctsEdit.html', {"message": "Account was updated successfully"})
 
 
 class AccountEditOther(View):
