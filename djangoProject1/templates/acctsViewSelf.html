@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+</head>
+<body>
+<h1>Account</h1>
+    <form method="get">
+        {% csrf_token %}
+        <table>
+            <tr><td>Name: {{ name }}</td></tr>
+            <tr><td>Email: {{ email }}</td></tr>
+            <tr><td>Address: {{ address }}</td></tr>
+            <tr><td>Phone Number: {{ phone }}</td></tr>
+        </table>
+    </form>
+    <a href="/accountSearch">Search Accounts</a>
+    <a href="/accountEditSelf/">Edit Your Account</a>
+    <a href="/accountEditOther/">Edit Other's Accounts</a>
+    <a href="/accountCreate/">Create Accounts</a>
+    <a href="/deleteAccount">Delete Accounts</a>
+    <a href="/Home">home</a>
+</body>
+</html>

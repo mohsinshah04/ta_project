@@ -57,31 +57,43 @@ class Announcements(View):
         return render(request, 'announcements.html', {})
 
 
-class Accounts(View):
+class AccountViewSelf(View):
     def get(self, request):
         own_id = request.session.get('id')
-        return render(request, 'acctsView.html', {})
+        user = User.objects.get(id=own_id)
+        name = user.User_FName + " " + user.User_LName
+        email = user.User_Email
+        phone = user.User_Phone_Number
+        address = user.User_Home_Address
+        return render(request, 'acctsViewSelf.html', {"name": name, "email": email, "phone":phone, "address": address})
 
+    def post(self, request):
+        return render(request, 'acctsViewSelf.html', {})
+
+
+class AccountSearch(View):
+    def get(self, request):
+        return render(request, 'acctsSearch.html', {})
     def post(self, request):
         own_id = request.session.get("id")
         user_fname = request.POST.get('First Name')
         user_lname = request.POST.get('Last Name')
         if not User.objects.filter(User_FName=user_fname, User_LName=user_lname).exists():
-            return render(request, 'acctsView.html', {"message": "Invalid account: " + user_fname + " " + user_lname})
+            return render(request, 'acctsSearch.html', {"message": "Invalid account: " + user_fname + " " + user_lname})
         own_user = User.objects.get(id=own_id)
         user = User.objects.get(User_FName=user_fname, User_LName=user_lname)
         if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
-            return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
+            return render(request, 'acctsSearch.html', {"message": "You cannot view this account because of your role"})
 
-        if own_user.User_Role.Role_Name == 'TA' and (user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
-            return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
+        if own_user.User_Role.Role_Name == 'TA' and (
+                user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
+            return render(request, 'acctsSearch.html', {"message": "You cannot view this account because of your role"})
 
         account_string = UserObject.view_account(user.id, own_id)
         if account_string == "INVALID":
-            return render(request, "acctsView.html", {"message": "Invalid account id: " + user.id})
+            return render(request, "acctsSearch.html", {"message": "Invalid account id: " + user.id})
         name = account_string.split(":")
-        return render(request, 'acctsView.html', {"name": name[0], "role": name[1]})
-
+        return render(request, 'acctsSearch.html', {"name": name[0], "role": name[1]})
 
 class AccountCreate(View):
     def get(self, request):
@@ -93,7 +105,7 @@ class AccountCreate(View):
             own_id = request.session.get("id")
             own_user = User.objects.get(id=own_id)
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsView.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsViewSelf.html", {"message": "You do not have permission to create users"})
 
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
@@ -117,17 +129,19 @@ class AccountCreate(View):
         return render(request, 'acctsCreate.html', {"message": "User was created successfully"})
 
 
-class AccountEdit(View):
+class AccountEditSelf(View):
     def get(self, request):
-        return render(request, 'acctsEdit.html', {})
+        return render(request, 'acctsEditSelf.html', {})
 
     def post(self, request):
         get_all_info = False
         try:
             own_id = request.session.get('id')
-            user_id = int(request.POST.get('id'))
-            if own_id is not user_id:
-                return render(request, 'acctsEdit.html', {"message": "Account ids do not match"})
+            user_password = request.POST.get('Old Password')
+            own_user = User.objects.get(id=own_id)
+            if own_user.User_Password != user_password:
+                return render(request, 'acctsEditSelf.html', {"message": "Account passwords do not match"})
+            user_id = User.objects.get(User_Password=user_password).id
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
@@ -138,14 +152,14 @@ class AccountEdit(View):
             get_all_info = True
 
         if get_all_info:
-            return render(request, 'acctsEdit.html', {"message": "Please enter all information correctly"})
+            return render(request, 'acctsEditSelf.html', {"message": "Please enter all information correctly"})
 
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
-            return render(request, 'acctsEdit.html', {"message": "Account was not updated successfully"})
+            return render(request, 'acctsEditSelf.html', {"message": "Account was not updated successfully"})
 
-        return render(request, 'acctsEdit.html', {"message": "Account was updated successfully"})
+        return render(request, 'acctsEditSelf.html', {"message": "Account was updated successfully"})
 
 
 class AccountEditOther(View):
@@ -161,7 +175,7 @@ class AccountEditOther(View):
                 return render(request, 'acctsOtherEdit.html', {"message": "Invalid account id: " + str(user_id)})
             own_user = User.objects.get(id=own_id)
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsView.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsViewSelf.html", {"message": "You do not have permission to create users"})
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')

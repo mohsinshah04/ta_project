@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ta_app.views import (Home, LoginPage, LogOutPage, Announcements,
-                          Accounts, AccountCreate, AccountEdit, AccountEditOther,
+                          AccountViewSelf, AccountCreate, AccountEditSelf, AccountEditOther,
                           Courses, CourseCreate, CourseEdit,
-                          Sections, SectionCreate, SectionEdit, AccountDelete)
+                          Sections, SectionCreate, SectionEdit, AccountDelete, AccountSearch)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,10 +28,11 @@ urlpatterns = [
     path('home/', Home.as_view(), name='home'),
     path('logout/', LogOutPage.as_view(), name='logout'),
     path('announcements/', Announcements.as_view(), name='announcements'),
-    path('accounts/', Accounts.as_view(), name='accounts'),
+    path('accountsViewSelf/', AccountViewSelf.as_view(), name='account'),
     path('accountCreate/', AccountCreate.as_view(), name='accountCreate'),
-    path('accountEdit/', AccountEdit.as_view(), name='accountEdit'),
+    path('accountEditSelf/', AccountEditSelf.as_view(), name='accountEditSelf'),
     path('accountEditOther/', AccountEditOther.as_view(), name='accountEditOther'),
+    path('accountSearch/', AccountSearch.as_view(), name='accountSearch'),
     path('deleteAccount/', AccountDelete.as_view(), name='deleteAccount'),
     path('courses/', Courses.as_view(), name='courses'),
     path('courseCreate/', CourseCreate.as_view(), name='courseCreate'),

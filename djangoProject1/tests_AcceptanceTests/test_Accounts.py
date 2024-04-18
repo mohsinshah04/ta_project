@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from ta_app.models import Role, User
 
-class AccountsTest(TestCase, Client):
+class AccountSearchTest(TestCase, Client):
 
     def setUp(self):
         self.client = Client()
@@ -34,26 +34,26 @@ class AccountsTest(TestCase, Client):
         self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
 
     def test_view_account(self):
-        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.post('/accountSearch/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['name'], 'John Johnson, Super@uwm.edu') and self.assertEqual(response.context['role'], 'Supervisor')
 
     def test_user_doesnt_exist(self):
-        response = self.client.post('/accounts/', {'First Name': "I am", 'Last Name': "Not a User"})
+        response = self.client.post('/accountSearch/', {'First Name': "I am", 'Last Name': "Not a User"})
         self.assertEqual(response.context['message'], "Invalid account: I am Not a User")
 
     def test_in_view_su(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.post('/accountSearch/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
     def test_ta_view_su(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.post('/accountSearch/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
     def test_ta_view_in(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.post('/accountSearch/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
 
@@ -160,38 +160,38 @@ class AccountsEditSelf(TestCase, Client):
                          follow=True)
 
     def test_edit_self(self):
-        response = self.client.post("/accountEdit/", {"id": self.user.id, "Email": self.update_email, "Password": self.update_password,
+        response = self.client.post("/accountEditSelf/", {"Old Password": self.user.User_Password, "Email": self.update_email, "Password": self.update_password,
                                                         "Address": self.update_address,
                                                         "Phone Number": self.update_phone_number,
                                                         "First Name": self.update_FName, "Last Name": self.update_LName})
         self.assertEqual(response.context['message'], "Account was updated successfully")
 
     def test_edit_self_empty_Strings(self):
-        response = self.client.post("/accountEdit/",
-                                    {"id": self.user.id, "Email": "", "Password": "", "Address": "", "Phone Number": "",
+        response = self.client.post("/accountEditSelf/",
+                                    {"Old Password": self.user.User_Password, "Email": "", "Password": "", "Address": "", "Phone Number": "",
                                      "First Name": "", "Last Name": ""})
         self.assertEqual(response.context['message'], "Account was not updated successfully")
 
 
     def test_edit_self_ids_dont_match(self):
-        response = self.client.post("/accountEdit/",
-                                    {"id": 12321, "Email": self.update_email, "Password": self.update_password,
+        response = self.client.post("/accountEditSelf/",
+                                    {"Old Password": "notAuser@uwm.edu", "Email": self.update_email, "Password": self.update_password,
                                      "Address": self.update_address,
                                      "Phone Number": self.update_phone_number,
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
-        self.assertEqual(response.context['message'], "Account ids do not match")
+        self.assertEqual(response.context['message'], "Account passwords do not match")
 
     def test_edit_self_bad_password(self):
-        response = self.client.post("/accountEdit/",
-                                    {"id": self.user.id, "Email": self.update_email, "Password": "HEAVEN",
+        response = self.client.post("/accountEditSelf/",
+                                    {"Old Password": self.user.User_Password, "Email": self.update_email, "Password": "HEAVEN",
                                      "Address": self.update_address,
                                      "Phone Number": self.update_phone_number,
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
         self.assertEqual(response.context['message'], "Account was not updated successfully")
 
     def test_edit_self_bad_phone(self):
-        response = self.client.post("/accountEdit/",
-                                    {"id": self.user.id, "Email": self.update_email, "Password": "HEAVEN",
+        response = self.client.post("/accountEditSelf/",
+                                    {"Old Password": self.user.User_Password, "Email": self.update_email, "Password": "HEAVEN",
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
