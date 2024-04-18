@@ -34,26 +34,26 @@ class AccountsTest(TestCase, Client):
         self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
 
     def test_view_account(self):
-        response = self.client.post('/accounts/', {'id': self.test_user.id})
-        self.assertEqual(response.context['name'], 'John, Johnson') and self.assertEqual(response.context['role'], 'Supervisor')
+        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        self.assertEqual(response.context['name'], 'John Johnson, Super@uwm.edu') and self.assertEqual(response.context['role'], 'Supervisor')
 
     def test_user_doesnt_exist(self):
-        response = self.client.post('/accounts/', {'id': 12323})
-        self.assertEqual(response.context['message'], "Invalid account id: 12323")
+        response = self.client.post('/accounts/', {'First Name': "I am", 'Last Name': "Not a User"})
+        self.assertEqual(response.context['message'], "Invalid account: I am Not a User")
 
     def test_in_view_su(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'id': self.test_user.id})
+        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
     def test_ta_view_su(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'id': self.test_user.id})
+        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
     def test_ta_view_in(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accounts/', {'id': self.test_user_in.id})
+        response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
         self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
 

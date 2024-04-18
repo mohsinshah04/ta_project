@@ -288,22 +288,22 @@ class TestViewAccount(TestCase):
         self.assertEqual("INVALID", UserObject.view_account(1111, self.test_user_su.id))
 
     def test_view_account_SU_to_IN(self):
-        self.assertEqual("Jose, Johnson: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        self.assertEqual("Jose Johnson, Instrc@uwm.edu: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_SU_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
+        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
 
     def test_view_account_SU_to_SU(self):
-        self.assertEqual("John, Johnson: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
+        self.assertEqual("John Johnson, Super@uwm.edu: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
 
     def test_view_account_IN_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
+        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
 
     def test_view_account_IN_to_IN(self):
-        self.assertEqual("Jose, Johnson: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        self.assertEqual("Jose Johnson, Instrc@uwm.edu: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_TA_to_TA(self):
-        self.assertEqual("Joann, Johnson: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
+        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_IN(self):
         self.assertEqual("INVALID", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))

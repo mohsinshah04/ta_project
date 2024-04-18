@@ -57,24 +57,26 @@ class Announcements(View):
 
 class Accounts(View):
     def get(self, request):
+        own_id = request.session.get('id')
         return render(request, 'acctsView.html', {})
 
     def post(self, request):
         own_id = request.session.get("id")
-        user_id = request.POST.get('id')
-        if not User.objects.filter(id=user_id).exists():
-            return render(request, 'acctsView.html', {"message": "Invalid account id: " + user_id})
+        user_fname = request.POST.get('First Name')
+        user_lname = request.POST.get('Last Name')
+        if not User.objects.filter(User_FName=user_fname, User_LName=user_lname).exists():
+            return render(request, 'acctsView.html', {"message": "Invalid account: " + user_fname + " " + user_lname})
         own_user = User.objects.get(id=own_id)
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(User_FName=user_fname, User_LName=user_lname)
         if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
             return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
 
         if own_user.User_Role.Role_Name == 'TA' and (user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
             return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
 
-        account_string = UserObject.view_account(user_id, own_id)
+        account_string = UserObject.view_account(user.id, own_id)
         if account_string == "INVALID":
-            return render(request, "acctsView.html", {"message": "Invalid account id: " + user_id})
+            return render(request, "acctsView.html", {"message": "Invalid account id: " + user.id})
         name = account_string.split(":")
         return render(request, 'acctsView.html', {"name": name[0], "role": name[1]})
 
