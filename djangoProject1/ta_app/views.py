@@ -149,7 +149,40 @@ class AccountEditOther(View):
         return render(request, 'acctsOtherEdit.html', {})
 
     def post(self, request):
-        return render(request, 'acctsOtherEdit.html', {})
+        get_all_info = False
+        try:
+            own_id = request.session.get('id')
+            user_id = int(request.POST.get('id'))
+            if not User.objects.filter(id=user_id).exists():
+                return render(request, 'acctsOtherEdit.html', {"message": "Invalid account id: " + str(user_id)})
+            own_user = User.objects.get(id=own_id)
+            if own_user.User_Role.Role_Name != "Supervisor":
+                return render(request, "acctsView.html", {"message": "You do not have permission to create users"})
+            f_name = request.POST.get('First Name')
+            l_name = request.POST.get('Last Name')
+            email = request.POST.get('Email')
+            password = request.POST.get('Password')
+            address = request.POST.get('Address')
+            phone = request.POST.get('Phone Number')
+        except:
+            get_all_info = True
+
+        if get_all_info:
+            return render(request, 'acctsOtherEdit.html', {"message": "Please enter all information correctly"})
+
+        toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
+
+        if not toReturn:
+            return render(request, 'acctsOtherEdit.html', {"message": "Account was not updated successfully"})
+
+        return render(request, 'acctsOtherEdit.html', {"message": "Account was updated successfully"})
+
+class AccountDelete(View):
+    def get(self, request):
+        return render(request, 'deleteAccount.html', {})
+
+    def post(self, request):
+        return render(request, 'deleteAccount.html', {})
 
 
 class Courses(View):

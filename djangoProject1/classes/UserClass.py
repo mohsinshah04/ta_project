@@ -58,7 +58,7 @@ class UserObject:
             return False
         if email == "" or password == "" or phoneNumber == "" or address == "" or firstName == "" or lastName == "":
             return False
-        if len(password) < 7 or len(phoneNumber) < 15:
+        if len(password) < 7 or len(phoneNumber) > 15:
             return False
         if not User.objects.filter(id=user_id).exists():
             return False
