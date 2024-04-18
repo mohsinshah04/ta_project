@@ -6,8 +6,9 @@ class SemesterClass:
     def __init__(self, semester):
         self.semester = semester
 
-    def create_semester(self, semester):
+    @classmethod
+    def createSemester(self, semesterTerm, semesterYear, user):
         pass
 
-    def delete_semester(self, semester):
+    def deleteSemester(self, semester, user):
         pass
