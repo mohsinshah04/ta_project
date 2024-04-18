@@ -3,10 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>loginPage</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+        .login {
+            width: 500px;
+            height: 300px;
+            padding: 100px;
+            background-color: lightgray;
+            text-align: center;
+        }
+
+        .login h2 {
+            margin-bottom: 40px;
+            font-size: xx-large;
+        }
+
+        .login input[type="text"],
+        .login input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .login input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: dodgerblue;
+            color: #fff;
+            border: none;
+        }
+        
+        .login input[type="submit"]:hover {
+            background-color: deepskyblue;
+        }
+        
+    </style>
 </head>
 <body>
-    <p>dont have anything yet so link to home page</p>
-    <a href="/home">home</a>
-
+   <div class="login">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="Email" placeholder="Email" required><br>
+            <input type="password" name="Password" placeholder="Password" required><br>
+            <input type="submit" value="Login">
+        </form>
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>
