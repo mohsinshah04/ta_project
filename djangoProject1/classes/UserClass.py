@@ -90,7 +90,6 @@ class UserObject:
         toReturn = User.objects.filter(User_Role=change_role).exists()
         return toReturn
 
-    #Waiting for course class to be complete and tested, then will add list of sections later
     @classmethod
     def view_account(cls, user_ID, own_id):
         if not User.objects.filter(id=own_id).exists():
@@ -105,5 +104,4 @@ class UserObject:
             return "INVALID"
         if checked_user.User_Role.Role_Name == "TA" and (user.User_Role.Role_Name == "Instructor" or user.User_Role.Role_Name =="Supervisor"):
             return "INVALID"
-        #sectionsList = list(Assign_User_Junction.objects.filter(User_ID=user_ID))
         return user.User_FName + ", " + user.User_LName + ": " + user.User_Role.Role_Name
