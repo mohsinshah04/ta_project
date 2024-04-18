@@ -11,7 +11,6 @@ class UserObject:
             raise TypeError("Please specify a valid role")
         self.role = role
 
-    @classmethod
     def create_user(self, email, password, role, phoneNumber, address, firstName, lastName):
         if self.role.Role_Name != "Supervisor":
             return False

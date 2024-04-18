@@ -16,26 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from ta_app.views import (Home, LoginPage, LogOutPage, announcements,
-                          accounts, accountCreate, accountEdit, accountEditOther,
-                          courses, courseCreate, courseEdit,
-                          sections, sectionCreate, sectionEdit)
+from ta_app.views import (Home, LoginPage, LogOutPage, Announcements,
+                          Accounts, AccountCreate, AccountEdit, AccountEditOther,
+                          Courses, CourseCreate, CourseEdit,
+                          Sections, SectionCreate, SectionEdit, AccountDelete)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LoginPage.as_view()),
     path('home/', Home.as_view(), name='login'),
     path('logout/', LogOutPage.as_view(), name='logout'),
-    path('announcements/', announcements.as_view(), name='announcements'),
-    path('accounts/', accounts.as_view(), name='accounts'),
-    path('accountCreate/', accountCreate.as_view(), name='accountCreate'),
-    path('accountEdit/', accountEdit.as_view(), name='accountEdit'),
-    path('accountEditOther/', accountEditOther.as_view(), name='accountEditOther'),
-    path('courses/', courses.as_view(), name='courses'),
-    path('courseCreate/', courseCreate.as_view(), name='courseCreate'),
-    path('courseEdit/', courseEdit.as_view(), name='courseEdit'),
-    path('sections/', sections.as_view(), name='sections'),
-    path('sectionCreate/', sectionCreate.as_view(), name='sectionCreate'),
-    path('sectionEdit/', sectionEdit.as_view(), name='sectionEdit'),
+    path('announcements/', Announcements.as_view(), name='announcements'),
+    path('accounts/', Accounts.as_view(), name='accounts'),
+    path('accountCreate/', AccountCreate.as_view(), name='accountCreate'),
+    path('accountEdit/', AccountEdit.as_view(), name='accountEdit'),
+    path('accountEditOther/', AccountEditOther.as_view(), name='accountEditOther'),
+    path('deleteAccount/', AccountDelete.as_view(), name='deleteAccount'),
+    path('courses/', Courses.as_view(), name='courses'),
+    path('courseCreate/', CourseCreate.as_view(), name='courseCreate'),
+    path('courseEdit/', CourseEdit.as_view(), name='courseEdit'),
+    path('sections/', Sections.as_view(), name='sections'),
+    path('sectionCreate/', SectionCreate.as_view(), name='sectionCreate'),
+    path('sectionEdit/', SectionEdit.as_view(), name='sectionEdit'),
 
 ]
