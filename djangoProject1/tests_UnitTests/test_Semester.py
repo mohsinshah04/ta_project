@@ -84,7 +84,6 @@ class SemesterTestCase(TestCase):
 
 
 
-
     #delete tests
     def test_DeleteSemesterValid(self):
         deleteSemester = SemesterClass.createSemester(

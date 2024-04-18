@@ -1,14 +1,49 @@
 """Currently Skeleton Class for Semesters"""
-from ta_app.models import Semester
-
-
+from ta_app.models import Course, Section, Semester, Assign_User_Junction, User
+from datetime import datetime
 class SemesterClass:
     def __init__(self, semester):
-        self.semester = semester
+        pass
+
 
     @classmethod
     def createSemester(self, semesterTerm, semesterYear, user):
-        pass
+        if user == None:
+            return False
+        if semesterTerm == None:
+            return False
+        if(semesterYear == None):
+            return False
+        if (type(user) != User):
+            return False
+        if not User.objects.filter(id=user.id).exists():
+            return False
+        if user.User_Role.Role_Name != 'Supervisor':
+            return False
 
+        validSemesterTerms = ["Spring", "Fall", "Winter", "Summer"]
+
+        validCheck = False
+        for term in validSemesterTerms:
+            if term in semesterTerm:
+                validCheck = True
+
+        if(validCheck == False):
+            return False
+
+        curYear = datetime.now().year
+        if ((semesterYear-100) < curYear-100) or ((semesterYear>curYear)):
+            return False
+
+
+        buildName = semesterTerm + " " + str(semesterYear)
+        self.semester = Semester.objects.create(Semester_Name=buildName)
+        if(self.semester == None):
+            return False
+
+        return True
+
+
+    @classmethod
     def deleteSemester(self, semester, user):
         pass
