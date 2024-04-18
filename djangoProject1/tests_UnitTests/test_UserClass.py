@@ -184,7 +184,7 @@ class TestEditUser(TestCase):
 
     def test_edit_user_bad_phoneNumber(self):
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                                     "123+(312)-1232", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                                     "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
     def test_edit_user_bad_fName_lName(self):
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
