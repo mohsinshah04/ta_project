@@ -46,4 +46,19 @@ class SemesterClass:
 
     @classmethod
     def deleteSemester(self, semester, user):
-        pass
+        if user == None:
+            return False
+        if semester == None:
+            return False
+        if (type(user) != User):
+            return False
+        if not User.objects.filter(id=user.id).exists():
+            return False
+        if not Semester.objects.filter(id=semester).exists():
+            return False
+        if user.User_Role.Role_Name != 'Supervisor':
+            return False
+
+        Semester.objects.filter(id=semester).delete()
+
+        return True

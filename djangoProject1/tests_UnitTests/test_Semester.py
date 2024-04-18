@@ -86,31 +86,31 @@ class SemesterTestCase(TestCase):
 
     #delete tests
     def test_DeleteSemesterValid(self):
-        deleteSemester = SemesterClass.createSemester(
-            self.semester.ID, self.user
+        deleteSemester = SemesterClass.deleteSemester(
+            self.semester.id, self.user
         )
-        self.assertFalse(deleteSemester, "Valid Deletion Of semester requires exisitng Semester and Supervisor level")
+        self.assertTrue(deleteSemester, "Valid Deletion Of semester requires exisitng Semester and Supervisor level")
 
     def test_DeleteSemesterInvalidUser(self):
-        deleteSemester = SemesterClass.createSemester(
-            self.semester.ID, self.userTA
+        deleteSemester = SemesterClass.deleteSemester(
+            self.semester.id, self.userTA
         )
         self.assertFalse(deleteSemester, "Must be Supervisor level")
 
     def test_DeleteSemesterNonExistentSemester(self):
-        deleteSemester = SemesterClass.createSemester(
+        deleteSemester = SemesterClass.deleteSemester(
             43934, self.user
         )
         self.assertFalse(deleteSemester, "Must be existing Semester")
 
     def test_DeleteSemesterNullSemester(self):
-        deleteSemester = SemesterClass.createSemester(
+        deleteSemester = SemesterClass.deleteSemester(
             None, self.user
         )
         self.assertFalse(deleteSemester, "Must be non null exisiting Semester")
 
     def test_DeleteSemesterNullUser(self):
-        deleteSemester = SemesterClass.createSemester(
-            self.semester.ID, None
+        deleteSemester = SemesterClass.deleteSemester(
+            self.semester.id, None
         )
         self.assertFalse(deleteSemester, "Must be Supervisor level and non-null")
