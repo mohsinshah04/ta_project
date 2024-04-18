@@ -338,13 +338,13 @@ class AccountsDelete(TestCase, Client):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password},
                          follow=True)
         response = self.client.post('/deleteAccount/', {"id": self.user.id})
-        self.assertEqual(response.context['message'], "You do not have permission to create users")
+        self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
     def test_delete_account_as_ta(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password},
                          follow=True)
         response = self.client.post('/deleteAccount/', {"id": self.user.id})
-        self.assertEqual(response.context['message'], "You do not have permission to create users")
+        self.assertEqual(response.context['message'], "You cannot view this account because of your role")
 
 
 

@@ -182,7 +182,25 @@ class AccountDelete(View):
         return render(request, 'deleteAccount.html', {})
 
     def post(self, request):
-        return render(request, 'deleteAccount.html', {})
+        own_id = request.session.get('id')
+        user_id = request.POST.get('id')
+        if not User.objects.filter(id=own_id).exists():
+            return render(request, 'deleteAccount.html', {"message": "Invalid account id: " + user_id})
+        own_user = User.objects.get(id=own_id)
+        user = User.objects.get(id=user_id)
+        if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
+            return render(request, 'deleteAccount.html', {"message": "You cannot view this account because of your role"})
+
+        if own_user.User_Role.Role_Name == 'TA' and (
+                user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
+            return render(request, 'deleteAccount.html', {"message": "You cannot view this account because of your role"})
+
+        toReturn = UserObject.delete_user(user_id, own_id)
+
+        if not toReturn:
+            return render(request, 'deleteAccount.html', {"message": "Account was not deleted successfully"})
+
+        return render(request, 'deleteAccount.html', {"message": "You have successfully deleted account: " + user_id})
 
 
 class Courses(View):
