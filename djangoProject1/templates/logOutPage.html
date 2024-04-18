@@ -3,8 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>loggedOutPage</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+        .logout {
+            width: 500px;
+            height: 300px;
+            padding: 100px;
+            background-color: lightgray;
+            text-align: center;
+        }
+        .logout p1 {
+            font-size: 36px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            display: block;
+        }
+        .logout p2 {
+            font-size: 36px;
+            color: gray;
+            margin-bottom: 40px;
+            display: block;
+
+        }
+        .logout a {
+            font-size: 24px;
+            margin-top: 20px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
-
+   <div class="logout">
+       <p1>You are now logged out.</p1>
+       <p2> Session Has Ended</p2>
+       <a href="/login">Log back In</a>
+   </div>    
 </body>
 </html>
