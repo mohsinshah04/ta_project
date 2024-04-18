@@ -35,7 +35,7 @@ class AccountsTest(TestCase, Client):
 
     def test_view_account(self):
         response = self.client.post('/accounts/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
-        self.assertEqual(response.context['name'], 'John, Johnson') and self.assertEqual(response.context['role'], 'Supervisor')
+        self.assertEqual(response.context['name'], 'John Johnson, Super@uwm.edu') and self.assertEqual(response.context['role'], 'Supervisor')
 
     def test_user_doesnt_exist(self):
         response = self.client.post('/accounts/', {'First Name': "I am", 'Last Name': "Not a User"})

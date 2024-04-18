@@ -57,6 +57,7 @@ class Announcements(View):
 
 class Accounts(View):
     def get(self, request):
+        own_id = request.session.get('id')
         return render(request, 'acctsView.html', {})
 
     def post(self, request):
