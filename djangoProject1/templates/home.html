@@ -17,6 +17,7 @@
             align-items: center;
             border: solid 1px black;
         }
+        
         .button {
             font-size: 24px;
             padding: 30px;
@@ -25,6 +26,7 @@
             color: dimgray;
             border: solid 1px black;
         }
+        
         .logoutButton {
             position: absolute;
             bottom: 30px;
@@ -36,6 +38,22 @@
             color: dimgray;
             border: solid 1px black;
         }
+        
+        .text h1 {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            color: dimgray; /* Change the color */
+            font-size: 36px; /* Change the font size */
+        }
+        
+        .text p {
+            position: absolute;
+            padding-top: 150px;
+            left: 60px;
+            color: dimgray; /* Change the color */
+            font-size: 36px; /* Change the font size */
+        }
     </style>
 </head>
 <body>
@@ -44,9 +62,12 @@
         <a href="/courses" class="button">View Courses</a>
         <a href="/announcements" class="button">Announcements</a>
     </div>
-    <div class="content">
+    <div class="text">
         <h1>TA Scheduling App</h1>
-        <p>Get started text</p>
+        <p>Welcome to the TA Scheduling App! Get started by viewing your schedule, 
+            your courses, your account, as well as staying up to date with the latest announcements!
+            With our user-friendly interface, you'll be able to conveniently view your 
+            daily tasks and optimize your productivity. Good Luck!</p>
     </div>
     <a href="/logout" class="logoutButton">Log Out</a>
 </body>
