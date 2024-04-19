@@ -105,15 +105,14 @@ class AccountCreate(View):
             own_id = request.session.get("id")
             own_user = User.objects.get(id=own_id)
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsViewSelf.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsCreate.html", {"message": "You do not have permission to create users"})
 
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
             password = request.POST.get('Password')
             role_name = request.POST.get('Role')
-            name = role_name.split(": ")
-            role = Role(Role_Name=name[1])
+            role = Role(Role_Name=role_name)
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
         except:
@@ -190,7 +189,7 @@ class AccountEditOther(View):
             user = User.objects.get(User_Email=user_email)
             user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsViewSelf.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to create users"})
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
