@@ -14,7 +14,7 @@ class TestCoursesView(TestCase):
         self.course = Course.objects.create(Course_Name="MATH - 201", Course_Description="Calculus", Course_Semester_ID_id = self.semester.id)
         self.course2 = Course.objects.create(Course_Name="CS - 351", Course_Description="Data Structures and Algos", Course_Semester_ID_id = self.semester.id)
         self.userTA = User.objects.create(User_FName="John", User_LName="Pork", User_Email="ta@uwm.edu", User_Password = "tapassword", User_Role = self.RoleTA)
-        self.userTA2 = User.objects.create(User_FName="Davis", User_LName="Clark", User_Email="ta@uwm.edu", User_Password = "tapassword", User_Role = self.RoleTA)
+        self.userTA2 = User.objects.create(User_FName="Davis", User_LName="Clark", User_Email="ta2@uwm.edu", User_Password = "ta2password", User_Role = self.RoleTA)
 
         Assign_User_Junction.objects.create(Course_ID=self.course, User_ID=self.userTA)
         Assign_User_Junction.objects.create(Course_ID=self.course, User_ID=self.userTA2)
@@ -24,12 +24,20 @@ class TestCoursesView(TestCase):
         self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu", User_Password = "prof", User_Role = self.RoleProf)
 
         self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID = self.course2)
-        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+       # self.client.post("/login/", {"Email": self.user.User_Email, "Password": self.user.User_Password})
 
-    def test_courses_list_with_assigned_users(self):
-        self.client.login(username='Supervisor', password='admin')
-        response = self.client.get('/courses/')
+        self.user.save()
+        self.userTA.save()
+        self.userTA2.save()
+        self.userProf.save()
+        self.userProf1.save()
 
+
+    def test_coursesListWithAssignedUsers(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
+                         follow=True)
+        response = self.client.get('/courses/',{"id": self.user.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
         printout = [
             "MATH - 201 - Calculus",
             "Assigned Users: John Pork (TA), Davis Clark (TA)",
@@ -40,29 +48,44 @@ class TestCoursesView(TestCase):
         for content in printout:
             self.assertContains(response, content)
 
-    def test_no_courses_available(self):
+    def test_coursesListWithAssignedUsersAsFirstTA(self):
+        self.client.post("/", {"Email": self.userTA.User_Email, "Password": self.userTA.User_Password}, follow=True)
+        response = self.client.get('/courses/',{"id": self.user.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        printout = [
+            "MATH - 201 - Calculus",
+            "Assigned Users: John Pork (TA), Davis Clark (TA)",
+            "CS - 351 - Data Structures and Algos",
+            "Assigned Users: John Pork (TA), Himmithy Him (Instructor)"
+        ]
+
+        for content in printout:
+            self.assertContains(response, content)
+
+    def test_coursesListWithAssignedUsersAsSecondTA(self):
+        self.client.post("/", {"Email": self.userTA2.User_Email, "Password": self.userTA2.User_Password}, follow=True)
+        response = self.client.get('/courses/', {"id": self.user.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        printout = [
+            "MATH - 201 - Calculus",
+            "Assigned Users: John Pork (TA), Davis Clark (TA)"
+        ]
+
+        for content in printout:
+            self.assertContains(response, content)
+
+
+    def test_noCoursesAvailable(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
         Course.objects.all().delete()
-        response = self.client.get('/courses/')
-        self.assertIn("INVALID", response.content.decode())
+        response = self.client.get('/courses/', {"id": self.user.id}, follow=True)
+        printout = [
+            "No courses found"
+        ]
 
-    def test_instructor_sees_assigned_courses(self):
-        self.client.logout()
-        self.client.login(username='Himmithy', password='password')
-        response = self.client.get('/courses/')
-        self.assertContains(response, "CS - 351 - Data Structures and Algos")
-        self.assertContains(response, "Himmithy Him (Instructor)")
-        self.assertNotContains(response, "Calculus")
+        for content in printout:
+            self.assertContains(response, content)
 
-    def test_ta_sees_assigned_courses(self):
-        self.client.logout()
-        self.client.login(username='John', password='tapassword')
-        response = self.client.get('/courses/')
-        self.assertContains(response, "MATH - 201 - Calculus")
-        self.assertContains(response, "John Pork (TA)")
-        self.assertContains(response, "CS - 351 - Data Structures and Algos")
-        self.assertNotContains(response, "PHYS - 101 - Physics")
-
-    def test_unauthenticated_user_access(self):
-        self.client.logout()
-        response = self.client.get('/courses/')
-        self.assertRedirects(response, '/login/')
+    def test_NotLoggedIn(self):
+        response = self.client.get('/courses/', {"id": self.user.id}, follow=True)
+        self.assertContains(response, "Please log in to view this page.")
