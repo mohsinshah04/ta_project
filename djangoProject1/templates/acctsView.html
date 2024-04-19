@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Accounts</title>
+    <title>Accounts Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <h1>Accounts Page</h1>
-    <a href="/accountCreate">create accounts</a>
-    <a href="/home">home</a>
+    <p>List of Account(s):</p>
+    <div class="course-related-buttons">
+        <a href="/acctsCreate" class="button orange-button">Create Accounts</a>
+        <a href="/acctsEdit" class="button orange-button">Edit Course</a>
+        <a href="/home" class="button">Home</a>
+    </div>
 </body>
 </html>

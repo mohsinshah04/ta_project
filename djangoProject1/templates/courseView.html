@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>View Course Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-<h1>View course page</h1>
-    <p>blah blah blah</p>
-    <a href="/home">home</a>
-    <a href="/courseCreate">create course</a>
-    <a href="/sections">View Sections</a>
-
-
+    <div class="course-related-buttons">
+        <a href="/courseCreate" class="button orange-button">Create Course</a>
+        <a href="/courses/edit" class="button orange-button">Edit Course</a>
+        <a href="/home" class="button">Home</a>
+        <a href="/sections" class="button">View Sections</a>
+    </div>
+    <h1>View Course Page</h1>
+    <p>List of Courses You Are Able To See:</p>
+    {% if courseInformation %}
+        <div class="courseInformation">
+            <pre>{{ courseInformation }}</pre>
+        </div>
+    {% else %}
+        <p>No courses available or data error.</p>
+    {% endif %}
 </body>
 </html>

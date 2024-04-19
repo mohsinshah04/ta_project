@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <h1>Welcome to Home Page</h1>
-    <a href="/accounts">View Account</a>
-    <a href="/courses">View Courses</a>
-    <a href="/announcements">Announcements</a>
-    <a href="/logout">Log Out</a>
+    <div class="course-related-buttons">
+        <a href="/announcements" class="button orange-button">Announcements</a>
+        <a href="/logout" class="button orange-button">Log Out</a>
+        <a href="/accounts" class="button">View Account</a>
+        <a href="/courses" class="button">View Courses</a>
+    </div>
+    <h1>Home Page</h1>
+    <p>Get Started: [to be finished]</p>
 </body>
 </html>
