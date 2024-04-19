@@ -183,10 +183,12 @@ class AccountEditOther(View):
         get_all_info = False
         try:
             own_id = request.session.get('id')
-            user_id = int(request.POST.get('id'))
-            if not User.objects.filter(id=user_id).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "Invalid account id: " + str(user_id)})
+            user_email = request.POST['User Email']
+            if not User.objects.filter(User_Email=user_email).exists():
+                return render(request, 'acctsOtherEdit.html', {"message": "Invalid account email: " + user_email})
             own_user = User.objects.get(id=own_id)
+            user = User.objects.get(User_Email=user_email)
+            user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
                 return render(request, "acctsViewSelf.html", {"message": "You do not have permission to create users"})
             f_name = request.POST.get('First Name')
@@ -195,6 +197,18 @@ class AccountEditOther(View):
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
+            if f_name == "":
+                f_name = user.User_FName
+            if l_name == "":
+                l_name = user.User_LName
+            if email == "":
+                email = user.User_Email
+            if password == "":
+                password = user.User_Password
+            if address == "":
+                address = user.User_Home_Address
+            if phone == "":
+                phone = user.User_Phone_Number
         except:
             get_all_info = True
 

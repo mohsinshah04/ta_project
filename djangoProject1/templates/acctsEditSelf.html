@@ -8,12 +8,12 @@
 <h1>Edit Your Account</h1>
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="Email" placeholder="New Email" required><br>
-        <input type="password" name="Password" placeholder="New Password" required><br>
-        <input type="text" name="First Name" placeholder="First Name" required><br>
-        <input type="text" name="Last Name" placeholder="Last Name" required><br>
-        <input type="text" name="Address" placeholder="New Address" required><br>
-        <input type="text" name="Phone Number" placeholder="New Phone Number" required><br>
+        <input type="text" name="Email" placeholder="New Email" value=""><br>
+        <input type="password" name="Password" placeholder="New Password" value=""><br>
+        <input type="text" name="First Name" placeholder="First Name" value=""><br>
+        <input type="text" name="Last Name" placeholder="Last Name" value=""><br>
+        <input type="text" name="Address" placeholder="New Address" value=""><br>
+        <input type="text" name="Phone Number" placeholder="New Phone Number" value=""><br>
         <input type="password" name="Old Password" placeholder="Please Enter Your Old Pass." required><br>
         <input type="submit" value="Make Changes">
     </form>

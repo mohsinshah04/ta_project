@@ -216,13 +216,15 @@ class AccountsEditOthers(TestCase, Client):
         self.test_user_in = User.objects.create(User_Role=self.test_role, User_Email="Instrc@uwm.edu",
                                                 User_FName="Jose", User_LName="Johnson",
                                                 User_Phone_Number="1+(608)532-2343",
-                                                User_Home_Address="123, Ridgeview Ct")
+                                                User_Home_Address="123, Ridgeview Ct",
+                                                User_Password="<PASSWORD>")
 
         self.test_user_ta = User.objects.create(User_Role=self.test_role_ta, User_Email="TA@uwm.edu",
                                                 User_FName="Joann",
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
-                                                User_Home_Address="123, Ridgeview Ct")
+                                                User_Home_Address="123, Ridgeview Ct",
+                                                User_Password="<PASSWORD>")
         self.user.save()
         self.test_user_ta.save()
         self.test_user_in.save()
@@ -237,7 +239,7 @@ class AccountsEditOthers(TestCase, Client):
 
 
     def test_edit_user_in(self):
-        response = self.client.post("/accountEditOther/", {"id": self.test_user_in.id, "Email": self.update_email,
+        response = self.client.post("/accountEditOther/", {"User Email": self.test_user_in.User_Email, "Email": self.update_email,
                                                         "Password": self.update_password,
                                                         "Address": self.update_address,
                                                         "Phone Number": self.update_phone_number,
@@ -245,22 +247,31 @@ class AccountsEditOthers(TestCase, Client):
         self.assertEqual(response.context['message'], "Account was updated successfully")
 
     def test_edit_user_ta(self):
-        response = self.client.post("/accountEditOther/", {"id": self.test_user_ta.id, "Email": self.update_email,
+        response = self.client.post("/accountEditOther/", {"User Email": self.test_user_ta.User_Email, "Email": self.update_email,
                                                         "Password": self.update_password,
                                                         "Address": self.update_address,
                                                         "Phone Number": self.update_phone_number,
                                                         "First Name": self.update_FName, "Last Name": self.update_LName})
         self.assertEqual(response.context['message'], "Account was updated successfully")
 
+    def test_edit_user_not_found(self):
+        response = self.client.post("/accountEditOther/",
+                                    {"User Email": "self.test_user_ta.User_Email", "Email": self.update_email,
+                                     "Password": self.update_password,
+                                     "Address": self.update_address,
+                                     "Phone Number": self.update_phone_number,
+                                     "First Name": self.update_FName, "Last Name": self.update_LName})
+        self.assertEqual(response.context['message'], "Invalid account email: self.test_user_ta.User_Email")
+
     def test_edit_self_empty_Strings(self):
         response = self.client.post("/accountEditOther/",
-                                    {"id": self.test_user_in.id, "Email": "", "Password": "", "Address": "", "Phone Number": "",
+                                    {"User Email": self.test_user_in.User_Email, "Email": "", "Password": "", "Address": " ", "Phone Number": "",
                                      "First Name": "", "Last Name": ""})
-        self.assertEqual(response.context['message'], "Account was not updated successfully")
+        self.assertEqual(response.context['message'], "Account was updated successfully")
 
     def test_edit_self_bad_password(self):
         response = self.client.post("/accountEditOther/",
-                                    {"id": self.test_user_in.id, "Email": self.update_email, "Password": "HEAVEN",
+                                    {"User Email": self.test_user_in.User_Email, "Email": self.update_email, "Password": "HEAVEN",
                                      "Address": self.update_address,
                                      "Phone Number": self.update_phone_number,
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
@@ -268,7 +279,7 @@ class AccountsEditOthers(TestCase, Client):
 
     def test_edit_self_bad_phone(self):
         response = self.client.post("/accountEditOther/",
-                                    {"id": self.test_user_in.id, "Email": self.update_email, "Password": self.update_password,
+                                    {"User Email": self.test_user_in.User_Email, "Email": self.update_email, "Password": self.update_password,
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
@@ -278,7 +289,7 @@ class AccountsEditOthers(TestCase, Client):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password},
                          follow=True)
         response = self.client.post("/accountEditOther/",
-                                    {"id": self.user.id, "Email": self.update_email, "Password": self.update_password,
+                                    {"User Email": self.user.User_Email, "Email": self.update_email, "Password": self.update_password,
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
@@ -288,7 +299,7 @@ class AccountsEditOthers(TestCase, Client):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_in.User_Password},
                          follow=True)
         response = self.client.post("/accountEditOther/",
-                                    {"id": self.user.id, "Email": self.update_email, "Password": self.update_password,
+                                    {"User Email": self.user.User_Email, "Email": self.update_email, "Password": self.update_password,
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
