@@ -164,13 +164,14 @@ class AccountsEditSelf(TestCase, Client):
                                                         "Address": self.update_address,
                                                         "Phone Number": self.update_phone_number,
                                                         "First Name": self.update_FName, "Last Name": self.update_LName})
+        self.assertTrue(User.objects.filter(User_Email=self.update_email).exists())
         self.assertEqual(response.context['message'], "Account was updated successfully")
 
     def test_edit_self_empty_Strings(self):
         response = self.client.post("/accountEditSelf/",
                                     {"Old Password": self.user.User_Password, "Email": "", "Password": "", "Address": "", "Phone Number": "",
                                      "First Name": "", "Last Name": ""})
-        self.assertEqual(response.context['message'], "Account was not updated successfully")
+        self.assertEqual(response.context['message'], "Account was updated successfully")
 
 
     def test_edit_self_ids_dont_match(self):

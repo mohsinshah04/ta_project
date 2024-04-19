@@ -8,7 +8,18 @@
 <h1>Edit Your Account</h1>
     <form method="post">
         {% csrf_token %}
-        
+        <input type="text" name="Email" placeholder="New Email" required><br>
+        <input type="password" name="Password" placeholder="New Password" required><br>
+        <input type="text" name="First Name" placeholder="First Name" required><br>
+        <input type="text" name="Last Name" placeholder="Last Name" required><br>
+        <input type="text" name="Address" placeholder="New Address" required><br>
+        <input type="text" name="Phone Number" placeholder="New Phone Number" required><br>
+        <input type="password" name="Old Password" placeholder="Please Enter Your Old Pass." required><br>
+        <input type="submit" value="Make Changes">
     </form>
+    {% if message %}
+            <p class="message">{{ message }}</p>
+    {% endif %}
+    <a href="/accountsViewSelf">Back</a>
 </body>
 </html>

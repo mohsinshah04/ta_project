@@ -148,6 +148,19 @@ class AccountEditSelf(View):
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
+            if f_name == "":
+                f_name = own_user.User_FName
+            if l_name == "":
+                l_name = own_user.User_LName
+            if email == "":
+                email = own_user.User_Email
+            if password == "":
+                password = own_user.User_Password
+            if address == "":
+                address = own_user.User_Home_Address
+            if phone == "":
+                phone = own_user.User_Phone_Number
+
         except:
             get_all_info = True
 
