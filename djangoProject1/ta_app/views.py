@@ -112,6 +112,8 @@ class AccountCreate(View):
             email = request.POST.get('Email')
             password = request.POST.get('Password')
             role_name = request.POST.get('Role')
+            if role_name != "Supervisor" and role_name != "Instructor" and role_name != "TA":
+                return render(request, "acctsCreate.html", {"message": "Please enter a valid role"})
             role = Role(Role_Name=role_name)
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -223,28 +225,24 @@ class AccountEditOther(View):
 
 class AccountDelete(View):
     def get(self, request):
-        return render(request, 'deleteAccount.html', {})
+        return render(request, 'deleteAccounts.html', {})
 
     def post(self, request):
         own_id = request.session.get('id')
-        user_id = request.POST.get('id')
-        if not User.objects.filter(id=own_id).exists():
-            return render(request, 'deleteAccount.html', {"message": "Invalid account id: " + user_id})
+        user_email = request.POST.get('User Email')
+        if not User.objects.filter(User_Email=user_email).exists():
+            return render(request, 'deleteAccounts.html', {"message": "Invalid account id: " + user_email})
         own_user = User.objects.get(id=own_id)
-        user = User.objects.get(id=user_id)
-        if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
-            return render(request, 'deleteAccount.html', {"message": "You cannot view this account because of your role"})
-
-        if own_user.User_Role.Role_Name == 'TA' and (
-                user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
-            return render(request, 'deleteAccount.html', {"message": "You cannot view this account because of your role"})
+        user_id = User.objects.get(User_Email=user_email).id
+        if own_user.User_Role.Role_Name != "Supervisor":
+            return render(request, 'deleteAccounts.html', {"message": "You do not have permission to delete accounts"})
 
         toReturn = UserObject.delete_user(user_id, own_id)
 
         if not toReturn:
-            return render(request, 'deleteAccount.html', {"message": "Account was not deleted successfully"})
+            return render(request, 'deleteAccounts.html', {"message": "Account was not deleted successfully"})
 
-        return render(request, 'deleteAccount.html', {"message": "You have successfully deleted account: " + user_id})
+        return render(request, 'deleteAccounts.html', {"message": "You have successfully deleted account: " + user_email})
 
 
 class Courses(View):

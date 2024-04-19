@@ -91,27 +91,27 @@ class AccountCreationTests(TestCase, Client):
 
     def test_create_user(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password, "Address": self.user_Home_Address,
-                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role, "First Name": self.user_FName, "Last Name": self.user_LName})
+                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name, "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "User was created successfully")
 
     def test_create_user_invalid_password(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": "HEAVEN",
                                                         "Address": self.user_Home_Address,
-                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role,
+                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name,
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "User was not created successfully")
 
     def test_create_user_invalid_name(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
                                                         "Address": self.user_Home_Address,
-                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role,
+                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name,
                                                         "First Name": "", "Last Name": ""})
         self.assertEqual(response.context['message'], "User was not created successfully")
 
     def test_create_user_invalid_phone(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
                                                         "Address": self.user_Home_Address,
-                                                        "Phone Number": "1+(608)543-123211", "Role": self.user_Role,
+                                                        "Phone Number": "1+(608)543-123211", "Role": self.user_Role.Role_Name,
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "User was not created successfully")
 
@@ -120,13 +120,13 @@ class AccountCreationTests(TestCase, Client):
                                                         "Address": self.user_Home_Address,
                                                         "Phone Number": self.user_Phone_Number, "Role": "Guy",
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
-        self.assertEqual(response.context['message'], "Please enter in all information")
+        self.assertEqual(response.context['message'], "Please enter a valid role")
 
     def test_create_user_as_in(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password}, follow=True)
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
                                                         "Address": self.user_Home_Address,
-                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role,
+                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name,
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "You do not have permission to create users")
 
@@ -134,7 +134,7 @@ class AccountCreationTests(TestCase, Client):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
                                                         "Address": self.user_Home_Address,
-                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role,
+                                                        "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name,
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "You do not have permission to create users")
 
@@ -337,26 +337,26 @@ class AccountsDelete(TestCase, Client):
                          follow=True)
 
     def test_delete_account_in(self):
-        response = self.client.post('/deleteAccount/', {"id": self.test_user_in.id})
-        self.assertEqual(response.context['message'], "You have successfully deleted account: " + str(self.test_user_in.id))
+        response = self.client.post('/deleteAccounts/', {"User Email": self.test_user_in.User_Email})
+        self.assertEqual(response.context['message'], "You have successfully deleted account: " + self.test_user_in.User_Email)
         self.assertFalse(User.objects.filter(id=self.test_user_in.id).exists())
 
     def test_delete_account_ta(self):
-        response = self.client.post('/deleteAccount/', {"id": self.test_user_ta.id})
-        self.assertEqual(response.context['message'], "You have successfully deleted account: " + str(self.test_user_ta.id))
+        response = self.client.post('/deleteAccounts/', {"User Email": self.test_user_ta.User_Email})
+        self.assertEqual(response.context['message'], "You have successfully deleted account: " + self.test_user_ta.User_Email)
         self.assertFalse(User.objects.filter(id=self.test_user_ta.id).exists())
 
     def test_delete_account_as_in(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password},
                          follow=True)
-        response = self.client.post('/deleteAccount/', {"id": self.user.id})
-        self.assertEqual(response.context['message'], "You cannot view this account because of your role")
+        response = self.client.post('/deleteAccounts/', {"User Email": self.user.User_Email})
+        self.assertEqual(response.context['message'], "You do not have permission to delete accounts")
 
     def test_delete_account_as_ta(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password},
                          follow=True)
-        response = self.client.post('/deleteAccount/', {"id": self.user.id})
-        self.assertEqual(response.context['message'], "You cannot view this account because of your role")
+        response = self.client.post('/deleteAccounts/', {"User Email": self.user.User_Email})
+        self.assertEqual(response.context['message'], "You do not have permission to delete accounts")
 
 
 
