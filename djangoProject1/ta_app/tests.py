@@ -1,7 +1,7 @@
 from django.test import TestCase
 import tests_UnitTests.test_UserClass
 import tests_UnitTests.test_Course
-from tests_AcceptanceTests.test_Accounts import AccountsTest, AccountCreationTests, AccountsDelete, AccountsEditOthers, AccountsEditSelf
+from tests_AcceptanceTests.test_Accounts import AccountSearchTest, AccountCreationTests, AccountsDelete, AccountsEditOthers, AccountsEditSelf
 from tests_AcceptanceTests.test_Login import TestLogin
 
 
@@ -17,7 +17,7 @@ class TestCourseClass(TestCase):
 
 class TestAccounts(TestCase):
     def test_all(self):
-        self.assertTrue(AccountsTest, AccountCreationTests)
+        self.assertTrue(AccountSearchTest, AccountCreationTests)
         self.assertTrue(AccountsDelete, AccountsEditOthers)
         self.assertTrue(AccountsEditSelf, AccountsEditSelf)
 

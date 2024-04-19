@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Search</title>
+</head>
+<body>
+<h1>Account Search</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="First Name" placeholder="First Name" required><br>
+        <input type="text" name="Last Name" placeholder="Last Name" required><br>
+        <input type="submit" value="Search">
+    </form>
+    <table>
+        <tr><td>Name: {{ name }}</td></tr>
+        <tr><td>Role: {{ role }}</td></tr>
+    </table>
+    {% if message %}
+            <p class="message">{{ message }}</p>
+    {% endif %}
+    <a href="/accountsViewSelf">Back</a>
+</body>
+</html>
