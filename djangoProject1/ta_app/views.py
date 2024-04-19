@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from datetime import datetime
-from .models import Role, User
+from .models import Role, User, Course
 from classes.UserClass import UserObject
+from classes.CourseClass import CourseClass
 # Create your views here.
 
 
@@ -209,10 +210,28 @@ class AccountDelete(View):
 
 class Courses(View):
     def get(self, request):
-        return render(request, 'courseView.html', {})
+        user_id = request.session.get('id')
+        if not User.objects.filter(id=user_id).exists():
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        user = User.objects.get(id=user_id)
+
+        if (user.User_Role.Role_Name == 'Supervisor'):
+            course_details = CourseClass.viewAllAssignments(user)
+        else:
+            course_details = CourseClass.viewUserAssignments(user, user)
+
+        if course_details == "INVALID":
+            return render(request, 'courseView.html', {'message': 'No Courses To See Here'})
+
+        context = {
+            'courseInformation': course_details
+        }
+
+        return render(request, 'courseView.html', context)
 
     def post(self, request):
-        return render(request, 'courseView.html', {})
+        return self.get(request)
 
 
 class CourseCreate(View):
