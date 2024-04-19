@@ -24,7 +24,6 @@ class TestCoursesView(TestCase):
         self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu", User_Password = "prof", User_Role = self.RoleProf)
 
         self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID = self.course2)
-       # self.client.post("/login/", {"Email": self.user.User_Email, "Password": self.user.User_Password})
 
         self.user.save()
         self.userTA.save()
