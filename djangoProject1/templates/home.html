@@ -3,12 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
+    <style>
+        .buttonbox {
+            width: 50%; 
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px; 
+            right: 0px; 
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        .logoutButton {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            padding: 30px;
+            font-size: 24px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Home Page</h1>
-    <a href="/accounts">View Account</a>
-    <a href="/courses">View Courses</a>
-    <a href="/announcements">Announcements</a>
-    <a href="/logout">Log Out</a>
+    <div class="buttonbox">
+        <a href="/accounts" class="button">View Account</a>
+        <a href="/courses" class="button">View Courses</a>
+        <a href="/announcements" class="button">Announcements</a>
+    </div>
+    <div class="content">
+        <h1>TA Scheduling App</h1>
+        <p>Get started text</p>
+    </div>
+    <a href="/logout" class="logoutButton">Log Out</a>
 </body>
 </html>
