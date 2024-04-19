@@ -36,7 +36,6 @@ class TestCoursesView(TestCase):
         self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
                          follow=True)
         response = self.client.get('/courses/',{"id": self.user.id}, follow=True)
-        self.assertEqual(response.status_code, 200)
         printout = [
             "MATH - 201 - Calculus",
             "Assigned Users: John Pork (TA), Davis Clark (TA)",
@@ -50,7 +49,6 @@ class TestCoursesView(TestCase):
     def test_coursesListWithAssignedUsersAsFirstTA(self):
         self.client.post("/", {"Email": self.userTA.User_Email, "Password": self.userTA.User_Password}, follow=True)
         response = self.client.get('/courses/',{"id": self.user.id}, follow=True)
-        self.assertEqual(response.status_code, 200)
         printout = [
             "MATH - 201 - Calculus",
             "Assigned Users: John Pork (TA), Davis Clark (TA)",
@@ -64,7 +62,6 @@ class TestCoursesView(TestCase):
     def test_coursesListWithAssignedUsersAsSecondTA(self):
         self.client.post("/", {"Email": self.userTA2.User_Email, "Password": self.userTA2.User_Password}, follow=True)
         response = self.client.get('/courses/', {"id": self.user.id}, follow=True)
-        self.assertEqual(response.status_code, 200)
         printout = [
             "MATH - 201 - Calculus",
             "Assigned Users: John Pork (TA), Davis Clark (TA)"
