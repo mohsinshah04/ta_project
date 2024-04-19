@@ -6,8 +6,21 @@
 </head>
 <body>
     <h1>Create Account</h1>
-    <a href="/accounts">cancel</a>
-    <a href="/accounts">cancel</a>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="Email" placeholder="Email" required><br>
+        <input type="text" name="Password" placeholder="Password" required><br>
+        <input type="text" name="First Name" placeholder="First Name" required><br>
+        <input type="text" name="Last Name" placeholder="Last Name" required><br>
+        <input type="text" name="Address" placeholder="Address" required><br>
+        <input type="text" name="Phone Number" placeholder="Phone Number" required><br>
+        <input type="text" name="Role" placeholder="Account Role" required><br>
+        <input type="submit" value="Make Changes">
+    </form>
+    {% if message %}
+            <p class="message">{{ message }}</p>
+    {% endif %}
+    <a href="/accountsViewSelf">Back</a>
 
 </body>
 </html>
