@@ -85,20 +85,26 @@ class AccountsView(View):
         if own_user.User_Role.Role_Name != "Supervisor":
             return render(request, 'acctsView.html', {"message": "You do not have permission to view other users"})
         names = []
+        emails = []
+        addresses = []
+        phones = []
         roles = []
-        accounts = []
         for i in User.objects.iterator():
             if i.id == own_id:
                 continue
             account_string = UserObject.view_account(i.id, own_id)
             if account_string == "INVALID":
                 return render(request, "acctsView.html", {"message": "Invalid account id: " + i.id})
-            accounts.append(account_string)
-            name = account_string.split(": ")
-            names.append(name[0])
-            roles.append(name[1])
+            string = account_string.split(": ")
+            names.append(string[0])
+            emails.append(string[1])
+            phones.append(string[2])
+            addresses.append(string[3])
+            roles.append(string[4])
 
-        return render(request, 'acctsView.html', {"accounts": accounts})
+        accounts_list = zip(names, emails, phones, addresses, roles)
+
+        return render(request, 'acctsView.html', {"Accounts": accounts_list})
     def post(self, request):
         return render(request, 'acctsView.html', {})
 

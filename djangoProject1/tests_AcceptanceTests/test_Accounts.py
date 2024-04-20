@@ -32,17 +32,18 @@ class AccountSearchTest(TestCase, Client):
         self.test_user_ta.save()
         self.test_user_in.save()
         self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
-        self.names_List = ["Generic User, genericUser@uwm.edu", "John Johnson, Super@uwm.edu", "Jose Johnson, Instrc@uwm.edu", "Joann Johnson, TA@uwm.edu"]
-        self.roles_List = ["Supervisor", "Instructor", "TA"]
+        self.objects = User.objects.all()
+        self.names_list = [obj.User_FName + " " + obj.User_LName for obj in self.objects]
+        self.emails_list = [obj.User_Email for obj in self.objects]
+        self.phone_list = [obj.User_Phone_Number for obj in self.objects]
+        self.address_list = [obj.User_Home_Address for obj in self.objects]
+        self.roles_list = [obj.User_Role.Role_Name for obj in self.objects]
+        self.zip_list = zip(self.names_list, self.emails_list, self.phone_list, self.address_list, self.roles_list)
 
     def test_view_account(self):
-        response = self.client.post('/accountsView/')
-        for i in self.names_List:
-            if i == "Generic User, genericUser@uwm.edu":
-                continue
-            self.assertIn(i, response.context['names'])
-        for j in self.roles_List:
-            self.assertIn(j, response.context['roles'])
+        response = self.client.get('/accountsView/')
+        for i, j in zip(response.context['Accounts'], self.zip_list):
+            self.assertEqual(i, j)
 
     """
         def test_user_doesnt_exist(self):
@@ -52,17 +53,17 @@ class AccountSearchTest(TestCase, Client):
     """
     def test_in_view_su(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password}, follow=True)
-        response = self.client.post('/accountsView/')
+        response = self.client.get('/accountsView/')
         self.assertEqual(response.context['message'], "You do not have permission to view other users")
 
     def test_ta_view_su(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accountsView/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.get('/accountsView/')
         self.assertEqual(response.context['message'], "You do not have permission to view other users")
 
     def test_ta_view_in(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password}, follow=True)
-        response = self.client.post('/accountsView/', {'First Name': self.test_user.User_FName, 'Last Name': self.test_user.User_LName})
+        response = self.client.get('/accountsView/')
         self.assertEqual(response.context['message'], "You do not have permission to view other users")
 
 

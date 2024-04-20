@@ -69,15 +69,30 @@
                     <div class="cell">
                         <td>Name:</td>
                         <td>Email:</td>
-                        <td>Address:</td>
                         <td>Phone Number:</td>
+                        <td>Address</td>
+                        <td>Role:</td>
                     </div>
                 </tr>
             </div>
             <div class="row">
-                {% for i in name %}
-                <tr class="white"><div class="cell"><td>{{ i }}</td></div></tr>
-            {% endfor %}
+                <tr>
+                    <div class="white">
+                        <div class="cell">
+                           {% for name, email, phone_number, address, role in Accounts %}
+                               <tr class="row">
+                                    <div class="cell">
+                                        <td>{{ name }}</td>
+                                        <td>{{ email }}</td>
+                                        <td>{{ phone_number }}</td>
+                                        <td>{{ address }}</td>
+                                        <td>{{ role }}</td>
+                                    </div>
+                               </tr>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </tr>
             </div>
         </table>
         </div>
