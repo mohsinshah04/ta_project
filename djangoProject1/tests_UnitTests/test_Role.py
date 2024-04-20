@@ -17,6 +17,7 @@ class RoleTest(TestCase):
                                             User_Password="prof", User_Role=self.RoleProf)
 
     # create role tests
+
     def test_createTA(self):
         role = Role(self.RoleTA)
         self.assertEqual(Role.create_role(self.RoleTA))
