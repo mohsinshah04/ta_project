@@ -183,3 +183,18 @@ class TestCoursesCreate(TestCase):
                                                        "semesterYear": 2022,
                                                        "semesterMonth": "mmm", "semester": self.semester.id})
         self.assertEqual(response.context['error'], "Invalid Format: Try Again")
+
+    def test_coursesCreateSemestersAppear(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password})
+        response = self.client.get("/courseCreate/", {"id": self.user.id})
+        printout = [
+            'Fall 2024'
+        ]
+        content = response.context['semesters']
+        for name in printout:
+            self.assertIn(name, content)
+
+    def test_coursesCreateSemestersAppearInvalidUser(self):
+        self.client.post("/", {"Email": self.userTA.User_Email, "Password": self.userTA.User_Password})
+        response = self.client.get("/courseCreate/", {"id": self.userTA.id})
+        self.assertEqual(response.url, "/courses/")
