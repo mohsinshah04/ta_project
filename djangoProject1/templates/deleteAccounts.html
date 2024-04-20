@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Accounts</title>
+</head>
+<body>
+<h1>Delete Accounts</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="User Email" placeholder="User's Email" required><br>
+        <input type="submit" value="Delete Account">
+    </form>
+    {% if message %}
+        <p class="message">{{ message }}</p>
+    {% endif %}
+    <a href="/accountsViewSelf">Back</a>
+</body>
+</html>
