@@ -4,9 +4,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from datetime import datetime
-from .models import Role, User, Course
+from .models import Role, User, Course, Semester
 from classes.UserClass import UserObject
 from classes.CourseClass import CourseClass
+from classes.SemesterClass import SemesterClass
 # Create your views here.
 
 
@@ -236,10 +237,66 @@ class Courses(View):
 
 class CourseCreate(View):
     def get(self, request):
-        return render(request, 'courseCreate.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('courses')
+
+        semesters = Semester.objects.all()
+        users = User.objects.filter()
+        context = {
+            'semesters': semesters,
+            'users': users
+        }
+        return render(request, 'courseCreate.html', context)
 
     def post(self, request):
-        return render(request, 'courseCreate.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.get(id=user_id)
+        course_code = request.POST.get('courseCode')
+        course_name = request.POST.get('courseName')
+        course_description = request.POST.get('courseDescription')
+        semester_id = request.POST.get('semester')
+
+        semesters = Semester.objects.all()
+
+        if semester_id == 'new':
+            semester_name = request.POST.get('semesterMonth')
+            semester_year = request.POST.get('semesterYear')
+            if semester_name and semester_year:
+                # Assuming createSemester returns the new semester instance or None
+                semester = SemesterClass.createSemester(semesterTerm=semester_name, semesterYear=int(semester_year),
+                                                        user=user)
+                if semester:
+                    sem = Semester.objects.get(Semester_Name=semester_name + " " + semester_year)
+                    semester_id = sem.id
+                else:
+                    context = {
+                        'semesters': semesters,
+                        'error': 'Failed to create new semester.'
+                    }
+                    return render(request, 'courseCreate.html', context)
+
+        if course_code and course_name and course_description and semester_id:
+            created = CourseClass.createAssignment(course_code, course_name, course_description, semester_id, user)
+            if created:
+                assigned_user_ids = request.POST.getlist('assignedUsers')
+                course_instance = None
+                if created:
+                    course_instance = Course.objects.last()
+                    for user_id in assigned_user_ids:
+                        user1 = User.objects.get(id=user_id)
+                        CourseClass.userAssignment(course_instance.id, user1.id, user)
+            return redirect('courses')
+
+        context = {
+            'semesters': semesters,
+            'error': 'Invalid format or missing information. Please try again.'
+        }
+        return render(request, 'courseCreate.html', context)
 
 
 class CourseEdit(View):

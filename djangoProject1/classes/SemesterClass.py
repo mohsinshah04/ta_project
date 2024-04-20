@@ -14,6 +14,8 @@ class SemesterClass:
             return False
         if(semesterYear == None):
             return False
+        if(type(semesterYear) != int):
+            return False
         if (type(user) != User):
             return False
         if not User.objects.filter(id=user.id).exists():
@@ -32,7 +34,7 @@ class SemesterClass:
             return False
 
         curYear = datetime.now().year
-        if ((semesterYear-100) < curYear-100) or ((semesterYear>curYear)):
+        if ((semesterYear>curYear)):
             return False
 
 
