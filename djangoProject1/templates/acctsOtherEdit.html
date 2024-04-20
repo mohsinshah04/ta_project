@@ -3,24 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Other Accounts Page</title>
-    
+     <style>
+         body {
+            display: flex;
+            justify-content: left; 
+            align-items: flex-start; 
+            height: 100vh;
+        }
+        .backButton {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            padding: 30px;
+            font-size: 24px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        
+        .text h1 {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            color: dimgray;
+            font-size: 36px;
+        }
+        
+        .text {
+            width: 75%;
+            padding-top: 100px;
+            left: 100px;
+            text-align: left;
+            font-size: 15px;
+        }
+        
+        .text p {
+            position: absolute;
+            top: 10px;
+            padding-left: 150px;
+            text-align: left;
+            font-size: 20px; /* Change the font size */
+        }
+        
+        .text-input {
+            width: 200px; /* Adjust width as needed */
+            height: 25px; /* Adjust height as needed */
+            padding: 7px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: lightgrey;
+            font-size: 16px;
+            box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+        }
+        
+        .input[type="submit"] {
+            width: 50%;
+            padding: 10px;
+            background-color: dodgerblue;
+            color: #fff;
+            border: none;
+        }
+        
+        .input[type="submit"]:hover {
+            background-color: deepskyblue;
+        }
+        
+        .text-message{
+            vertical-align: text-bottom;
+        }
+        
+    </style>
 </head>
 <body>
-<h1>Edit Other Account</h1>
-    <form method="post">
+<div class="text">
+    <h1>Edit Other Account</h1>
+        <p class="text p">
+            Please enter the new fields that you would like to have edited. If you want a filed to remain the same you
+            can leave it blank but in order for the changed to take effect you must enter the user's old email address.
+            After the changes are made press the submit button. Thank you!
+        </p>
+        <form method="post">
         {% csrf_token %}
-        <input type="text" name="Email" placeholder="New Email" value=""><br>
-        <input type="password" name="Password" placeholder="New Password" value=""><br>
-        <input type="text" name="First Name" placeholder="First Name" value=""><br>
-        <input type="text" name="Last Name" placeholder="Last Name" value=""><br>
-        <input type="text" name="Address" placeholder="New Address" value=""><br>
-        <input type="text" name="Phone Number" placeholder="New Phone Number" value=""><br>
-        <input type="text" name="User Email" placeholder="Please Enter User's Email" required><br>
-        <input type="submit" value="Make Changes">
+        <br>New Email:  
+        <br><input type="text" name="Email" class="text-input" value=""><br>
+        <br>New Password:
+        <br><input type="password" name="Password" class="text-input" value=""><br>
+        <br>New First Name:     
+        <br><input type="text" name="First Name" class="text-input" value=""><br>
+        <br>New Last Name:    
+        <br><input type="text" name="Last Name" class="text-input" value=""><br>
+        <br>New Address:    
+        <br><input type="text" name="Address" class="text-input" value=""><br>
+        <br>New Phone Number:    
+        <br><input type="text" name="Phone Number" class="text-input" value=""><br>
+        <br>Please enter the User's Old Email:    
+        <br><input type="text" name="User Email" class="text-input" required><br>
+            <input type="submit" class="input"value="Make Changes">
     </form>
     {% if message %}
-            <p class="message">{{ message }}</p>
+            <h2 class="text-message">{{ message }}</h2>
     {% endif %}
-    <a href="/accountsViewSelf">Back</a>
+    <a href="/accountsViewSelf" class="backButton">Back</a>
+</div>
 </body>
 </html>

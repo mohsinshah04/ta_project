@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Search</title>
+    <title>View All Accounts</title>
     <style>
+        body {
+            display: flex;
+            justify-content: normal; 
+            align-items: normal; 
+            height: 100vh;
+        }
+        
         .backButton {
             position: absolute;
             bottom: 30px;
@@ -17,7 +24,7 @@
         }
         
         .text h1 {
-            position: absolute;
+            position: page;
             top: 20px;
             left: 200px;
             color: dimgray; /* Change the color */
@@ -26,7 +33,7 @@
         
         .text table {
             width: 75%;
-            padding-top: 300px;
+            padding-top: 150px;
             left: 100px;
             text-align: center;
             color: dimgray; /* Change the color */
@@ -35,7 +42,7 @@
         
         .table {
             display: table;
-            width: 100%;
+            width: 200%;
             border-collapse: collapse;
         }
 
@@ -59,7 +66,7 @@
 </head>
 <body>
 <div class="text">
-    <h1>Account Search</h1>
+    <h1>View All Accounts</h1>
     <form method="get">
         {% csrf_token %}
         <div class="table">
