@@ -28,7 +28,9 @@ class CourseClass:
             return False
         if user.User_Role.Role_Name != 'Supervisor':
             return False
-        course = Course.objects.create(Course_Name="CS 351", Course_Description="Course Test.",Course_Semester_ID_id=semester)
+
+        buildString = courseCode + " - " + courseName
+        course = Course.objects.create(Course_Name=buildString, Course_Description=courseDescription,Course_Semester_ID_id=semester)
 
         if(course == None):
             return False
