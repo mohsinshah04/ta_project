@@ -104,4 +104,4 @@ class UserObject:
             return "INVALID"
         if checked_user.User_Role.Role_Name == "TA" and (user.User_Role.Role_Name == "Instructor" or user.User_Role.Role_Name =="Supervisor"):
             return "INVALID"
-        return user.User_FName + " " + user.User_LName + ", " + user.User_Email + ": " + user.User_Role.Role_Name
+        return user.User_FName + " " + user.User_LName + "\t" + user.User_Email + ": \t" + user.User_Role.Role_Name

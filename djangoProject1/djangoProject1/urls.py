@@ -19,7 +19,7 @@ from django.urls import path
 from ta_app.views import (Home, LoginPage, LogOutPage, Announcements,
                           AccountViewSelf, AccountCreate, AccountEditSelf, AccountEditOther,
                           Courses, CourseCreate, CourseEdit,
-                          Sections, SectionCreate, SectionEdit, AccountDelete, AccountSearch)
+                          Sections, SectionCreate, SectionEdit, AccountDelete, AccountsView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('accountCreate/', AccountCreate.as_view(), name='accountCreate'),
     path('accountEditSelf/', AccountEditSelf.as_view(), name='accountEditSelf'),
     path('accountEditOther/', AccountEditOther.as_view(), name='accountEditOther'),
-    path('accountSearch/', AccountSearch.as_view(), name='accountSearch'),
+    path('accountsView/', AccountsView.as_view(), name='accountsView'),
     path('deleteAccounts/', AccountDelete.as_view(), name='deleteAccounts'),
     path('courses/', Courses.as_view(), name='courses'),
     path('courseCreate/', CourseCreate.as_view(), name='courseCreate'),
