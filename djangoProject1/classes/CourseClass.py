@@ -94,14 +94,15 @@ class CourseClass:
             return False
         if (user == None):
             return False
-        if (User.objects.filter(id=user.id).exists() == False):
+        userobj = User.objects.get(id=user)
+        if (User.objects.filter(id=user).exists() == False):
             return "INVALID"
         if (Course.objects.filter(id=courseID).exists() == False):
             return False
-        if user.User_Role.Role_Name != 'Supervisor':
-            return False
-
-        Course.objects.filter(id=courseID).delete()
+        if userobj.User_Role.Role_Name != 'Supervisor':
+            Assign_User_Junction.objects.filter(Course_ID=courseID, User_ID_id=user).delete()
+        else:
+            Course.objects.filter(id=courseID).delete()
 
         return True
 
