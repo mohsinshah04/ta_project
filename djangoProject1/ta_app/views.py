@@ -351,6 +351,8 @@ class CourseEdit(View):
         user_id = request.session.get('id')
         user = User.objects.get(id=user_id)
         course_id = request.POST.get('course_id')
+        print(course_id)
+        print(user_id)
         selected_course = Course.objects.get(id=course_id)
 
         if user.User_Role.Role_Name != 'Supervisor':

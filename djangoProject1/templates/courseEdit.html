@@ -93,6 +93,8 @@
         <form method="post">
             {% csrf_token %}
             <label>Course Code:</label>
+            <input type="hidden" name="course_id" value="{{ selected_course.id }}">
+
             <input type="text" name="courseCode" value="{{ course_code }}" readonly>
 
             <label>Course Full Name:</label>
@@ -111,7 +113,7 @@
             </select>
 
             <label>Assigned Users (Hold Shift To Select Multiple, Hold Command To Remove):</label>
-            <select id="assignedUsers" name="assignedUsers" multiple required>
+            <select id="assignedUsers" name="assignedUsers" multiple>
                 {% for user in users %}
                 <option value="{{ user.id }}" {% if user.id in assigned_users_ids %}selected{% endif %}>
                     {{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }})
