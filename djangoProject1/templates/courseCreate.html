@@ -2,10 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Courses Page</title>
+    <title>Create Course</title>
+    <style>
+        .buttonbox {
+            width: 50%;
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        .button:hover {
+        background-color: #0056b3;
+        }
+        body { font-family: Arial, sans-serif; }
+        .form-container {padding-top: 40px; margin: 20px; }
+        input, select {  display: block; width: 800px; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-    <h1>Create Courses</h1>
-    <a href="/courses">cancel</a>
+    <div class="buttonbox">
+        <a href="/courses" class="button">Cancel</a>
+    </div>
+    <div class="form-container">
+        <h1>Create Course</h1>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label>Course Code (FORMAT MUST BE: "CourseAbbreviation - CourseNumber")</label>
+            <input type="text" name="courseCode" required>
+            <label>Course Name (Give Course Full Name):</label>
+            <input type="text" name="courseName" required>
+            <label>Course Description (at least 10 characters):</label>
+            <input type="text" name="courseDescription" required>
+            <label>Semester (Either select or create):</label>
+            <select name="semester" required>
+                {% for semester in semesters %}
+                    <option value="{{ semester.id }}">{{ semester.Semester_Name }}</option>
+                {% endfor %}
+                <option value="new">Create New Semester</option>
+            </select>
+            <label>New Semester Term (Spring, Fall, Summer, Winter) (leave blank if not creating):</label>
+            <input type="text" name="semesterMonth">
+            <label>New Semester Year (Must be not exceed current year by one) (leave blank if not creating):</label>
+            <input type="text" name="semesterYear">
+            
+            
+            
+          
+            </select>
+
+            <label for="assignedUsers">Assign Users:</label>
+            <select id="assignedUsers" name="assignedUsers" multiple >
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.User_FName}} {{user.User_LName}} ::::: {{user.User_Role}} </option>
+            {% endfor %}
+            </select>
+        
+            <button type="submit">Create Course</button>
+        
+            
+        </form>
+    </div>
 </body>
 </html>
