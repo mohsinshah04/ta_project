@@ -2,10 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Course Page</title>
+    <title>Edit Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            
+        }
+        .buttonbox {
+            width: 50%;
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        
+        
+        .form-container {
+            padding-top: 40px; 
+            margin: 20px;
+        }
+        
+        input, select, textarea {
+            display: block;
+            width: 80%; 
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        select[multiple] {
+            height: 150px; 
+            overflow-y: auto;
+        }
+        
+        button {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function submitOnChange(element) {
+            element.form.submit();
+        }
+    </script>
 </head>
 <body>
-    <h1>Edit Courses</h1>
-    <a href="/courses">cancel</a>
+    <div class="buttonbox">
+        <a href="/courses" class="button">Cancel</a>
+    </div>
+    <div class="form-container">
+        <h1>Edit Course</h1>
+    <form method="get" action="">
+        <label for="course_id">Select Course to Edit:</label>
+        <select id="course_id" name="course_id" onchange="submitOnChange(this)" class="submit-on-change">
+            <option value="">-- Select a Course --</option>
+            {% for course in courses %}
+            <option value="{{ course.id }}" {% if selected_course and course.id == selected_course.id %}selected{% endif %}>
+                {{ course.Course_Name }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if selected_course %}
+        <form method="post">
+            {% csrf_token %}
+            <label>Course Code:</label>
+            <input type="hidden" name="course_id" value="{{ selected_course.id }}">
+
+            <input type="text" name="courseCode" value="{{ course_code }}" readonly>
+
+            <label>Course Full Name:</label>
+            <input type="text" name="courseFullName" value="{{ course_full_name }}" readonly>
+            
+            <label>Course Description:</label>
+            <textarea name="courseDescription" readonly>{{ selected_course.Course_Description }}</textarea>
+            
+            <label>Semester:</label>
+            <select name="semester" disabled>
+                {% for semester in semesters %}
+                <option value="{{ semester.id }}" {% if selected_course.semester_id == semester.id %}selected{% endif %}>
+                    {{ semester.Semester_Name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Assigned Users (Hold Shift To Select Multiple, Hold Command To Remove):</label>
+            <select id="assignedUsers" name="assignedUsers" multiple>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id in assigned_users_ids %}selected{% endif %}>
+                    {{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }})
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Update Course</button>
+        </form>
+    <p>Please select a course to edit its details.</p>
+    {% endif %}
+    </div>
 </body>
 </html>

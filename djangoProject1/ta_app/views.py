@@ -4,8 +4,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from datetime import datetime
-from .models import Role, User
+from .models import Role, User, Course, Semester, Assign_User_Junction
 from classes.UserClass import UserObject
+from classes.CourseClass import CourseClass
+from classes.SemesterClass import SemesterClass
 # Create your views here.
 
 
@@ -247,26 +249,170 @@ class AccountDelete(View):
 
 class Courses(View):
     def get(self, request):
-        return render(request, 'courseView.html', {})
+        user_id = request.session.get('id')
+        if not User.objects.filter(id=user_id).exists():
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        user = User.objects.get(id=user_id)
+
+        if (user.User_Role.Role_Name == 'Supervisor'):
+            course_details = CourseClass.viewAllAssignments(user)
+        else:
+            course_details = CourseClass.viewUserAssignments(user, user)
+
+        if course_details == "INVALID":
+            return render(request, 'courseView.html', {'message': 'No Courses To See Here'})
+
+        context = {
+            'courseInformation': course_details
+        }
+
+        return render(request, 'courseView.html', context)
 
     def post(self, request):
-        return render(request, 'courseView.html', {})
+        return self.get(request)
 
 
 class CourseCreate(View):
     def get(self, request):
-        return render(request, 'courseCreate.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('courses')
+
+        semesters = Semester.objects.all()
+        users = User.objects.filter()
+        context = {
+            'semesters': semesters,
+            'users': users
+        }
+        return render(request, 'courseCreate.html', context)
 
     def post(self, request):
-        return render(request, 'courseCreate.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.get(id=user_id)
+        course_code = request.POST.get('courseCode')
+        course_name = request.POST.get('courseName')
+        course_description = request.POST.get('courseDescription')
+        semester_id = request.POST.get('semester')
+
+        semesters = Semester.objects.all()
+
+        if semester_id == 'new':
+            semester_name = request.POST.get('semesterMonth')
+            semester_year = request.POST.get('semesterYear')
+            if semester_name and semester_year:
+                semester = SemesterClass.createSemester(semesterTerm=semester_name, semesterYear=int(semester_year),
+                                                        user=user)
+                if semester:
+                    sem = Semester.objects.get(Semester_Name=semester_name + " " + semester_year)
+                    semester_id = sem.id
+                else:
+                    context = {
+                        'semesters': semesters,
+                        'error': 'Failed to create new semester.'
+                    }
+                    return render(request, 'courseCreate.html', context)
+
+        if course_code and course_name and course_description and semester_id:
+            created = CourseClass.createAssignment(course_code, course_name, course_description, semester_id, user)
+            if created:
+                assigned_user_ids = request.POST.getlist('assignedUsers')
+                course_instance = None
+                if created:
+                    course_instance = Course.objects.last()
+                    for user_id in assigned_user_ids:
+                        user1 = User.objects.get(id=user_id)
+                        CourseClass.userAssignment(course_instance.id, user1.id, user)
+            else:
+                context = {
+                    'semesters': semesters,
+                    'error': 'Invalid format or missing information. Please try again.'
+                }
+                return render(request, 'courseCreate.html', context)
+            return redirect('courses')
+
+        context = {
+            'semesters': semesters,
+            'error': 'Invalid format or missing information. Please try again.'
+        }
+        return render(request, 'courseCreate.html', context)
 
 
 class CourseEdit(View):
     def get(self, request):
-        return render(request, 'courseEdit.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('courses')
+
+        courses = Course.objects.all()
+        semesters = Semester.objects.all()
+        users = User.objects.all()
+
+        selected_course_id = request.GET.get('course_id')
+        selected_course = Course.objects.filter(id=selected_course_id).first()
+
+        course_code, course_full_name = "", ""
+        if selected_course:
+            parts = selected_course.Course_Name.split(" - ", 2)
+            if len(parts) >= 3:
+                course_code = parts[0] + " - " + parts[1]
+                course_full_name = parts[2]
+            elif len(parts) == 2:
+                course_code = parts[0]
+                course_full_name = parts[1]
+
+        assigned_users_ids = []
+        if selected_course:
+            junctions = Assign_User_Junction.objects.filter(Course_ID=selected_course)
+            assigned_users_ids = [j.User_ID.id for j in junctions]
+
+        context = {
+            'courses': courses,
+            'selected_course': selected_course,
+            'course_code': course_code,
+            'course_full_name': course_full_name,
+            'semesters': semesters,
+            'users': users,
+            'assigned_users_ids': assigned_users_ids,
+        }
+        return render(request, 'courseEdit.html', context)
 
     def post(self, request):
-        return render(request, 'courseEdit.html', {})
+        user_id = request.session.get('id')
+        user = User.objects.get(id=user_id)
+        course_id = request.POST.get('course_id')
+        print(course_id)
+        print(user_id)
+        selected_course = Course.objects.get(id=course_id)
+
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('courses')
+
+        selected_course.Course_Name = request.POST.get('courseCode') + " - " + request.POST.get('courseFullName')
+        selected_course.Course_Description = request.POST.get('courseDescription')
+        selected_course.semester_id = request.POST.get('semester')
+        selected_course.save()
+
+        current_assigned_users = Assign_User_Junction.objects.filter(Course_ID=selected_course)
+        current_assigned_user_ids = [user.User_ID_id for user in current_assigned_users]
+        new_assigned_user_ids = [int(uid) for uid in request.POST.getlist('assignedUsers')]
+
+        for user_id in new_assigned_user_ids:
+            if user_id not in current_assigned_user_ids:
+                CourseClass.userAssignment(selected_course.id, user_id, user)
+
+        for user_id in current_assigned_user_ids:
+            if user_id not in new_assigned_user_ids:
+                CourseClass.deleteAssignment(selected_course.id, user_id)
+        return redirect('courses')
 
 
 class Sections(View):
