@@ -3,24 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Accounts Page</title>
+    <style>
+         body {
+            display: flex;
+            justify-content: left;
+            align-items: flex-start;
+            height: 100vh;
+        }
+        .backButton {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            padding: 30px;
+            font-size: 24px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+
+        .text h1 {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            color: dimgray;
+            font-size: 36px;
+        }
+
+        .text {
+            width: 75%;
+            padding-top: 100px;
+            left: 100px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .text p {
+            position: absolute;
+            top: 10px;
+            padding-left: 150px;
+            text-align: left;
+            font-size: 20px; /* Change the font size */
+        }
+
+        .text-input {
+            width: 200px; /* Adjust width as needed */
+            height: 25px; /* Adjust height as needed */
+            padding: 7px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+        }
+
+        .input[type="submit"] {
+            width: 25%;
+            padding: 10px;
+            background-color: dodgerblue;
+            margin-top: 20px;
+            color: #fff;
+            border: none;
+        }
+
+        .input[type="submit"]:hover {
+            background-color: deepskyblue;
+        }
+
+        .text-message{
+            vert-align: bottom;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Create Account</h1>
-    <form method="post">
+<div class="text">
+    <h1>Create an Account</h1>
+        <p class="text p">
+            Please enter all fields to have a user created. The password must have a length greater than 7 and the phone number
+            must be less than 15 digits. After all fields have been entered in correctly then enter in your password to create the
+            user in the database. Thank you!
+        </p>
+        <form method="post">
         {% csrf_token %}
-        <input type="text" name="Email" placeholder="Email" required><br>
-        <input type="text" name="Password" placeholder="Password" required><br>
-        <input type="text" name="First Name" placeholder="First Name" required><br>
-        <input type="text" name="Last Name" placeholder="Last Name" required><br>
-        <input type="text" name="Address" placeholder="Address" required><br>
-        <input type="text" name="Phone Number" placeholder="Phone Number" required><br>
-        <input type="text" name="Role" placeholder="Account Role" required><br>
-        <input type="submit" value="Make Changes">
+        <br>Email:
+        <br><input type="text" name="Email" class="text-input" required><br>
+        <br>Password:
+        <br><input type="text" name="Password" class="text-input" required><br>
+        <br>First Name:
+        <br><input type="text" name="First Name" class="text-input" required><br>
+        <br>Last Name:
+        <br><input type="text" name="Last Name" class="text-input" required><br>
+        <br>Address:
+        <br><input type="text" name="Address" class="text-input" required><br>
+        <br>Phone Number:
+        <br><input type="text" name="Phone Number" class="text-input" required><br>
+        <br>Role:
+        <br><input type="text" name="Role" class="text-input" required><br>
+        <br>Please enter Your Password:
+        <br><input type="password" name="Old Password" class="text-input" required><br>
+            <input type="submit" class="input" value="Create User">
     </form>
-    {% if message %}
-            <p class="message">{{ message }}</p>
-    {% endif %}
-    <a href="/accountsViewSelf">Back</a>
+    <div class="text-message">
+        {% if message %}
+            <h2>{{ message }}</h2>
+        {% endif %}
+    </div>
+    <a href="/accountsViewSelf" class="backButton">Back</a>
 
 </body>
 </html>

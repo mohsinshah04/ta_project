@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.core.mail import send_mail
 from django.core.checks import messages
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -73,29 +74,41 @@ class AccountViewSelf(View):
         return render(request, 'acctsViewSelf.html', {})
 
 
-class AccountSearch(View):
+class AccountsView(View):
     def get(self, request):
-        return render(request, 'acctsSearch.html', {})
-    def post(self, request):
         own_id = request.session.get("id")
-        user_fname = request.POST.get('First Name')
-        user_lname = request.POST.get('Last Name')
-        if not User.objects.filter(User_FName=user_fname, User_LName=user_lname).exists():
-            return render(request, 'acctsSearch.html', {"message": "Invalid account: " + user_fname + " " + user_lname})
         own_user = User.objects.get(id=own_id)
-        user = User.objects.get(User_FName=user_fname, User_LName=user_lname)
-        if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
-            return render(request, 'acctsSearch.html', {"message": "You cannot view this account because of your role"})
+        # if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
+        # return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
 
-        if own_user.User_Role.Role_Name == 'TA' and (
-                user.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
-            return render(request, 'acctsSearch.html', {"message": "You cannot view this account because of your role"})
+        # if own_user.User_Role.Role_Name == 'TA' and (
+        # ser.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
+        # return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
+        if own_user.User_Role.Role_Name != "Supervisor":
+            return render(request, 'acctsView.html', {"message": "You do not have permission to view other users"})
+        names = []
+        emails = []
+        addresses = []
+        phones = []
+        roles = []
+        for i in User.objects.iterator():
+            if i.id == own_id:
+                continue
+            account_string = UserObject.view_account(i.id, own_id)
+            if account_string == "INVALID":
+                return render(request, "acctsView.html", {"message": "Invalid account id: " + i.id})
+            string = account_string.split(": ")
+            names.append(string[0])
+            emails.append(string[1])
+            phones.append(string[2])
+            addresses.append(string[3])
+            roles.append(string[4])
 
-        account_string = UserObject.view_account(user.id, own_id)
-        if account_string == "INVALID":
-            return render(request, "acctsSearch.html", {"message": "Invalid account id: " + user.id})
-        name = account_string.split(":")
-        return render(request, 'acctsSearch.html', {"name": name[0], "role": name[1]})
+        accounts_list = zip(names, emails, phones, addresses, roles)
+
+        return render(request, 'acctsView.html', {"Accounts": accounts_list})
+    def post(self, request):
+        return render(request, 'acctsView.html', {})
 
 class AccountCreate(View):
     def get(self, request):
@@ -124,6 +137,8 @@ class AccountCreate(View):
 
         if get_all_info:
             return render(request, "acctsCreate.html", {"message": "Please enter in all information"})
+        if User.objects.filter(User_Email=email).exists():
+            return render(request, "acctsCreate.html", {"message": "This user already exists, please go to the update page if you would like to edit this user instead"})
 
         toReturn = UserObject.create_user(email, password, role, phone, address, f_name, l_name, own_id)
         if not toReturn:
@@ -233,7 +248,7 @@ class AccountDelete(View):
         own_id = request.session.get('id')
         user_email = request.POST.get('User Email')
         if not User.objects.filter(User_Email=user_email).exists():
-            return render(request, 'deleteAccounts.html', {"message": "Invalid account id: " + user_email})
+            return render(request, 'deleteAccounts.html', {"message": "Invalid email: " + user_email})
         own_user = User.objects.get(id=own_id)
         user_id = User.objects.get(User_Email=user_email).id
         if own_user.User_Role.Role_Name != "Supervisor":
@@ -243,6 +258,14 @@ class AccountDelete(View):
 
         if not toReturn:
             return render(request, 'deleteAccounts.html', {"message": "Account was not deleted successfully"})
+        """
+            send_mail(
+            "Account Deletion",
+            "Your account has been deleted. Please contact you supervisor for any further questions.",
+            "emmettbenck@gmail.com",
+            ["oliviajczarnecki@gmail.com"],
+        )
+        """
 
         return render(request, 'deleteAccounts.html', {"message": "You have successfully deleted account: " + user_email})
 
