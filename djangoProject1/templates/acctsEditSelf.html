@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Other Accounts Page</title>
+    <title>Edit Your Account</title>
 </head>
 <body>
-<h1>Edit Other Account</h1>
+<h1>Edit Your Account</h1>
     <form method="post">
         {% csrf_token %}
         <input type="text" name="Email" placeholder="New Email" value=""><br>
@@ -14,7 +14,7 @@
         <input type="text" name="Last Name" placeholder="Last Name" value=""><br>
         <input type="text" name="Address" placeholder="New Address" value=""><br>
         <input type="text" name="Phone Number" placeholder="New Phone Number" value=""><br>
-        <input type="text" name="User Email" placeholder="Please Enter User's Email" required><br>
+        <input type="password" name="Old Password" placeholder="Please Enter Your Old Pass." required><br>
         <input type="submit" value="Make Changes">
     </form>
     {% if message %}
