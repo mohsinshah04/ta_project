@@ -24,23 +24,44 @@
             border: solid 1px black;
         }
         
-        .text h1 {
-            position: page;
+        .buttonbox {
+            width: 50%; 
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px; 
+            right: 0px; 
             display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+        
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        
+        .text h1 {
+            position: absolute;
             top: 20px;
-            left: 200px;
+            left: 100px;
             color: dimgray; /* Change the color */
             font-size: 36px; /* Change the font size */
         }
         
         .text table {
             width: 75%;
-            padding-top: 150px;
+            padding-top: 300px;
             left: 100px;
             text-align: center;
             color: dimgray; /* Change the color */
             font-size: 36px; /* Change the font size */
-            display: flex;
         }
         
         .table {
@@ -55,7 +76,7 @@
 
         .cell {
             display: table-cell;
-            padding: 10px;
+            padding: 20px;
         }
 
         .gray {
@@ -68,6 +89,10 @@
     </style>
 </head>
 <body>
+<div class="buttonbox">
+    <a href="/accountEditSelf/" class="button">Edit Your Account</a>
+    <a href="/accountEditOther/" class="button">Edit Other's Accounts</a>
+</div>
 <div class="text">
     <h1>View All Accounts</h1>
     <form method="get">

@@ -6,13 +6,12 @@
     <style>
          body {
             display: flex;
-            justify-content: left; 
-            align-items: flex-start; 
+            justify-content: left;
+            align-items: flex-start;
             height: 100vh;
         }
         .backButton {
             position: absolute;
-            display: flex;
             bottom: 30px;
             right: 30px;
             padding: 30px;
@@ -22,34 +21,31 @@
             color: dimgray;
             border: solid 1px black;
         }
-        
+
         .text h1 {
             position: absolute;
-            display: flex;
             top: 10px;
             left: 20px;
             color: dimgray;
             font-size: 36px;
         }
-        
+
         .text {
             width: 75%;
-            display: flex;
             padding-top: 100px;
             left: 100px;
             text-align: left;
             font-size: 15px;
         }
-        
+
         .text p {
             position: absolute;
-            display: flex;
             top: 10px;
             padding-left: 150px;
             text-align: left;
             font-size: 20px; /* Change the font size */
         }
-        
+
         .text-input {
             width: 200px; /* Adjust width as needed */
             height: 25px; /* Adjust height as needed */
@@ -57,30 +53,27 @@
             margin: 5px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            background-color: lightgrey;
-            display: flex;
             font-size: 16px;
             box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
         }
-        
+
         .input[type="submit"] {
-            width: 50%;
+            width: 25%;
             padding: 10px;
             background-color: dodgerblue;
             margin-top: 20px;
             color: #fff;
             border: none;
-            display: flex;
         }
-        
+
         .input[type="submit"]:hover {
             background-color: deepskyblue;
         }
-        
+
         .text-message{
-            vertical-align: text-bottom;
+            vert-align: bottom;
         }
-        
+
     </style>
 </head>
 <body>
@@ -93,27 +86,29 @@
         </p>
         <form method="post">
         {% csrf_token %}
-        <br>Email:  
+        <br>Email:
         <br><input type="text" name="Email" class="text-input" required><br>
         <br>Password:
         <br><input type="text" name="Password" class="text-input" required><br>
-        <br>First Name:     
+        <br>First Name:
         <br><input type="text" name="First Name" class="text-input" required><br>
-        <br>Last Name:    
+        <br>Last Name:
         <br><input type="text" name="Last Name" class="text-input" required><br>
-        <br>Address:    
+        <br>Address:
         <br><input type="text" name="Address" class="text-input" required><br>
-        <br>Phone Number:    
+        <br>Phone Number:
         <br><input type="text" name="Phone Number" class="text-input" required><br>
-        <br>Role:    
-        <br><input type="text" name="Role" class="text-input" required><br>    
-        <br>Please enter Your Password:    
+        <br>Role:
+        <br><input type="text" name="Role" class="text-input" required><br>
+        <br>Please enter Your Password:
         <br><input type="password" name="Old Password" class="text-input" required><br>
             <input type="submit" class="input" value="Create User">
     </form>
-    {% if message %}
-            <h2 class="text-message">{{ message }}</h2>
-    {% endif %}
+    <div class="text-message">
+        {% if message %}
+            <h2>{{ message }}</h2>
+        {% endif %}
+    </div>
     <a href="/accountsViewSelf" class="backButton">Back</a>
 
 </body>
