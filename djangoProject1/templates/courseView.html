@@ -3,14 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>View Course Page</title>
+    <style>
+        .header {
+            padding-left: 20px; 
+            padding-top: 30px;
+        }
+        .buttonbox {
+            width: 50%;
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        .button:hover {
+        background-color: #0056b3;
+        }
+
+        .text h1 {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            color: dimgray;
+            font-size: 36px; 
+        }
+        .courseInformation {
+        margin-top: 40px;
+        padding: 10px;
+        background-color: #ffffff;
+        border: 1px solid;
+        border-radius: 5px;
+        }
+        .text p {
+            position: absolute;
+            padding-top: 300px;
+            left: 60px;
+            color: dimgray; 
+            font-size: 36px;
+        }
+        pre {
+
+        font-size: 20px;
+        color: #333333;
+        font-family: Tahoma, sans-serif;
+        }
+    </style>
 </head>
 <body>
-<h1>View course page</h1>
-    <p>blah blah blah</p>
-    <a href="/home">home</a>
-    <a href="/courseCreate">create course</a>
-    <a href="/sections">View Sections</a>
-
-
+    <div class="buttonbox">
+        <a href="/courseCreate" class="button">Create Course</a>
+        <a href="/courseEdit" class="button">Edit Course</a>
+        <a href="/home" class="button">Home</a>
+        <a href="/sections" class="button">View Sections</a>
+    </div>
+    <div class="header">
+    <h1>View Course Page</h1>
+    <p>List of Courses You Are Able To See:</p>
+    </div>
+    {% if courseInformation %}
+        <div class="courseInformation">
+            <pre>{{ courseInformation }}</pre>
+        </div>
+    {% else %}
+        <p>No courses available or data error.</p>
+    {% endif %}
 </body>
 </html>
