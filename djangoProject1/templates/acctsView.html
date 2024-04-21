@@ -13,6 +13,7 @@
         
         .backButton {
             position: absolute;
+            display: flex;
             bottom: 30px;
             right: 30px;
             padding: 30px;
@@ -25,6 +26,7 @@
         
         .text h1 {
             position: page;
+            display: flex;
             top: 20px;
             left: 200px;
             color: dimgray; /* Change the color */
@@ -38,6 +40,7 @@
             text-align: center;
             color: dimgray; /* Change the color */
             font-size: 36px; /* Change the font size */
+            display: flex;
         }
         
         .table {
@@ -74,11 +77,11 @@
             <div class="row">
                 <tr class="gray">
                     <div class="cell">
-                        <td>Name:</td>
-                        <td>Email:</td>
-                        <td>Phone Number:</td>
-                        <td>Address</td>
-                        <td>Role:</td>
+                        <td>Name:&nbsp;</td>
+                        <td>Email:&nbsp;</td>
+                        <td>Phone Number:&nbsp;</td>
+                        <td>Address&nbsp;</td>
+                        <td>Role:&nbsp;</td>
                     </div>
                 </tr>
             </div>
@@ -89,11 +92,11 @@
                            {% for name, email, phone_number, address, role in Accounts %}
                                <tr class="row">
                                     <div class="cell">
-                                        <td>{{ name }}</td>
-                                        <td>{{ email }}</td>
-                                        <td>{{ phone_number }}</td>
-                                        <td>{{ address }}</td>
-                                        <td>{{ role }}</td>
+                                        <td>{{ name }}&nbsp;&nbsp;</td>
+                                        <td>{{ email }}&nbsp;&nbsp;</td>
+                                        <td>{{ phone_number }}&nbsp;&nbsp;</td>
+                                        <td>{{ address }}&nbsp;&nbsp;</td>
+                                        <td>{{ role }}&nbsp;&nbsp;</td>
                                     </div>
                                </tr>
                             {% endfor %}

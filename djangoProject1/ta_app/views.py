@@ -135,6 +135,8 @@ class AccountCreate(View):
 
         if get_all_info:
             return render(request, "acctsCreate.html", {"message": "Please enter in all information"})
+        if User.objects.filter(User_Email=email).exists():
+            return render(request, "acctsCreate.html", {"message": "This user already exists, please go to the update page if you would like to edit this user instead"})
 
         toReturn = UserObject.create_user(email, password, role, phone, address, f_name, l_name, own_id)
         if not toReturn:

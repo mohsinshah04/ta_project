@@ -111,6 +111,19 @@ class AccountCreationTests(TestCase, Client):
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
         self.assertEqual(response.context['message'], "User was not created successfully")
 
+    def test_create_user_already_exists(self):
+        response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
+                                                        "Address": self.user_Home_Address,
+                                                        "Phone Number": self.user_Phone_Number,
+                                                        "Role": self.user_Role.Role_Name, "First Name": self.user_FName,
+                                                        "Last Name": self.user_LName})
+        response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
+                                                        "Address": self.user_Home_Address,
+                                                        "Phone Number": self.user_Phone_Number,
+                                                        "Role": self.user_Role.Role_Name, "First Name": self.user_FName,
+                                                        "Last Name": self.user_LName})
+        self.assertEqual(response.context['message'], "This user already exists, please go to the update page if you would like to edit this user instead")
+
     def test_create_user_invalid_name(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
                                                         "Address": self.user_Home_Address,
