@@ -4,30 +4,19 @@
     <meta charset="UTF-8">
     <title>Create Course</title>
     <style>
-        .buttonbox {
-            width: 50%;
-            height: 75px;
-            padding: 20px;
-            background-color: lightgray;
+        .backButton {
             position: absolute;
-            top: 0px;
-            right: 0px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border: solid 1px black;
-        }
-
-        .button {
-            font-size: 24px;
+            bottom: 30px;
+            right: 30px;
             padding: 30px;
+            font-size: 24px;
             background-color: white;
             text-decoration: none;
             color: dimgray;
             border: solid 1px black;
         }
-        .button:hover {
-        background-color: #0056b3;
+        .backButton:hover {
+            background-color: orange;        
         }
         body { font-family: Arial, sans-serif; }
         .form-container {padding-top: 40px; margin: 20px; }
@@ -35,9 +24,7 @@
     </style>
 </head>
 <body>
-    <div class="buttonbox">
-        <a href="/courses" class="button">Cancel</a>
-    </div>
+    <a href="/courses" class="backButton">Cancel</a>
     <div class="form-container">
         <h1>Create Course</h1>
         {% if error %}

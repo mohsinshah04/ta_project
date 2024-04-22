@@ -5,6 +5,7 @@
     <title>Home Page</title>
     <style>
         .buttonbox {
+            z-index: 11;
             width: 50%; 
             height: 75px;
             padding: 20px;
@@ -17,8 +18,9 @@
             align-items: center;
             border: solid 1px black;
         }
-        
+
         .button {
+            z-index: 10;
             font-size: 24px;
             padding: 30px;
             background-color: white;
@@ -26,7 +28,12 @@
             color: dimgray;
             border: solid 1px black;
         }
-        
+        .button:hover {
+            background-color: deepskyblue;        
+        }
+        .logoutButton:hover {
+            background-color: red;        
+        }
         .logoutButton {
             position: absolute;
             bottom: 30px;
@@ -43,16 +50,16 @@
             position: absolute;
             top: 20px;
             left: 60px;
-            color: dimgray; /* Change the color */
-            font-size: 36px; /* Change the font size */
+            color: dimgray; 
+            font-size: 36px; 
         }
         
         .text p {
             position: absolute;
             padding-top: 150px;
             left: 60px;
-            color: dimgray; /* Change the color */
-            font-size: 36px; /* Change the font size */
+            color: dimgray;
+            font-size: 36px;
         }
     </style>
 </head>
