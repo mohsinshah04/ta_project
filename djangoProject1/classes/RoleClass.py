@@ -11,7 +11,7 @@ class RoleClass:
             return False
         if type(user) != User:
             return False
-        if Role.objects.filter(name=roleName).exists():
+        if Role.objects.filter(Role_Name=roleName).exists():
             return False
         if user.User_Role.Role_Name != 'Supervisor':
             return False
@@ -20,13 +20,13 @@ class RoleClass:
 
         validCheck = False
         for term in validRole:
-            if term in roleName:
+            if term == roleName:
                 validCheck = True
 
         if not validCheck:
             return False
 
-        role = Role.objects.create(name=roleName)
+        role = Role.objects.create(Role_Name=roleName)
 
         if role is None:
             return False
@@ -34,18 +34,20 @@ class RoleClass:
         return True
 
     @classmethod
-    def delete_role(self, roleName, user):
-        if roleName is None:
+    def delete_role(self, role, user):
+        if role is None:
             return False
         if type(user) != User:
             return False
-        if not Role.objects.filter(name=roleName).exists():
+        if type(role) != Role:
+            return False
+        if not Role.objects.filter(id=role.id).exists():
             return False
         if not User.objects.filter(id=user.id).exists():
             return False
         if user.User_Role.Role_Name != 'Supervisor':
             return False
 
-        Role.objects.filter(id=roleName).delete()
+        Role.objects.filter(id=role.id).delete()
 
         return True

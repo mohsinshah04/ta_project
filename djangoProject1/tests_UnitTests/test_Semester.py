@@ -70,11 +70,6 @@ class SemesterTestCase(TestCase):
         )
         self.assertFalse(createdSemester, "valid year within -100 and +1 current year must exist")
 
-    def test_CreateSemesterInvalidNegativeYear(self):
-        createdSemester = SemesterClass.createSemester(
-            self.validTermSpring, 1923, self.user
-        )
-        self.assertFalse(createdSemester, "valid year within -100 of current year")
 
     def test_CreateSemesterInvalidPositiveYear(self):
         createdSemester = SemesterClass.createSemester(

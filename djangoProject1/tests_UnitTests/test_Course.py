@@ -269,7 +269,7 @@ class CourseTestCase(TestCase):
             self.course.id, self.user
         )"""
         courseDelete = CourseClass.deleteAssignment(
-            self.course.id, self.user
+            self.course.id, self.user.id
         )
         self.assertTrue(courseDelete, "Valid Delete Assignment, existing course and existing/correct permission user.")
 
@@ -278,7 +278,7 @@ class CourseTestCase(TestCase):
             1234, self.user
         )"""
         courseDelete = CourseClass.deleteAssignment(
-            1234, self.user
+            1234, self.user.id
         )
         self.assertFalse(courseDelete, "Must be a existing course to delete")
 
@@ -287,7 +287,7 @@ class CourseTestCase(TestCase):
             self.course.id, self.userTA
         )"""
         courseDelete = CourseClass.deleteAssignment(
-            1234, self.user
+            1234, self.user.id
         )
         self.assertFalse(courseDelete, "Must be of a Supervisor/Admin permission to delete")
 
