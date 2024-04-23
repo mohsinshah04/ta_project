@@ -21,7 +21,9 @@
             color: dimgray;
             border: solid 1px black;
         }
-        
+        .backButton:hover {
+            background-color: orange;        
+        }
         .text h1 {
             position: absolute;
             top: 10px;
@@ -77,35 +79,36 @@
         
     </style>
 </head>
-<body>
-<div class="text">
-    <h1>Edit Your Account</h1>
-        <p class="text p">
-            Please enter the new fields that you would like to have edited. If you want a filed to remain the same you
-            can leave it blank, but in order for the changed to take effect you must enter your old password.
-            After the changes are made press the submit button. Thank you!
-        </p>
-        <form method="post">
-        {% csrf_token %}
-        <br>New Email:  
-        <br><input type="text" name="Email" class="text-input" value=""><br>
-        <br>New Password:
-        <br><input type="password" name="Password" class="text-input" value=""><br>
-        <br>New First Name:     
-        <br><input type="text" name="First Name" class="text-input" value=""><br>
-        <br>New Last Name:    
-        <br><input type="text" name="Last Name" class="text-input" value=""><br>
-        <br>New Address:    
-        <br><input type="text" name="Address" class="text-input" value=""><br>
-        <br>New Phone Number:    
-        <br><input type="text" name="Phone Number" class="text-input" value=""><br>
-        <br>Please enter Your Old Password:    
-        <br><input type="password" name="Old Password" class="text-input" required><br>
-            <input type="submit" class="input" value="Make Changes">
-    </form>
-    {% if message %}
-            <h2 class="text-message">{{ message }}</h2>
-    {% endif %}
-    <a href="/accountsViewSelf" class="backButton">Back</a>
-</body>
+    <body>
+        <div class="text">
+            <h1>Edit Your Account</h1>
+                <p class="text p">
+                    Please enter the new fields that you would like to have edited. If you want a filed to remain the same you
+                    can leave it blank, but in order for the changed to take effect you must enter your old password.
+                    After the changes are made press the submit button. Thank you!
+                </p>
+                <form method="post">
+                {% csrf_token %}
+                <br>New Email:  
+                <br><input type="text" name="Email" class="text-input" value=""><br>
+                <br>New Password:
+                <br><input type="password" name="Password" class="text-input" value=""><br>
+                <br>New First Name:     
+                <br><input type="text" name="First Name" class="text-input" value=""><br>
+                <br>New Last Name:    
+                <br><input type="text" name="Last Name" class="text-input" value=""><br>
+                <br>New Address:    
+                <br><input type="text" name="Address" class="text-input" value=""><br>
+                <br>New Phone Number:    
+                <br><input type="text" name="Phone Number" class="text-input" value=""><br>
+                <br>Please enter Your Old Password:    
+                <br><input type="password" name="Old Password" class="text-input" required><br>
+                    <input type="submit" class="input" value="Make Changes">
+            </form>
+            {% if message %}
+                    <h2 class="text-message">{{ message }}</h2>
+            {% endif %}
+            <a href="/accountsViewSelf" class="backButton">Cancel</a>
+        </div>
+    </body>
 </html>
