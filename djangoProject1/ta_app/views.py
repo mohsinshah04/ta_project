@@ -304,7 +304,7 @@ class CourseCreate(View):
             return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         if user.User_Role.Role_Name != 'Supervisor':
-            return redirect('courses')
+            return redirect('login')
 
         semesters = Semester.objects.all()
         users = User.objects.filter()
@@ -321,6 +321,8 @@ class CourseCreate(View):
         course_name = request.POST.get('courseName')
         course_description = request.POST.get('courseDescription')
         semester_id = request.POST.get('semester')
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('login')
 
         semesters = Semester.objects.all()
 
@@ -334,11 +336,7 @@ class CourseCreate(View):
                     sem = Semester.objects.get(Semester_Name=semester_name + " " + semester_year)
                     semester_id = sem.id
                 else:
-                    context = {
-                        'semesters': semesters,
-                        'error': 'Failed to create new semester.'
-                    }
-                    return render(request, 'courseCreate.html', context)
+                    return redirect('courses')
 
         if course_code and course_name and course_description and semester_id:
             created = CourseClass.createAssignment(course_code, course_name, course_description, semester_id, user)
@@ -351,18 +349,10 @@ class CourseCreate(View):
                         user1 = User.objects.get(id=user_id)
                         CourseClass.userAssignment(course_instance.id, user1.id, user)
             else:
-                context = {
-                    'semesters': semesters,
-                    'error': 'Invalid format or missing information. Please try again.'
-                }
-                return render(request, 'courseCreate.html', context)
+                return redirect('courses')
             return redirect('courses')
 
-        context = {
-            'semesters': semesters,
-            'error': 'Invalid format or missing information. Please try again.'
-        }
-        return render(request, 'courseCreate.html', context)
+        return redirect('courses')
 
 
 class CourseEdit(View):
@@ -417,7 +407,7 @@ class CourseEdit(View):
         selected_course = Course.objects.get(id=course_id)
 
         if user.User_Role.Role_Name != 'Supervisor':
-            return redirect('courses')
+            return redirect('login')
 
         selected_course.Course_Name = request.POST.get('courseCode') + " - " + request.POST.get('courseFullName')
         selected_course.Course_Description = request.POST.get('courseDescription')
