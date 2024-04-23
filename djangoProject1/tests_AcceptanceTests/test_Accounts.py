@@ -312,7 +312,7 @@ class AccountsEditOthers(TestCase, Client):
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
-        self.assertEqual(response.context['message'], "You do not have permission to create users")
+        self.assertEqual(response.context['message'], "You do not have permission to edit users")
 
     def test_edit_as_ta(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_in.User_Password},
@@ -322,7 +322,7 @@ class AccountsEditOthers(TestCase, Client):
                                      "Address": self.update_address,
                                      "Phone Number": "1+(608)543-123211",
                                      "First Name": self.update_FName, "Last Name": self.update_LName})
-        self.assertEqual(response.context['message'], "You do not have permission to create users")
+        self.assertEqual(response.context['message'], "You do not have permission to edit users")
 
 
 class AccountsDelete(TestCase, Client):
