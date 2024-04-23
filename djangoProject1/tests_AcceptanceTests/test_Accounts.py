@@ -45,12 +45,8 @@ class AccountSearchTest(TestCase, Client):
         for i, j in zip(response.context['Accounts'], self.zip_list):
             self.assertEqual(i, j)
 
-    """
-        def test_user_doesnt_exist(self):
-        response = self.client.post('/accountSearch/', {'First Name': "I am", 'Last Name': "Not a User"})
-        self.assertEqual(response.context['message'], "Invalid account: I am Not a User")
 
-    """
+
     def test_in_view_su(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password}, follow=True)
         response = self.client.get('/accountsView/')
@@ -380,6 +376,12 @@ class AccountsDelete(TestCase, Client):
                          follow=True)
         response = self.client.post('/deleteAccounts/', {"User Email": self.user.User_Email})
         self.assertEqual(response.context['message'], "You do not have permission to delete accounts")
+
+    def test_delete_account_doesnt_exist(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
+        self.client.post('/deleteAccounts/', {"User Email": self.test_user_in.User_Email})
+        response = self.client.post('/deleteAccounts/', {"User Email": self.test_user_in.User_Email})
+        self.assertEqual(response.context['message'], "Invalid email: " + self.test_user_in.User_Email)
 
 
 

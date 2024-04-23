@@ -27,6 +27,7 @@ class RoleTest(TestCase):
         output = RoleClass.create_role("No", self.user)
         self.assertFalse(output)
 
+
     # delete role tests
     def test_deleteTA(self):
         self.Role = Role.objects.create(Role_Name="TA")

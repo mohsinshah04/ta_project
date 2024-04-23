@@ -1,5 +1,6 @@
 from ta_app.models import Role, User
 
+
 class RoleClass:
     def __init__(self):
         pass
