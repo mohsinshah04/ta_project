@@ -210,7 +210,7 @@ class AccountEditOther(View):
             user = User.objects.get(User_Email=user_email)
             user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to edit users"})
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
