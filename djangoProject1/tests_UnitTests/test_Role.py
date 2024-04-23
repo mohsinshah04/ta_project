@@ -1,5 +1,5 @@
 from django.test import TestCase
-from classes.Role import Role
+from classes.RoleClass import RoleClass
 from .mocks import MockHandleAssignments
 from ta_app.models import User, Role, Assign_User_Junction
 
@@ -20,33 +20,33 @@ class RoleTest(TestCase):
 
     def test_createTA(self):
         role = Role(self.RoleTA)
-        self.assertEqual(Role.create_role(self.RoleTA))
+        self.assertEqual(RoleClass.create_role(self.RoleTA))
 
     def test_createSupervisor(self):
         role = Role(self.Role)
-        self.assertEqual(Role.create_role(self.Role))
+        self.assertEqual(RoleClass.create_role(self.Role))
 
     def test_createInstructor(self):
         role = Role(self.RoleProf)
-        self.assertEqual(Role.create_role(self.RoleProf))
+        self.assertEqual(RoleClass.create_role(self.RoleProf))
 
     def test_createUnexisting(self):
         role = Role(self.FAKE)
-        self.assertFalse(Role.create_role(self.FAKE))
+        self.assertFalse(RoleClass.create_role(self.FAKE))
 
     def test_CreateRoleName(self):
         role = Role(self.Role)
-        self.assertFalse(Role.RoleName(None))
+        self.assertFalse(RoleClass.RoleName(None))
 
     # delete role tests
 
     def test_deleteTA(self):
         role = Role(self.RoleTA)
-        self.assertEqual(Role.delete_role(self.RoleTA))
+        self.assertEqual(RoleClass.delete_role(self.RoleTA))
 
     def test_deleteSupervisor(self):
         role = Role(self.Role)
-        self.assertEqual(Role.delete_role(self.Role))
+        self.assertEqual(RoleClass.delete_role(self.Role))
 
     def test_deleteInstructor(self):
         role = Role(self.RoleProf)

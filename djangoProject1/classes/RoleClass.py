@@ -1,4 +1,4 @@
-from djangoProject1.ta_app.models import Role, User
+from ta_app.models import Role, User
 
 
 class RoleClass:
