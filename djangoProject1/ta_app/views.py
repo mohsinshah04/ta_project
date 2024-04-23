@@ -251,6 +251,8 @@ class AccountDelete(View):
             return render(request, 'deleteAccounts.html', {"message": "Invalid email: " + user_email})
         own_user = User.objects.get(id=own_id)
         user_id = User.objects.get(User_Email=user_email).id
+        if own_user.User_Email == user_email:
+            return render(request, 'deleteAccounts.html', {"message": "You cannot delete your own account"})
         if own_user.User_Role.Role_Name != "Supervisor":
             return render(request, 'deleteAccounts.html', {"message": "You do not have permission to delete accounts"})
 
@@ -258,14 +260,6 @@ class AccountDelete(View):
 
         if not toReturn:
             return render(request, 'deleteAccounts.html', {"message": "Account was not deleted successfully"})
-        """
-            send_mail(
-            "Account Deletion",
-            "Your account has been deleted. Please contact you supervisor for any further questions.",
-            "emmettbenck@gmail.com",
-            ["oliviajczarnecki@gmail.com"],
-        )
-        """
 
         return render(request, 'deleteAccounts.html', {"message": "You have successfully deleted account: " + user_email})
 
@@ -300,7 +294,7 @@ class CourseCreate(View):
     def get(self, request):
         user_id = request.session.get('id')
         user = User.objects.filter(id=user_id).first()
-        if not user:
+        if not User.objects.filter(id=user_id).exists():
             return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         if user.User_Role.Role_Name != 'Supervisor':
