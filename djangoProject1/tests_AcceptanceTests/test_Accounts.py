@@ -118,7 +118,7 @@ class AccountCreationTests(TestCase, Client):
                                                         "Phone Number": self.user_Phone_Number,
                                                         "Role": self.user_Role.Role_Name, "First Name": self.user_FName,
                                                         "Last Name": self.user_LName})
-        self.assertEqual(response.context['message'], "This user already exists, please go to the update page if you would like to edit this user instead")
+        self.assertEqual(response.context['message'], "The entered email already exists: genericUser@uwm.edu")
 
     def test_create_user_invalid_name(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
