@@ -10,29 +10,21 @@
             padding: 20px;
             
         }
-        .buttonbox {
-            width: 50%;
-            height: 75px;
-            padding: 20px;
-            background-color: lightgray;
-            position: fixed;
-            top: 0px;
-            right: 0px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border: solid 1px black;
-        }
 
-        .button {
-            font-size: 24px;
+        .cancelButton {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
             padding: 30px;
+            font-size: 24px;
             background-color: white;
             text-decoration: none;
             color: dimgray;
             border: solid 1px black;
         }
-        
+        .cancelButton:hover {
+            background-color: orange;        
+        }
         
         .form-container {
             padding-top: 40px; 
@@ -72,9 +64,7 @@
     </script>
 </head>
 <body>
-    <div class="buttonbox">
-        <a href="/courses" class="button">Cancel</a>
-    </div>
+    <a href="/courses" class="cancelButton">Cancel</a>
     <div class="form-container">
         <h1>Edit Course</h1>
     <form method="get" action="">

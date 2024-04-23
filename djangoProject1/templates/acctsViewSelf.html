@@ -12,13 +12,13 @@
         }
 
         .buttonbox {
-            width: 50%;
+            width: 50%; 
             height: 75px;
             padding: 20px;
             background-color: lightgray;
             position: absolute;
-            top: 0px;
-            right: 0px;
+            top: 0px; 
+            right: 0px; 
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -33,11 +33,14 @@
             color: dimgray;
             border: solid 1px black;
         }
-
+        .button:hover {
+            background-color: deepskyblue;        
+        }
+        
         .createButton {
             position: absolute;
             top: 30px;
-            left: 600px;
+            left: 300px;
             padding: 30px;
             font-size: 24px;
             background-color: orange;
@@ -49,9 +52,9 @@
         .text h1 {
             position: absolute;
             top: 20px;
-            left: 200px;
-            color: dimgray; /* Change the color */
-            font-size: 36px; /* Change the font size */
+            left: 60px;
+            color: dimgray; 
+            font-size: 36px; 
         }
 
         .text table {
@@ -89,10 +92,10 @@
 </head>
 <body>
 <div class="buttonbox">
-    <a href="/accountsView/" class="button">View All Accounts</a>
-    <a href="/accountEditSelf/" class="button">Edit Your Account</a>
-    <a href="/accountEditOther/" class="button">Edit Other's Accounts</a>
-    <a href="/deleteAccounts" class="button">Delete Accounts</a>
+    <a href="/accountsView/" class="button">View All</a>
+    <a href="/accountEditSelf/" class="button">Edit Your</a>
+    <a href="/accountEditOther/" class="button">Edit Other</a>
+    <a href="/deleteAccounts" class="button">Delete</a>
     <a href="/home" class="button">Home</a>
 </div>
 <div class="text">
