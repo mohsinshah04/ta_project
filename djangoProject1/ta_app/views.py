@@ -164,7 +164,7 @@ class AccountEditSelf(View):
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
             if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
+                return render(request, 'acctsEditSelf.html', {"message": "The entered email already exists: " + email})
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
