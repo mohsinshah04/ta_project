@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from ta_app.models import User, Role
 
 
-class AnnouncmentTests(TestCase):
+class AnnouncementTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.role = Role(Role_Name="Supervisor")
@@ -15,9 +15,13 @@ class AnnouncmentTests(TestCase):
         self.client.post("/", {"Email": self.test_user.User_Email, "Password": self.test_user.User_Password}, follow=True)
 
     def test_redirect_to_announcement(self):
-        response = self.client.post("/announcement/", {"User_List": self.test_user, "Message": "This is a test message"}, follow=True)
-        self.assertTrue(response.status_code == 200)
+        response = self.client.post("/announcements/", {"User_List": self.test_user, "Message": "This is a test message"}, follow=True)
+        self.assertEqual(response.status_code, 200)
 
     def test_page_not_found(self):
-        response = self.client.post("/announcement/", {"User_List": self.test_user, "Message": "This is a test message"}, follow=True)
-        self.assertFalse(response.status_code == 404)
+        response = self.client.post("/announcements/", {"User_List": self.test_user, "Message": "This is a test message"}, follow=True)
+        self.assertNotEqual(response.status_code, 404)
+
+    def test_announcement_success(self):
+        response = self.client.post("/announcements/", {"User_List": self.test_user, "Message": "This is a test message"}, follow=True)
+        self.assertEqual(response.context['message'], "Announcement sent!")
