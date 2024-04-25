@@ -3,6 +3,7 @@ import tests_UnitTests.test_UserClass
 import tests_UnitTests.test_Course
 from tests_AcceptanceTests.test_Accounts import AccountSearchTest, AccountCreationTests, AccountsDelete, AccountsEditOthers, AccountsEditSelf
 from tests_AcceptanceTests.test_Login import TestLogin
+from tests_AcceptanceTests.test_Courses import TestCoursesCreate, TestCoursesEdit, TestCoursesView
 
 
 class TestUserClass(TestCase):
@@ -25,6 +26,14 @@ class TestAccounts(TestCase):
 class TestLoginClass(TestCase):
     def test_all(self):
         self.assertTrue(TestLogin)
+
+
+class TestCourses(TestCase):
+    def test_all(self):
+        self.assertTrue(TestCoursesView, TestCoursesCreate)
+        self.assertTrue(TestCoursesEdit)
+
+
 
 
 

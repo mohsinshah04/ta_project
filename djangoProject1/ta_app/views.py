@@ -125,6 +125,8 @@ class AccountCreate(View):
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
+            if User.objects.filter(User_Email=email).exists():
+                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
             password = request.POST.get('Password')
             role_name = request.POST.get('Role')
             if role_name != "Supervisor" and role_name != "Instructor" and role_name != "TA":
@@ -137,8 +139,6 @@ class AccountCreate(View):
 
         if get_all_info:
             return render(request, "acctsCreate.html", {"message": "Please enter in all information"})
-        if User.objects.filter(User_Email=email).exists():
-            return render(request, "acctsCreate.html", {"message": "This user already exists, please go to the update page if you would like to edit this user instead"})
 
         toReturn = UserObject.create_user(email, password, role, phone, address, f_name, l_name, own_id)
         if not toReturn:
@@ -165,6 +165,8 @@ class AccountEditSelf(View):
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
+            if User.objects.filter(User_Email=email).exists():
+                return render(request, 'acctsEditSelf.html', {"message": "The entered email already exists: " + email})
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -212,10 +214,12 @@ class AccountEditOther(View):
             user = User.objects.get(User_Email=user_email)
             user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to create users"})
+                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to edit users"})
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
+            if User.objects.filter(User_Email=email).exists():
+                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -257,6 +261,8 @@ class AccountDelete(View):
             return render(request, 'deleteAccounts.html', {"message": "Invalid email: " + user_email})
         own_user = User.objects.get(id=own_id)
         user_id = User.objects.get(User_Email=user_email).id
+        if own_user.User_Email == user_email:
+            return render(request, 'deleteAccounts.html', {"message": "You cannot delete your own account"})
         if own_user.User_Role.Role_Name != "Supervisor":
             return render(request, 'deleteAccounts.html', {"message": "You do not have permission to delete accounts"})
 
@@ -264,14 +270,6 @@ class AccountDelete(View):
 
         if not toReturn:
             return render(request, 'deleteAccounts.html', {"message": "Account was not deleted successfully"})
-        """
-            send_mail(
-            "Account Deletion",
-            "Your account has been deleted. Please contact you supervisor for any further questions.",
-            "emmettbenck@gmail.com",
-            ["oliviajczarnecki@gmail.com"],
-        )
-        """
 
         return render(request, 'deleteAccounts.html', {"message": "You have successfully deleted account: " + user_email})
 
@@ -306,11 +304,11 @@ class CourseCreate(View):
     def get(self, request):
         user_id = request.session.get('id')
         user = User.objects.filter(id=user_id).first()
-        if not user:
+        if not User.objects.filter(id=user_id).exists():
             return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         if user.User_Role.Role_Name != 'Supervisor':
-            return redirect('courses')
+            return redirect('login')
 
         semesters = Semester.objects.all()
         users = User.objects.filter()
@@ -327,6 +325,8 @@ class CourseCreate(View):
         course_name = request.POST.get('courseName')
         course_description = request.POST.get('courseDescription')
         semester_id = request.POST.get('semester')
+        if user.User_Role.Role_Name != 'Supervisor':
+            return redirect('login')
 
         semesters = Semester.objects.all()
 
@@ -340,11 +340,7 @@ class CourseCreate(View):
                     sem = Semester.objects.get(Semester_Name=semester_name + " " + semester_year)
                     semester_id = sem.id
                 else:
-                    context = {
-                        'semesters': semesters,
-                        'error': 'Failed to create new semester.'
-                    }
-                    return render(request, 'courseCreate.html', context)
+                    return redirect('courses')
 
         if course_code and course_name and course_description and semester_id:
             created = CourseClass.createAssignment(course_code, course_name, course_description, semester_id, user)
@@ -357,18 +353,10 @@ class CourseCreate(View):
                         user1 = User.objects.get(id=user_id)
                         CourseClass.userAssignment(course_instance.id, user1.id, user)
             else:
-                context = {
-                    'semesters': semesters,
-                    'error': 'Invalid format or missing information. Please try again.'
-                }
-                return render(request, 'courseCreate.html', context)
+                return redirect('courses')
             return redirect('courses')
 
-        context = {
-            'semesters': semesters,
-            'error': 'Invalid format or missing information. Please try again.'
-        }
-        return render(request, 'courseCreate.html', context)
+        return redirect('courses')
 
 
 class CourseEdit(View):
@@ -423,7 +411,7 @@ class CourseEdit(View):
         selected_course = Course.objects.get(id=course_id)
 
         if user.User_Role.Role_Name != 'Supervisor':
-            return redirect('courses')
+            return redirect('login')
 
         selected_course.Course_Name = request.POST.get('courseCode') + " - " + request.POST.get('courseFullName')
         selected_course.Course_Description = request.POST.get('courseDescription')

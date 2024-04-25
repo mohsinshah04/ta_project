@@ -1,34 +1,6 @@
 from django.test import TestCase
 from classes.UserClass import UserObject
-from ta_app.models import User, Role, Assign_User_Junction
-
-"""
-class UserAbstractClassTest(TestCase):
-    def setUp(self):
-        self.testSRole = Role(Role_Name='Supervisor')
-        self.testIRole = Role(Role_Name='Instructor')
-        self.testTRole = Role(Role_Name='TA')
-
-    def test_no_parameters(self):
-        with self.assertRaises(TypeError, msg="Please specify a valid role"):
-            a = UserObject(None)
-
-    def test_no_role(self):
-        with self.assertRaises(TypeError, msg="Please specify a valid role"):
-            a = UserObject("Teach")
-    def test_role_supervisor(self):
-        a = UserObject(Role(Role_Name='Supervisor'))
-        self.assertEqual('Supervisor', a.role.Role_Name)
-
-    def test_role_instructor(self):
-        a = UserObject(Role(Role_Name='Instructor'))
-        self.assertEqual('Instructor', a.role.Role_Name)
-
-    def test_role_TA(self):
-        a = UserObject(Role(Role_Name='TA'))
-        self.assertEqual('TA', a.role.Role_Name)
-"""
-
+from ta_app.models import User, Role
 
 
 class TestCreateUser(TestCase):
@@ -57,46 +29,51 @@ class TestCreateUser(TestCase):
 
 
     def test_create_user(self):
+        # toReturn = MockUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
+        #                                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         self.assertTrue(UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id))
 
     def test_create_existing_user(self):
+        # toReturn = MockUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
+        #                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         self.assertFalse(UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                        self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id))
-    """
-    def test_create_bad_user(self):
-        a = User
-        a.User_FName = "John"
-        a.User_LName = "Doe"
-        a.User_Password = "<PASSWORD>"
-        with self.assertRaises("TypeError" ):
-            UserObject.create_user(a.User_FName, a.User_LName, a.User_Password)
-    """
 
 
     def test_create_empty_user(self):
+        # toReturn = MockUser.create_user(None, None, None, None,
+        #                                                        None, None, None, self.test_user.id)
         self.assertFalse(UserObject.create_user(None, None, None, None,
                                                        None, None, None, self.test_user.id))
 
 
 
     def test_password_verification(self):
+        # toReturn = MockUser.create_user(self.user_Email, bad_Password, self.user_Role, self.user_Phone_Number,
+        #                                                        self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         bad_Password = "HEAVEN"
         self.assertFalse(UserObject.create_user(self.user_Email, bad_Password, self.user_Role, self.user_Phone_Number,
                                                        self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id))
 
     def test_user_in_database(self):
+        # toReturn = MockUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
+        #                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                       self.user_Home_Address, self.user_FName, self.user_LName, self.test_user.id)
         self.assertTrue(User.objects.filter(User_Email=self.user_Email).exists())
 
     def test_create_with_instructor(self):
+        # toReturn = MockUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
+        #                                                 self.user_Home_Address, self.user_FName, self.user_LName, self.test_user_in.id)
         self.assertFalse(UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                 self.user_Home_Address, self.user_FName, self.user_LName, self.test_user_in.id))
 
     def test_create_with_TA(self):
+        # toReturn = MockUser.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
+        #                                                 self.user_Home_Address, self.user_FName, self.user_LName, self.test_user_ta.id)
         self.assertFalse(UserObject.create_user(self.user_Email, self.user_Password, self.user_Role, self.user_Phone_Number,
                                                 self.user_Home_Address, self.user_FName, self.user_LName, self.test_user_ta.id))
 
@@ -120,20 +97,24 @@ class TestDeleteAccount(TestCase):
                                                 User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct")
 
     def test_delete_user(self):
-        result = UserObject.delete_user(self.test_user.id, self.test_sUser.id)
-        self.assertTrue(result, "User in database should have been deleted from table.")
+        # toReturn = MockUser.delete_user(self.test_user.id, self.test_sUser.id)
+        self.assertTrue(UserObject.delete_user(self.test_user.id, self.test_sUser.id))
 
     def test_user_does_not_exist(self):
+        # toReturn = MockUser.delete_user(1111, self.test_sUser.id)
         self.assertFalse(UserObject.delete_user(1111, self.test_sUser.id))
 
     def test_user_in_database(self):
+        # toReturn = MockUser.delete_user(self.test_user.id, self.test_sUser.id)
         UserObject.delete_user(self.test_user.id, self.test_sUser.id)
         self.assertFalse(User.objects.filter(id=self.test_user.id).exists())
 
     def test_delete_user_instructor(self):
+        # toReturn = MockUser.delete_user(self.test_sUser.id, self.test_user_in.id)
         self.assertFalse(UserObject.delete_user(self.test_sUser.id, self.test_user_in.id))
 
     def test_delete_user_TA(self):
+        # toReturn = MockUser.delete_user(self.test_sUser.id, self.test_user_ta.id)
         self.test_sUser.user_Role = Role(Role_Name="TA")
         self.assertFalse(UserObject.delete_user(self.test_sUser.id, self.test_user_ta.id))
 
@@ -166,47 +147,58 @@ class TestEditUser(TestCase):
         self.updatePhoneNumber = "1+(608)554-2321"
 
     def test_edit_user(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_su.id)
         self.assertTrue(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_su.id))
         self.assertTrue(User.objects.filter(id=self.test_user.id, User_Email=self.updateEmail).exists())
 
     def test_edit_user_does_not_exist(self):
+        # toReturn = MockUser.edit_user(1234, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
         self.assertFalse(UserObject.edit_user(1234, self.updateEmail, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
     def test_edit_user_bad_password(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, "HEAVEN", self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, "HEAVEN",
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
     def test_edit_user_bad_email(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, None, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, None, self.updatePassword,
                                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
     def test_edit_user_bad_phoneNumber(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                                      "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
     def test_edit_user_bad_fName_lName(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePassword, self.updateAddress, None, None, self.test_user.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                         self.updatePassword, self.updateAddress, None, None, self.test_user.id))
 
     def test_edit_user_instructor(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                      self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id))
 
     def test_edit_user_TA(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id))
 
     def test_edit_self_TA(self):
+        # toReturn = MockUser.edit_user(self.test_user_ta.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id)
         self.assertTrue(UserObject.edit_user(self.test_user_ta.id, self.updateEmail, self.updatePassword,
                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id))
 
     def test_edit_self_IN(self):
+        # toReturn = MockUser.edit_user(self.test_user_in.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id)
         self.assertTrue(UserObject.edit_user(self.test_user_in.id, self.updateEmail, self.updatePassword,
                                              self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id))
 
     def test_edit_self_SU(self):
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
         self.assertTrue(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
                                              self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
 
@@ -228,39 +220,51 @@ class TestAccountRole(TestCase):
                             User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct")
 
     def test_account_roleNone(self):
+        # toReturn = MockUser.account_role(self.test_user_ta.id, None, self.test_user_su.id)
         self.assertFalse(UserObject.account_role(self.test_user_ta.id, None, self.test_user_su.id))
 
     def test_account_role_user_does_not_exist(self):
+        # toReturn = MockUser.account_role(1111, self.TAuser_Role, self.test_user_su.id)
         self.assertFalse(UserObject.account_role(1111, self.TAuser_Role, self.test_user_su.id))
 
     def test_account_roleTA(self):
+        # toReturn = MockUser.account_role(self.test_user_in.id, self.TAuser_Role, self.test_user_ta.id)
         self.assertFalse(UserObject.account_role(self.test_user_in.id, self.TAuser_Role, self.test_user_ta.id))
 
     def test_account_roleSupervisor(self):
+        # toReturn = MockUser.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_su.id))
 
     def test_account_roleInstructor(self):
+        # toReturn = MockUser.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_in.id)
         self.assertFalse(UserObject.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_in.id))
 
     def test_changeRoleSup_InstructorToTA(self):
+        # toReturn = MockUser.account_role(self.test_user_in.id, self.TAuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_in.id, self.TAuser_Role, self.test_user_su.id))
 
     def test_changeRoleSup_instructorToSupervisor(self):
+        # toReturn = MockUser.account_role(self.test_user_in.id, self.SUuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_in.id, self.SUuser_Role, self.test_user_su.id))
 
     def test_changeRoleSup_TAToInstructor(self):
+        # toReturn = MockUser.account_role(self.test_user_ta.id, self.INuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_ta.id, self.INuser_Role, self.test_user_su.id))
 
     def test_changeRoleSup_TAToSupervisor(self):
+        # toReturn = MockUser.account_role(self.test_user_ta.id, self.SUuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_ta.id, self.SUuser_Role, self.test_user_su.id))
 
     def test_changeRole_SupervisorToSupervisor(self):
+        # toReturn = MockUser.account_role(self.test_user_su.id, self.SUuser_Role, self.test_user_su.id)
         self.assertTrue(UserObject.account_role(self.test_user_su.id, self.SUuser_Role, self.test_user_su.id))
 
     def test_changeRole_InstructorToInstructor(self):
+        # toReturn = MockUser.account_role(self.test_user_su.id, self.INuser_Role, self.test_user_in.id)
         self.assertFalse(UserObject.account_role(self.test_user_su.id, self.INuser_Role, self.test_user_in.id))
 
     def test_changeRole_TAToTA(self):
+        # toReturn = MockUser.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_ta.id)
         self.assertFalse(UserObject.account_role(self.test_user_su.id, self.TAuser_Role, self.test_user_ta.id))
 
 
@@ -285,32 +289,42 @@ class TestViewAccount(TestCase):
 
 
     def test_user_doesnt_exist(self):
+        # toReturn = MockUser.view_account(1111, self.test_user_su.id)
         self.assertEqual("INVALID", UserObject.view_account(1111, self.test_user_su.id))
 
     def test_view_account_SU_to_IN(self):
-        self.assertEqual("Jose Johnson, Instrc@uwm.edu: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        # toReturn = MockUser.view_account(1111, self.test_user_su.id)
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_SU_to_TA(self):
-        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
+        # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_su.id)
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
 
     def test_view_account_SU_to_SU(self):
-        self.assertEqual("John Johnson, Super@uwm.edu: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
+        # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_su.id)
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
 
     def test_view_account_IN_to_TA(self):
-        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
+        # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_in.id)
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
 
     def test_view_account_IN_to_IN(self):
-        self.assertEqual("Jose Johnson, Instrc@uwm.edu: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        # toReturn = MockUser.view_account(self.test_user_in.id, self.test_user_su.id)
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_TA_to_TA(self):
-        self.assertEqual("Joann Johnson, TA@uwm.edu: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
+        # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_ta.id)
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_IN(self):
+        # toReturn = MockUser.view_account(self.test_user_in.id, self.test_user_ta.id)
         self.assertEqual("INVALID", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_SU(self):
+        # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
         self.assertEqual("INVALID", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 
     def test_view_account_IN_to_SU(self):
+        # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
         self.assertEqual("INVALID", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 
