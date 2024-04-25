@@ -142,6 +142,8 @@ class AccountCreate(View):
 
         toReturn = UserObject.create_user(email, password, role, phone, address, f_name, l_name, own_id)
         if not toReturn:
+            if len(password) < 7:
+                return render(request, "acctsCreate.html", {"message": "Password is too short"})
             return render(request, "acctsCreate.html", {"message": "User was not created successfully"})
 
         return render(request, 'acctsCreate.html', {"message": "User was created successfully"})
@@ -188,6 +190,8 @@ class AccountEditSelf(View):
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
+            if len(password) < 7:
+                return render(request, "acctsEditSelf.html", {"message": "Password is too short"})
             return render(request, 'acctsEditSelf.html', {"message": "Account was not updated successfully"})
 
         return render(request, 'acctsEditSelf.html', {"message": "Account was updated successfully"})
@@ -236,6 +240,8 @@ class AccountEditOther(View):
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
+            if len(password) < 7:
+                return render(request, "acctsOtherEdit.html", {"message": "Password is too short"})
             return render(request, 'acctsOtherEdit.html', {"message": "Account was not updated successfully"})
 
         return render(request, 'acctsOtherEdit.html', {"message": "Account was updated successfully"})
