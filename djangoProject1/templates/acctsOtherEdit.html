@@ -90,8 +90,10 @@
         </p>
         <form method="post">
         {% csrf_token %}
-        <br>New Email:  
-        <br><input type="text" name="Email" class="text-input" value=""><br>
+            <br>Please enter the User's Old Email: 
+            <br><input type="text" name="Email" class="text-input" value=""><br>
+            <br>New Email:
+            <br><input type="text" name="User Email" class="text-input" required><br>
         <br>New Password:
         <br><input type="password" name="Password" class="text-input" value=""><br>
         <br>New First Name:     
@@ -102,8 +104,6 @@
         <br><input type="text" name="Address" class="text-input" value=""><br>
         <br>New Phone Number:    
         <br><input type="text" name="Phone Number" class="text-input" value=""><br>
-        <br>Please enter the User's Old Email:    
-        <br><input type="text" name="User Email" class="text-input" required><br>
             <input type="submit" class="input"value="Make Changes">
     </form>
     {% if message %}

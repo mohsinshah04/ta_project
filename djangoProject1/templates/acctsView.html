@@ -55,8 +55,12 @@
         .text h1 {
             top: 20px;
             left: 100px;
-            color: dimgray; /* Change the color */
-            font-size: 36px; /* Change the font size */
+            color: dimgray; 
+            font-size: 36px; 
+  
+        .text {
+            margin-top: 120px; 
+            padding: 20px;
         }
         
         .text table {
@@ -74,21 +78,20 @@
             border-collapse: collapse;
         }
 
-        .row {
-            display: table-row;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            padding: 10px; 
         }
 
-        .cell {
-            display: table-cell;
-            padding: 20px;
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid gray;
         }
 
-        .gray {
+        th {
             background-color: lightgray;
-        }
-
-        .white {
-            background-color: white;
         }
     </style>
 </head>
@@ -101,43 +104,31 @@
     <h1>View All Accounts</h1>
     <form method="get">
         {% csrf_token %}
-        <div class="table">
-            <table>
-            <div class="row">
-                <tr class="gray">
-                    <div class="cell">
-                        <td>Name:&nbsp;</td>
-                        <td>Email:&nbsp;</td>
-                        <td>Phone Number:&nbsp;</td>
-                        <td>Address&nbsp;</td>
-                        <td>Role:&nbsp;</td>
-                    </div>
-                </tr>
-            </div>
-            <div class="row">
+        <table>
+            <thead>
                 <tr>
-                    <div class="white">
-                        <div class="cell">
-                           {% for name, email, phone_number, address, role in Accounts %}
-                               <tr class="row">
-                                    <div class="cell">
-                                        <td>{{ name }}&nbsp;&nbsp;</td>
-                                        <td>{{ email }}&nbsp;&nbsp;</td>
-                                        <td>{{ phone_number }}&nbsp;&nbsp;</td>
-                                        <td>{{ address }}&nbsp;&nbsp;</td>
-                                        <td>{{ role }}&nbsp;&nbsp;</td>
-                                    </div>
-                               </tr>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Role</th>
                 </tr>
-            </div>
+            </thead>
+            <tbody>
+                {% for name, email, phone_number, address, role in Accounts %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ email }}</td>
+                    <td>{{ phone_number }}</td>
+                    <td>{{ address }}</td>
+                    <td>{{ role }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-        </div>
     </form>
     {% if message %}
-            <p class="message">{{ message }}</p>
+        <p class="message">{{ message }}</p>
     {% endif %}
 </div>
 <a href="/accountsViewSelf" class="backButton">Cancel</a>
