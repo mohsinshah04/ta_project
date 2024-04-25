@@ -56,6 +56,12 @@
             color: dimgray;
             font-size: 36px;
         }
+        .text {
+            margin-top: 150px;
+            padding: 10px; 
+            width: 100%;
+        }
+
 
         .text table {
             width: 75%;
@@ -66,27 +72,21 @@
             font-size: 25px; /* Change the font size */
         }
 
-        .table {
-            display: table;
-            width: 200%;
+        table {
+            width: 90%; 
             border-collapse: collapse;
+            padding: 10px; 
+            margin: 20px auto;
         }
 
-        .row {
-            display: table-row;
+        th, td {
+            padding: 20px; 
+            text-align: left;
+            border: 1px solid gray;
         }
 
-        .cell {
-            display: table-cell;
-            padding: 20px;
-        }
-
-        .gray {
+        th {
             background-color: lightgray;
-        }
-
-        .white {
-            background-color: white;
         }
     </style>
 </head>
@@ -102,32 +102,24 @@
     <h1>Account</h1>
     <form method="get">
         {% csrf_token %}
-        <div class="table">
-            <table>
-                <div class="row">
-                    <tr class="gray">
-                        <div class="cell">
-                            <td>Name:</td>
-                            <td>Email:</td>
-                            <td>Address:</td>
-                            <td>Phone Number:</td>
-                        </div>
-                    </tr>
-                    </div>
-                <div class="row">
-                    <tr class="white">
-                        <div class="cell">
-                            <td>{{ name }}</td>
-                            <td>{{ email }}</td>
-                            <td>{{ address }}</td>
-                            <td>{{ phone }}</td>
-                        </div>
-                    </tr>
-                </div>
-                </table>
-                </div>
-            </form>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ email }}</td>
+                    <td>{{ address }}</td>
+                    <td>{{ phone }}</td>
+                </tr>
+            </tbody>
+        </table>
     </form>
 </div>
 
