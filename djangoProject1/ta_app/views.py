@@ -46,7 +46,9 @@ class LogOutPage(View):
 
 class Home(View):
     def get(self, request):
-        return render(request, 'home.html', {})
+        own_id = request.session.get('id')
+        own_name = User.objects.get(id=own_id).User_FName + " " + User.objects.get(id=own_id).User_LName
+        return render(request, 'home.html', {'name': own_name})
 
     def post(self, request):
         return render(request, 'home.html', {})
@@ -151,7 +153,11 @@ class AccountCreate(View):
 
 class AccountEditSelf(View):
     def get(self, request):
-        return render(request, 'acctsEditSelf.html', {})
+        own_id = request.session.get('id')
+        user = User.objects.get(id=own_id)
+        context = {"fname": user.User_FName,  "lname": user.User_LName, "email": user.User_Email, "password": user.User_Password,
+                   "phone": user.User_Phone_Number, "address": user.User_Home_Address}
+        return render(request, 'acctsEditSelf.html', context)
 
     def post(self, request):
         get_all_info = False
@@ -160,13 +166,15 @@ class AccountEditSelf(View):
             user_password = request.POST.get('Old Password')
             own_user = User.objects.get(id=own_id)
             if own_user.User_Password != user_password:
-                return render(request, 'acctsEditSelf.html', {"message": "Account passwords do not match"})
+                messages.success(request, "Account passwords do not match")
+                return redirect('/accountEditSelf/')
             user_id = User.objects.get(User_Password=user_password).id
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
             if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsEditSelf.html', {"message": "The entered email already exists: " + email})
+                messages.success(request, "The entered email already exists: " + email)
+                return redirect('/accountEditSelf/')
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -187,21 +195,40 @@ class AccountEditSelf(View):
             get_all_info = True
 
         if get_all_info:
-            return render(request, 'acctsEditSelf.html', {"message": "Please enter all information correctly"})
+            messages.success(request, "Please enter all information correctly")
+            return redirect('/accountEditSelf/')
 
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
             if len(password) < 7:
-                return render(request, "acctsEditSelf.html", {"message": "Password is too short"})
-            return render(request, 'acctsEditSelf.html', {"message": "Account was not updated successfully"})
-
-        return render(request, 'acctsEditSelf.html', {"message": "Account was updated successfully"})
+                messages.success(request, "Password is too short")
+                return redirect('/accountEditSelf/')
+            messages.success(request, "Account was not updated successfully")
+            return redirect('/accountEditSelf/')
+        messages.success(request, "Account was updated successfully")
+        return redirect('/accountEditSelf/')
 
 
 class AccountEditOther(View):
     def get(self, request):
-        return render(request, 'acctsOtherEdit.html', {})
+        own_id = request.session.get('id')
+        own_user = User.objects.get(id=own_id)
+        if own_user.User_Role.Role_Name != "Supervisor":
+            messages.success(request, "You do not have permission to edit users")
+            return redirect("/accountEditSelf/")
+        users = User.objects.all()
+        selected_user_id = request.GET.get('user_id')
+        selected_user = User.objects.filter(id=selected_user_id).first()
+        context = {"users": users}
+        if selected_user != None:
+            if selected_user.id == own_id:
+                return redirect("/accountEditSelf/")
+            context = {"users": users, "fname": selected_user.User_FName, "lname": selected_user.User_LName,
+                       "email": selected_user.User_Email, "password": selected_user.User_Password,
+                       "phone": selected_user.User_Phone_Number,
+                       "address": selected_user.User_Home_Address}
+        return render(request, 'acctsOtherEdit.html', context)
 
     def post(self, request):
         get_all_info = False
@@ -209,17 +236,20 @@ class AccountEditOther(View):
             own_id = request.session.get('id')
             user_email = request.POST['User Email']
             if not User.objects.filter(User_Email=user_email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "Invalid account email: " + user_email})
+                messages.success(request, "Invalid account email: " + user_email)
+                return redirect("/accountEditOther/")
             own_user = User.objects.get(id=own_id)
             user = User.objects.get(User_Email=user_email)
             user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to edit users"})
+                messages.success(request, "You do not have permission to edit users")
+                return redirect("/accountEditOther/")
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
-            if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
+            if User.objects.filter(User_Email=email).exists() and user_email != email:
+                messages.success(request, "The entered email already exists: " + email)
+                return redirect("/accountEditOther/")
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -239,16 +269,19 @@ class AccountEditOther(View):
             get_all_info = True
 
         if get_all_info:
-            return render(request, 'acctsOtherEdit.html', {"message": "Please enter all information correctly"})
+            messages.success(request, "Please enter all information correctly")
+            return redirect("/accountEditOther/")
 
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
             if len(password) < 7:
-                return render(request, "acctsOtherEdit.html", {"message": "Password is too short"})
-            return render(request, 'acctsOtherEdit.html', {"message": "Account was not updated successfully"})
-
-        return render(request, 'acctsOtherEdit.html', {"message": "Account was updated successfully"})
+                messages.success(request, "Password is too short")
+                return redirect("/accountEditOther/")
+            messages.success(request, "Account was not updated successfully")
+            return redirect("/accountEditOther/")
+        messages.success(request, "Account was updated successfully")
+        return redirect("/accountEditOther/")
 
 class AccountDelete(View):
     def get(self, request):
