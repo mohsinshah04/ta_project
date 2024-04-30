@@ -5,9 +5,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from datetime import datetime
-from .models import Role, User, Course, Semester, Assign_User_Junction
+from .models import Role, User, Course, Semester, Assign_User_Junction, Section
 from classes.UserClass import UserObject
 from classes.CourseClass import CourseClass
+from classes.SectionClass import SectionClass
 from classes.SemesterClass import SemesterClass
 # Create your views here.
 
@@ -467,18 +468,78 @@ class CourseEdit(View):
 
 class Sections(View):
     def get(self, request):
-        return render(request, 'sectionView.html', {})
+        user_id = request.session.get('id')
+        if not user_id:
+            return redirect('login')
+        days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
+        selected_course_id = request.GET.get('course_id')
+        context = SectionClass.viewUserAssignments(user_id, selected_course_id)
+
+        return render(request, 'sectionView.html', context)
 
     def post(self, request):
         return render(request, 'sectionView.html', {})
-
 
 class SectionCreate(View):
     def get(self, request):
-        return render(request, 'sectionCreate.html', {})
+        user_id = request.session.get('id')
+
+        own_user = User.objects.get(id=user_id)
+
+        courses = None
+        users = None
+        if own_user.User_Role.Role_Name != "Supervisor":
+            assigned_course_ids = Assign_User_Junction.objects.filter(
+                User_ID=user_id
+            ).values_list('Course_ID', flat=True).distinct()
+            courses = Course.objects.filter(id__in=assigned_course_ids)
+
+            assigned_user_ids = Assign_User_Junction.objects.filter(
+                Course_ID__in=assigned_course_ids
+            ).values_list('User_ID', flat=True).distinct()
+            users = User.objects.filter(id__in=assigned_user_ids)
+        else:
+            users = User.objects.all()
+            courses = Course.objects.all()
+
+        days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
+        return render(request, 'sectionCreate.html', {'courses': courses, 'users': users,'days_of_week': days_of_week})
 
     def post(self, request):
-        return render(request, 'sectionCreate.html', {})
+        user_id = request.session.get('id')
+        if not user_id:
+            return redirect('login')
+        course_id = request.POST.get('course')
+        section_num = request.POST.get('section_num')
+        section_type = request.POST.get('section_type')
+        meets_days = request.POST.getlist('meets_days')
+        campus = request.POST.get('campus')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        credits = int(request.POST.get('credits'))
+        start_times = request.POST.getlist('start_time')
+        end_times = request.POST.getlist('end_time')
+        assigned_users = request.POST.getlist('assigned_users[]')
+        building_name = request.POST.get('building_name')
+        room_number = request.POST.get('room_number')
+
+        new_section = SectionClass.createAssignment(course_id, section_num, section_type, meets_days, campus,
+                                                    start_date, end_date, credits, start_times, end_times, building_name, room_number, user_id)
+        if new_section:
+            for user_id in assigned_users:
+
+                Assign_User_Junction.objects.create(
+                    User_ID_id=user_id,
+                    Course_ID_id=course_id,
+                    Section_ID=new_section
+                )
+            return redirect('sections')
+        else:
+            return render(request, 'sectionCreate.html', {
+                'error': 'Failed to create section.',
+                'courses': Course.objects.all(),
+                'users': User.objects.filter(is_active=True)
+            })
 
 
 class SectionEdit(View):
