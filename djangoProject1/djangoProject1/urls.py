@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from ta_app.views import (Home, LoginPage, LogOutPage, Announcements,
                           AccountViewSelf, AccountCreate, AccountEditSelf, AccountEditOther,
-                          Courses, CourseCreate, CourseEdit,
-                          Sections, SectionCreate, SectionEdit, AccountDelete, AccountsView)
+                          Courses, CourseCreate, CourseEdit, AccountsViewTA_IN,
+                          Sections, SectionCreate, SectionEdit, AccountDelete, AccountsView, AccountsViewSelfTA_IN)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,10 +29,12 @@ urlpatterns = [
     path('logout/', LogOutPage.as_view(), name='logout'),
     path('announcements/', Announcements.as_view(), name='announcements'),
     path('accountsViewSelf/', AccountViewSelf.as_view(), name='account'),
+    path('accountsViewSelfTA_IN', AccountsViewSelfTA_IN.as_view(), name='accountsViewSelfTA_IN'),
     path('accountCreate/', AccountCreate.as_view(), name='accountCreate'),
     path('accountEditSelf/', AccountEditSelf.as_view(), name='accountEditSelf'),
     path('accountEditOther/', AccountEditOther.as_view(), name='accountEditOther'),
     path('accountsView/', AccountsView.as_view(), name='accountsView'),
+    path('accountsViewTA_IN', AccountsViewTA_IN.as_view(), name='accountsViewTA_In'),
     path('deleteAccounts/', AccountDelete.as_view(), name='deleteAccounts'),
     path('courses/', Courses.as_view(), name='courses'),
     path('courseCreate/', CourseCreate.as_view(), name='courseCreate'),

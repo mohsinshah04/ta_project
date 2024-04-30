@@ -18,7 +18,7 @@ class TestLogin(TestCase, Client):
 
     def test_login_wrong_password(self):
         response = self.client.post("/", {"Email": self.user.User_Email, "Password": "WrongPassword"}, follow=True)
-        self.assertEqual(response.context['message'], "Incorrect Password, please try again.")
+        self.assertEqual(response.context['message'], "Incorrect Email or Password, please try again.")
 
     def test_login_wrong_email(self):
         response = response = self.client.post("/", {"Email": "self.user.User_Email", "Password": self.user.User_Password}, follow=True)
