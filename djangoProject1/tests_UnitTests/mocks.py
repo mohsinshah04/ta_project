@@ -28,6 +28,54 @@ class MockHandleAssignments:
         return True
 
     @classmethod
+    def createAssignment(self, classID, sectionNum, sectionType, sectionMeetsDays, sectionCampus, sectionStartDate, sectionEndDate, sectionCredits, sectionStartTimes, sectionEndTimes, buldingName, roomNum, userID):
+        if (userID == None):
+            return False
+        user = User.objects.get(id=userID)
+        if (user.User_Role.Role_Name == "TA"):
+            return False
+
+        if (classID == None) or (sectionNum == None) or (sectionType == None) or (sectionMeetsDays == None) or (sectionCampus == None) or (sectionStartDate == None) or (sectionEndDate == None) or (sectionCredits == None) or (sectionStartTimes == None) or (sectionEndTimes == None) or (userID == None):
+            return False
+
+        if(type(sectionNum) ==int):
+            return False
+        if (type(sectionType) == int):
+            return False
+        if(type(sectionMeetsDays) != list ):
+            return False
+
+        if(type(sectionCampus) == int):
+            return False
+        if(type(sectionCredits) != int):
+            return False
+        if (sectionCredits <0):
+            return False
+        if(type(sectionStartTimes) ==int):
+            return False
+        if (type(sectionEndTimes) == int):
+            return False
+        if (type(buldingName) == int):
+            return False
+        if (type(roomNum) == int):
+            return False
+        try:
+            return True
+        except Exception as e:
+            return False, str(e)
+
+    @classmethod
+    def createAssignment(self, classID, sectionNum, sectionType, sectionMeetsDays, sectionCampus, sectionStartDate, sectionEndDate, sectionCredits, sectionStartTimes, sectionEndTimes, userID):
+        # based on the internet, you got to use re for format checking
+        if(classID == None):
+            return False
+        if (User.objects.filter(id=userID).exists() == False):
+            return "INVALID"
+
+
+        return True
+
+    @classmethod
     def editAssignment(self, courseID, courseDescription, user):
         if (courseID == None):
             return False

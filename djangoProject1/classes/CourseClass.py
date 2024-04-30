@@ -123,14 +123,24 @@ class CourseClass:
             junctions = Assign_User_Junction.objects.filter(Course_ID=course).select_related('User_ID', 'User_ID__User_Role')
             userDetails = ""
             first_user = True
+            checkExists = []
 
             for junction in junctions:
+                i = 0
                 if user.User_Role.Role_Name == 'TA' and junction.User_ID.User_Role.Role_Name == 'Instructor':
                     if not Assign_User_Junction.objects.filter(Course_ID=course, User_ID=user).exists():
                         continue
+
+                if junction.User_ID.id in checkExists:
+                    continue
+                checkExists.insert(i, junction.User_ID.id)
+                i = i+1
+
                 indDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
                 if not first_user:
                     userDetails += ", "
+
+
                 userDetails += indDetail
                 first_user = False
 
@@ -164,16 +174,29 @@ class CourseClass:
 
         courses = Course.objects.filter(assign_user_junction__User_ID=tuser)
         results = ""
+        checkCourses = []
+        z = 0
         for course in courses:
             if results:
                 results += "\n\n"
+            if(course.id in checkCourses):
+                continue
+            checkCourses.insert(z, course.id)
+            z = z + 1
 
             courseDetails = course.Course_Name + " - " + course.Course_Description + "\nAssigned Users: "
+
+
             userDetails = ""
             junctions = Assign_User_Junction.objects.filter(Course_ID=course).select_related('User_ID', 'User_ID__User_Role')
             first_user = True
-
+            checkExists = []
             for junction in junctions:
+                i = 0
+                if junction.User_ID.id in checkExists:
+                    continue
+                checkExists.insert(i, junction.User_ID.id)
+                i = i+1
                 userDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
                 if not first_user:
                     userDetails += ", "
