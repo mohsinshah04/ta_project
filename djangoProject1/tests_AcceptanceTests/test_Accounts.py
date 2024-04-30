@@ -105,7 +105,7 @@ class AccountCreationTests(TestCase, Client):
                                                         "Address": self.user_Home_Address,
                                                         "Phone Number": self.user_Phone_Number, "Role": self.user_Role.Role_Name,
                                                         "First Name": self.user_FName, "Last Name": self.user_LName})
-        self.assertEqual(response.context['message'], "User was not created successfully")
+        self.assertEqual(response.context['message'], "Password is too short")
 
     def test_create_user_already_exists(self):
         response = self.client.post("/accountCreate/", {"Email": self.user_Email, "Password": self.user_Password,
@@ -368,8 +368,10 @@ class AccountsDelete(TestCase, Client):
     def test_delete_account_as_in(self):
         self.client.post("/", {"Email": self.test_user_in.User_Email, "Password": self.test_user_in.User_Password},
                          follow=True)
-        response = self.client.post('/deleteAccounts/', {"User Email": self.user.User_Email})
-        self.assertEqual(response.context['message'], "You do not have permission to delete accounts")
+        response = self.client.post('/deleteAccounts/', {"User Email": self.user.User_Email, "User Password":
+                                                         self.user.User_Password}, follow=True)
+        self.assertTrue(response.status_code == 200)
+        self.assertTrue(response.message == "You do not have permission to delete users")
 
     def test_delete_account_as_ta(self):
         self.client.post("/", {"Email": self.test_user_ta.User_Email, "Password": self.test_user_ta.User_Password},

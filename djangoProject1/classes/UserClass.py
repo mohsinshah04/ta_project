@@ -94,16 +94,8 @@ class UserObject:
     def view_account(cls, user_ID, own_id):
         if not User.objects.filter(id=own_id).exists():
             return "INVALID"
-        checked_user = User.objects.get(id=own_id)
         if not User.objects.filter(id=user_ID).exists():
             return "INVALID"
         user = User.objects.get(id=user_ID)
-        if checked_user.User_Role.Role_Name == "Supervisor":
-            return (user.User_FName + " " + user.User_LName + ": " + user.User_Email + ": " + user.User_Phone_Number + ": "
-                    + user.User_Home_Address + ": " + user.User_Role.Role_Name)
-        if checked_user.User_Role.Role_Name == "Instructor" and user.User_Role.Role_Name == "Supervisor":
-            return "INVALID"
-        if checked_user.User_Role.Role_Name == "TA" and (user.User_Role.Role_Name == "Instructor" or user.User_Role.Role_Name =="Supervisor"):
-            return "INVALID"
         return (user.User_FName + " " + user.User_LName + ": " + user.User_Email + ": " + user.User_Phone_Number + ": "
                 + user.User_Home_Address + ": " + user.User_Role.Role_Name)
