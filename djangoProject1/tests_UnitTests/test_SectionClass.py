@@ -521,11 +521,59 @@ class SectionTestCase(TestCase):
 
 
 
-    def test_viewAllSectionAssingmentValidSupervisor(self):
-        pass
-    def test_viewAllSectionAssingmentValidInstructor(self):
-        pass
-    def test_viewAllSectionAssingmentValidTA(self):
-        pass
-    def test_viewAllSectionAssingmentInvalidUser(self):
-        pass
+
+    def test_viewUserAssignmentsValidSupervisor(self):
+        createdSection = SectionClass.createAssignment(
+            self.course.id, self.sectionNumValid, self.sectionTypeValid, self.sectionMeetsDaysValid,
+            self.sectionCampusValid,
+            self.sectionStartDate, self.sectionEndDate, self.sectionCreditsValid, self.sectionStartTimeValid,
+            self.sectionEndTimeValid, self.sectionBuildingName, self.sectionRoomNumberValid,
+            self.user.id
+        )
+        viewedSection = SectionClass.viewUserAssignments(
+            self.user.id, self.course.id
+        )
+        sections = viewedSection.get('sections', [])
+        s = sections[0].get('building')
+        self.assertEqual(s, "Tech Building")
+
+    def test_viewUserAssignmentsValidInstructor(self):
+        createdSection = SectionClass.createAssignment(
+            self.course.id, self.sectionNumValid, self.sectionTypeValid, self.sectionMeetsDaysValid,
+            self.sectionCampusValid,
+            self.sectionStartDate, self.sectionEndDate, self.sectionCreditsValid, self.sectionStartTimeValid,
+            self.sectionEndTimeValid, self.sectionBuildingName, self.sectionRoomNumberValid,
+            self.userProf.id
+        )
+        viewedSection = SectionClass.viewUserAssignments(
+            self.userProf.id, self.course.id
+        )
+        sections = viewedSection.get('sections', [])
+        s = sections[0].get('building')
+        self.assertEqual(s, "Tech Building")
+
+    def test_viewUserAssignmentsValidTA(self):
+        createdSection = SectionClass.createAssignment(
+            self.course.id, self.sectionNumValid, self.sectionTypeValid, self.sectionMeetsDaysValid,
+            self.sectionCampusValid,
+            self.sectionStartDate, self.sectionEndDate, self.sectionCreditsValid, self.sectionStartTimeValid,
+            self.sectionEndTimeValid, self.sectionBuildingName, self.sectionRoomNumberValid,
+            self.userProf.id
+        )
+        viewedSection = SectionClass.viewUserAssignments(
+            self.userTA.id, self.course.id
+        )
+        self.assertTrue(viewedSection, "Tech Building")
+
+    def test_viewUserAssignmentsInvalidUser(self):
+        createdSection = SectionClass.createAssignment(
+            self.course.id, self.sectionNumValid, self.sectionTypeValid, self.sectionMeetsDaysValid,
+            self.sectionCampusValid,
+            self.sectionStartDate, self.sectionEndDate, self.sectionCreditsValid, self.sectionStartTimeValid,
+            self.sectionEndTimeValid, self.sectionBuildingName, self.sectionRoomNumberValid,
+            self.userProf.id
+        )
+        viewedSection = SectionClass.viewUserAssignments(
+            434, self.course.id
+        )
+        self.assertFalse(viewedSection, "Tech Building")
