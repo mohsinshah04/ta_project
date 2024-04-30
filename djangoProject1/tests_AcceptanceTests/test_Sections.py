@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from ta_app.models import Role, User, Course, Semester, Assign_User_Junction
+from ta_app.models import Role, User, Course, Semester, Assign_User_Junction, Section
 
 class TestSectionsView(TestCase):
     def setUp(self):
@@ -73,6 +73,90 @@ class TestSectionCreate(TestCase):
                          follow=True)
         response = self.client.get('/sectionCreate/', {"id": self.user.id}, follow=True)
         self.assertEqual(response.status_code, 200)
+
+
+    def test_sectionsCreateValidAsSupervisor(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
+                         follow=True)
+        response = self.client.get('/sectionCreate/', {"id": self.user.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        form_data = {
+            'course': self.course.id,
+            'section_num': '001',
+            'section_type': 'Lecture',
+            'meets_days': ['M', 'W', 'F'],
+            'campus': 'Main Campus',
+            'start_date': '2023-09-01',
+            'end_date': '2023-12-15',
+            'credits': 3,
+            'start_time': '09:00',
+            'end_time': '10:15',
+            'building_name': 'Tech Building',
+            'room_number': '101',
+            'assigned_users[]': [self.user.id]
+        }
+
+        response = self.client.post('/sectionCreate/', form_data)
+
+
+        self.assertEqual(response.status_code, 302)
+
+
+        section = Section.objects.first()
+        self.assertIsNotNone(section)
+        self.assertEqual(section.Section_Number, '001')
+        self.assertEqual(section.Meets_Days, "['M', 'W', 'F']")
+        self.assertEqual(section.Credits, 3)
+
+    def test_sectionsCreateValidAsSupervisorSimilar(self):
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
+                         follow=True)
+        response = self.client.get('/sectionCreate/', {"id": self.user.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        form_data = {
+            'course': self.course.id,
+            'section_num': '001',
+            'section_type': 'Lecture',
+            'meets_days': ['M', 'W', 'F'],
+            'campus': 'Main Campus',
+            'start_date': '2023-09-01',
+            'end_date': '2023-12-15',
+            'credits': 3,
+            'start_time': '09:00',
+            'end_time': '10:15',
+            'building_name': 'Tech Building',
+            'room_number': '101',
+            'assigned_users[]': [self.user.id]
+        }
+
+        response = self.client.post('/sectionCreate/', form_data)
+
+        form_data = {
+            'course': self.course.id,
+            'section_num': '0012',
+            'section_type': 'Lecture',
+            'meets_days': ['M', 'W', 'F'],
+            'campus': 'Main Campus',
+            'start_date': '2023-09-01',
+            'end_date': '2023-12-15',
+            'credits': 3,
+            'start_time': '09:00',
+            'end_time': '10:15',
+            'building_name': 'Tech Building',
+            'room_number': '101',
+            'assigned_users[]': [self.user.id]
+        }
+
+        response2 = self.client.post('/sectionCreate/', form_data)
+
+
+        self.assertEqual(response.status_code, 302)
+
+        section = Section.objects.first()
+        self.assertIsNotNone(section)
+        self.assertEqual(section.Section_Number, '001')
+        self.assertEqual(section.Meets_Days, "['M', 'W', 'F']")
+        self.assertEqual(section.Credits, 3)
 
 
 class TestSectionEdit(TestCase):

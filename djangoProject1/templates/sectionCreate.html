@@ -2,10 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Sections Page</title>
+    <title>Create Section</title>
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        select[multiple] {
+            height: 150px;
+            overflow-y: auto;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .buttonbox {
+            width: 50%;
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+
+        .button {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        .button:hover {
+            background-color: deepskyblue;        
+        }
+        .days-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .day-section {
+            flex-basis: 120px; /* Adjust based on your layout preference */
+            align-items: center;
+            display: flex;
+        }
+        .time-range {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        input[type="time"] {
+            width: auto; /* prevents the time inputs from expanding */
+        }
+    </style>
 </head>
 <body>
-    <h1>create section</h1>
-    <a href="/sections">cancel</a>
+<div class="form-container">
+    <h1>Create Section</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+<div class="buttonbox">
+        <a href="/sections/" class="button">Cancel</a>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <label for="course">Course:</label>
+        <select name="course" required>
+            <option value="">Select a Course</option>
+            {% for course in courses %}
+            <option value="{{ course.id }}">{{ course.Course_Name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="section_num">Section Number:</label>
+        <input type="text" name="section_num" required>
+
+        <label for="section_type">Section Type:</label>
+        <input type="text" name="section_type" required>
+
+        <div class="days-container">
+    {% for day in days_of_week %}
+    <div class="day-section">
+        <input type="checkbox" name="meets_days" value="{{ day }}"> {{ day }}
+    </div>
+    {% endfor %}
+</div>
+        <label>Start Time:</label>
+        <input type="time" name="start_time" required>
+        <label>End Time:</label>
+        <input type="time" name="end_time" required>
+
+
+        <label for="campus">Campus:</label>
+        <input type="text" name="campus" required>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" required>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" required>
+
+        <label for="credits">Credits:</label>
+        <input type="number" name="credits" required>
+
+        <label for="building_name">Building Name:</label>
+        <input type="text" name="building_name" required>
+
+        <label for="room_number">Room Number:</label>
+        <input type="text" name="room_number" required>
+
+        <label for="assigned_users">Assign Users:</label>
+        <select id="assigned_users" name="assigned_users[]" multiple>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }})</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Create Section</button>
+    </form>
+</div>
 </body>
 </html>
