@@ -47,7 +47,11 @@ class LogOutPage(View):
 
 class Home(View):
     def get(self, request):
-        return render(request, 'home.html', {})
+        own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/loginPage')
+        own_name = User.objects.get(id=own_id).User_FName + " " + User.objects.get(id=own_id).User_LName
+        return render(request, 'home.html', {'name': own_name})
 
     def post(self, request):
         return render(request, 'home.html', {})
@@ -65,28 +69,35 @@ class AccountViewSelf(View):
     def get(self, request):
         own_id = request.session.get('id')
         user = User.objects.get(id=own_id)
+        if user.User_Role.Role_Name != "Supervisor":
+            return redirect('/accountsViewSelfTA_IN')
         name = user.User_FName + " " + user.User_LName
         email = user.User_Email
         phone = user.User_Phone_Number
         address = user.User_Home_Address
-        return render(request, 'acctsViewSelf.html', {"name": name, "email": email, "phone":phone, "address": address})
+        return render(request, 'acctsViewSelf.html', {"name": name, "email": email, "phone": phone,
+                                                      "address": address})
 
     def post(self, request):
         return render(request, 'acctsViewSelf.html', {})
 
+class AccountsViewSelfTA_IN(View):
+    def get(self, request):
+        own_id = request.session.get('id')
+        user = User.objects.get(id=own_id)
+        name = user.User_FName + " " + user.User_LName
+        email = user.User_Email
+        phone = user.User_Phone_Number
+        address = user.User_Home_Address
+        return render(request, 'acctsViewSelfTA_IN.html',
+                      {"name": name, "email": email, "phone": phone, "address": address})
 
 class AccountsView(View):
     def get(self, request):
         own_id = request.session.get("id")
         own_user = User.objects.get(id=own_id)
-        # if own_user.User_Role.Role_Name == 'Instructor' and user.User_Role.Role_Name == 'Supervisor':
-        # return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
-
-        # if own_user.User_Role.Role_Name == 'TA' and (
-        # ser.User_Role.Role_Name == 'Supervisor' or user.User_Role.Role_Name == 'Instructor'):
-        # return render(request, 'acctsView.html', {"message": "You cannot view this account because of your role"})
         if own_user.User_Role.Role_Name != "Supervisor":
-            return render(request, 'acctsView.html', {"message": "You do not have permission to view other users"})
+            return redirect("/accountsViewTA_IN")
         names = []
         emails = []
         addresses = []
@@ -111,6 +122,32 @@ class AccountsView(View):
     def post(self, request):
         return render(request, 'acctsView.html', {})
 
+class AccountsViewTA_IN(View):
+    def get(self, request):
+        own_id = request.session.get("id")
+        own_user = User.objects.get(id=own_id)
+        names = []
+        emails = []
+        addresses = []
+        phones = []
+        roles = []
+        for i in User.objects.iterator():
+            if i.id == own_id:
+                continue
+            account_string = UserObject.view_account(i.id, own_id)
+            if account_string == "INVALID":
+                return render(request, "acctsViewTA_IN.html", {"message": "Invalid account id: " + str(i.id)})
+            string = account_string.split(": ")
+            names.append(string[0])
+            emails.append(string[1])
+            phones.append(string[2])
+            addresses.append(string[3])
+            roles.append(string[4])
+
+        accounts_list = zip(names, emails, phones, addresses, roles)
+
+        return render(request, 'acctsViewTA_IN.html', {"Accounts": accounts_list})
+
 class AccountCreate(View):
     def get(self, request):
         return render(request, 'acctsCreate.html', {})
@@ -122,7 +159,6 @@ class AccountCreate(View):
             own_user = User.objects.get(id=own_id)
             if own_user.User_Role.Role_Name != "Supervisor":
                 return render(request, "acctsCreate.html", {"message": "You do not have permission to create users"})
-
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
@@ -152,7 +188,11 @@ class AccountCreate(View):
 
 class AccountEditSelf(View):
     def get(self, request):
-        return render(request, 'acctsEditSelf.html', {})
+        own_id = request.session.get('id')
+        user = User.objects.get(id=own_id)
+        context = {"fname": user.User_FName,  "lname": user.User_LName, "email": user.User_Email, "password": user.User_Password,
+                   "phone": user.User_Phone_Number, "address": user.User_Home_Address}
+        return render(request, 'acctsEditSelf.html', context)
 
     def post(self, request):
         get_all_info = False
@@ -161,13 +201,15 @@ class AccountEditSelf(View):
             user_password = request.POST.get('Old Password')
             own_user = User.objects.get(id=own_id)
             if own_user.User_Password != user_password:
-                return render(request, 'acctsEditSelf.html', {"message": "Account passwords do not match"})
+                messages.success(request, "Account passwords do not match")
+                return redirect('/accountEditSelf/')
             user_id = User.objects.get(User_Password=user_password).id
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
             if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsEditSelf.html', {"message": "The entered email already exists: " + email})
+                messages.success(request, "The entered email already exists: " + email)
+                return redirect('/accountEditSelf/')
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -188,21 +230,40 @@ class AccountEditSelf(View):
             get_all_info = True
 
         if get_all_info:
-            return render(request, 'acctsEditSelf.html', {"message": "Please enter all information correctly"})
+            messages.success(request, "Please enter all information correctly")
+            return redirect('/accountEditSelf/')
 
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
             if len(password) < 7:
-                return render(request, "acctsEditSelf.html", {"message": "Password is too short"})
-            return render(request, 'acctsEditSelf.html', {"message": "Account was not updated successfully"})
-
-        return render(request, 'acctsEditSelf.html', {"message": "Account was updated successfully"})
+                messages.success(request, "Password is too short")
+                return redirect('/accountEditSelf/')
+            messages.success(request, "Account was not updated successfully")
+            return redirect('/accountEditSelf/')
+        messages.success(request, "Account was updated successfully")
+        return redirect('/accountEditSelf/')
 
 
 class AccountEditOther(View):
     def get(self, request):
-        return render(request, 'acctsOtherEdit.html', {})
+        own_id = request.session.get('id')
+        own_user = User.objects.get(id=own_id)
+        if own_user.User_Role.Role_Name != "Supervisor":
+            messages.success(request, "You do not have permission to edit users")
+            return redirect("/accountEditSelf/")
+        users = User.objects.all()
+        selected_user_id = request.GET.get('user_id')
+        selected_user = User.objects.filter(id=selected_user_id).first()
+        context = {"users": users}
+        if selected_user != None:
+            if selected_user.id == own_id:
+                return redirect("/accountEditSelf/")
+            context = {"users": users, "fname": selected_user.User_FName, "lname": selected_user.User_LName,
+                       "email": selected_user.User_Email, "password": selected_user.User_Password,
+                       "phone": selected_user.User_Phone_Number,
+                       "address": selected_user.User_Home_Address}
+        return render(request, 'acctsOtherEdit.html', context)
 
     def post(self, request):
         get_all_info = False
@@ -210,17 +271,20 @@ class AccountEditOther(View):
             own_id = request.session.get('id')
             user_email = request.POST['User Email']
             if not User.objects.filter(User_Email=user_email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "Invalid account email: " + user_email})
+                messages.success(request, "Invalid account email: " + user_email)
+                return redirect("/accountEditOther/")
             own_user = User.objects.get(id=own_id)
             user = User.objects.get(User_Email=user_email)
             user_id = user.id
             if own_user.User_Role.Role_Name != "Supervisor":
-                return render(request, "acctsOtherEdit.html", {"message": "You do not have permission to edit users"})
+                messages.success(request, "You do not have permission to edit users")
+                return redirect("/accountEditOther/")
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
-            if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
+            if User.objects.filter(User_Email=email).exists() and user_email != email:
+                messages.success(request, "The entered email already exists: " + email)
+                return redirect("/accountEditOther/")
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
@@ -240,39 +304,63 @@ class AccountEditOther(View):
             get_all_info = True
 
         if get_all_info:
-            return render(request, 'acctsOtherEdit.html', {"message": "Please enter all information correctly"})
+            messages.success(request, "Please enter all information correctly")
+            return redirect("/accountEditOther/")
 
         toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
 
         if not toReturn:
             if len(password) < 7:
-                return render(request, "acctsOtherEdit.html", {"message": "Password is too short"})
-            return render(request, 'acctsOtherEdit.html', {"message": "Account was not updated successfully"})
-
-        return render(request, 'acctsOtherEdit.html', {"message": "Account was updated successfully"})
+                messages.success(request, "Password is too short")
+                return redirect("/accountEditOther/")
+            messages.success(request, "Account was not updated successfully")
+            return redirect("/accountEditOther/")
+        messages.success(request, "Account was updated successfully")
+        return redirect("/accountEditOther/")
 
 class AccountDelete(View):
     def get(self, request):
-        return render(request, 'deleteAccounts.html', {})
+        own_id = request.session.get('id')
+        own_user = User.objects.get(id=own_id)
+        if own_user.User_Role.Role_Name != "Supervisor":
+            messages.success(request, "You do not have permission to edit users")
+            return redirect("/deleteAccounts/")
+        users = User.objects.all()
+        selected_user_id = request.GET.get('user_id')
+        selected_user = User.objects.filter(id=selected_user_id).first()
+        context = {"users": users}
+        if selected_user != None:
+            if selected_user.id == own_id:
+                messages.success(request, "You cannot delete your own account")
+                return redirect("/deleteAccounts/")
+            context = {"users": users, "email": selected_user.User_Email}
+        return render(request, 'deleteAccounts.html', context)
 
     def post(self, request):
         own_id = request.session.get('id')
         user_email = request.POST.get('User Email')
+        user_password = request.POST.get('User Password')
+        if user_password != User.objects.get(id=own_id).User_Password:
+            messages.success(request, "Passwords do not match")
+            return redirect('/deleteAccounts/')
         if not User.objects.filter(User_Email=user_email).exists():
-            return render(request, 'deleteAccounts.html', {"message": "Invalid email: " + user_email})
+            messages.success(request, "Invalid email: " + user_email)
+            return redirect('/deleteAccounts/')
         own_user = User.objects.get(id=own_id)
         user_id = User.objects.get(User_Email=user_email).id
         if own_user.User_Email == user_email:
-            return render(request, 'deleteAccounts.html', {"message": "You cannot delete your own account"})
+            messages.success(request, "You cannot delete your own account")
+            return redirect('/deleteAccounts/')
         if own_user.User_Role.Role_Name != "Supervisor":
-            return render(request, 'deleteAccounts.html', {"message": "You do not have permission to delete accounts"})
+            messages.success(request, "You do not have permission to delete accounts")
+            return redirect('/deleteAccounts/')
 
         toReturn = UserObject.delete_user(user_id, own_id)
 
         if not toReturn:
             return render(request, 'deleteAccounts.html', {"message": "Account was not deleted successfully"})
-
-        return render(request, 'deleteAccounts.html', {"message": "You have successfully deleted account: " + user_email})
+        messages.success(request, "You have successfully deleted account: " + user_email)
+        return redirect('/deleteAccounts/')
 
 
 class Courses(View):
