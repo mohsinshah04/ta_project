@@ -370,7 +370,8 @@ class Courses(View):
             return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         user = User.objects.get(id=user_id)
-
+        if user.User_Role.Role_Name != "Supervisor":
+            return redirect("/coursesTA_IN")
         if (user.User_Role.Role_Name == 'Supervisor'):
             course_details = CourseClass.viewAllAssignments(user)
         else:
@@ -384,6 +385,30 @@ class Courses(View):
         }
 
         return render(request, 'courseView.html', context)
+
+    def post(self, request):
+        return self.get(request)
+class CoursesTA_IN(View):
+    def get(self, request):
+        user_id = request.session.get('id')
+        if not User.objects.filter(id=user_id).exists():
+            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+
+        user = User.objects.get(id=user_id)
+
+        if (user.User_Role.Role_Name == 'Supervisor'):
+            course_details = CourseClass.viewAllAssignments(user)
+        else:
+            course_details = CourseClass.viewUserAssignments(user, user)
+
+        if course_details == "INVALID":
+            return render(request, 'courseViewTA_IN.html', {'message': 'No Courses To See Here'})
+
+        context = {
+            'courseInformation': course_details
+        }
+
+        return render(request, 'courseViewTA_IN.html', context)
 
     def post(self, request):
         return self.get(request)
