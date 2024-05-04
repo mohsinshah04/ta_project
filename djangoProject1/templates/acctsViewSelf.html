@@ -73,9 +73,9 @@
         }
 
         table {
-            width: 90%; 
+            width: 90%;
             border-collapse: collapse;
-            padding: 10px; 
+            padding: 10px;
             margin: 20px auto;
         }
 
@@ -91,17 +91,9 @@
     </style>
 </head>
 <body>
-<div class="buttonbox">
-    <a href="/accountsView/" class="button">View All</a>
-    <a href="/accountEditSelf/" class="button">Edit Your</a>
-    <a href="/accountEditOther/" class="button">Edit Other</a>
-    <a href="/deleteAccounts" class="button">Delete</a>
-    <a href="/home" class="button">Home</a>
-</div>
 <div class="text">
     <h1>Account</h1>
     <form method="get">
-        {% csrf_token %}
         <table>
             <thead>
                 <tr>
@@ -122,8 +114,13 @@
         </table>
     </form>
 </div>
-
 <a href="/accountCreate/" class="createButton">Create Accounts</a>
-
+<div class="buttonbox">
+    <a href="/accountsView/" class="button">View All</a>
+    <a href="/accountEditSelf/" class="button">Edit Your</a>
+    <a href="/accountEditOther/" class="button">Edit Other</a>
+    <a href="/deleteAccounts" class="button">Delete</a>
+    <a href="/home" class="button">Home</a>
+</div>
 </body>
 </html>

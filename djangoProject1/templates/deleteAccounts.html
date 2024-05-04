@@ -83,24 +83,38 @@
         }
         
     </style>
+    <script>
+        function submitOnChange(element) {
+            element.form.submit();
+        }
+    </script>
 </head>
 <body>
 <div class="text">
     <h1>Delete Accounts</h1>
-    <p class="text p">
-        Please enter the email of the user you would like to delete, after if you are sure you would like to delete this
-        user press the delete account button directly bellow the text box
-    </p>
+    <form method="get">
+            {% csrf_token %}
+            <label for="user_id">Select User to Delete:</label>
+            <select id="user_id" name="user_id" onchange="submitOnChange(this)" class="submit-on-change">
+            <option value="">-- Select a user to Delete --</option>
+            {% for user in users %}
+            <option value="{{ user.id }}" {% if selected_user and user.id == selected_user.id %}selected{% endif %}>
+                {{ user.User_Email }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
     <form method="post">
         {% csrf_token %}
-        <div class="spacer"></div>
+        <br>Your password:
+        <br><input type="password" name="User Password" class="text-input" required><br>
         <br>User to delete (email):
-        <br><input type="text" name="User Email" class="text-input" required><br>
+        <br><input type="text" name="User Email" class="text-input" required value={{ email }}><br>
         <input type="submit" class="input" value="Delete Account">
     </form>
-    {% if message %}
+    {% for message in messages%}
         <h2 class="text-message">{{ message }}</h2>
-    {% endif %}
+    {% endfor %}
     <a href="/accountsViewSelf" class="backButton">Back</a>
 </div>
 </body>
