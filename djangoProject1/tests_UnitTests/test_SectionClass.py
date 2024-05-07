@@ -545,6 +545,10 @@ class SectionTestCase(TestCase):
             self.sectionEndTimeValid, self.sectionBuildingName, self.sectionRoomNumberValid,
             self.userProf.id
         )
+        userProf = [self.userProf.id]
+        editSection = SectionClass.editAssignment(
+            createdSection.id, userProf, self.userProf.id
+        )
         viewedSection = SectionClass.viewUserAssignments(
             self.userProf.id, self.course.id
         )
@@ -594,7 +598,7 @@ class SectionTestCase(TestCase):
                                                 Section_ID_id=createdSection.id)
 
         editSection = SectionClass.editAssignment(
-            createdSection.id, self.sectionAssignedUsersValid, self.user
+            createdSection.id, self.sectionAssignedUsersValid, self.user.id
         )
 
         section = Section.objects.get(id=createdSection.id)
@@ -614,7 +618,7 @@ class SectionTestCase(TestCase):
         for user_id in self.sectionAssignedUsersValid:
             Assign_User_Junction.objects.create(User_ID_id=user_id, Course_ID_id=self.course.id, Section_ID_id=createdSection.id)
         remaining_user = []
-        SectionClass.editAssignment(createdSection.id, remaining_user, self.user)
+        SectionClass.editAssignment(createdSection.id, remaining_user, self.user.id)
         updated_assigned_users = list(Assign_User_Junction.objects.filter(Section_ID_id=createdSection.id).values_list('User_ID_id', flat=True))
 
         self.assertListEqual(sorted(updated_assigned_users), sorted(remaining_user))
@@ -632,7 +636,7 @@ class SectionTestCase(TestCase):
                                                 Section_ID_id=createdSection.id)
 
         editSection = SectionClass.editAssignment(
-            createdSection.id, self.sectionAssignedUsersValid, self.userProf
+            createdSection.id, self.sectionAssignedUsersValid, self.userProf.id
         )
 
         section = Section.objects.get(id=createdSection.id)
@@ -653,7 +657,7 @@ class SectionTestCase(TestCase):
                                                 Section_ID_id=createdSection.id)
 
         editSection = SectionClass.editAssignment(
-            createdSection.id, self.sectionAssignedUsersValid, self.userTA
+            createdSection.id, self.sectionAssignedUsersValid, self.userTA.id
         )
         self.assertFalse(editSection)
 
