@@ -61,8 +61,31 @@ class SectionClass:
 
 
     @classmethod
-    def editAssignment(self, courseID, courseDescription, user):
-        pass
+    def editAssignment(self, section_id, assigned_user_ids, user):
+        if (user == None):
+            return False
+        user_role = User.objects.get(id=user).User_Role.Role_Name
+        if user_role in ['TA']:
+            return False
+
+        if section_id:
+            section = Section.objects.get(id=section_id)
+            course_id = section.Course_ID.id
+
+
+            Assign_User_Junction.objects.filter(Section_ID=section).delete()
+
+            for user_id in assigned_user_ids:
+                Assign_User_Junction.objects.create(
+                    User_ID_id=user_id,
+                    Course_ID_id=course_id,
+                    Section_ID_id=section_id
+                )
+            return True
+        else:
+            return False
+
+
 
     @classmethod
     def userAssignment(self, courseID, userID, user):
@@ -104,29 +127,23 @@ class SectionClass:
 
     @classmethod
     def viewUserAssignments(self, user_id, course_id):
+        if(User.objects.filter(id=user_id).exists() == False):
+            return False
+
         user_role = User.objects.get(id=user_id).User_Role.Role_Name
         if user_role in ['Supervisor']:
             courses_query = Course.objects.all() if not course_id else Course.objects.filter(id=course_id)
-        elif user_role in ['Instructor']:
+        else:
             courses_query = Assign_User_Junction.objects.filter(
                 User_ID=user_id,
 
             ).select_related('Course_ID').distinct()
-        else:
-            courses_query = Assign_User_Junction.objects.filter(
-                User_ID=user_id,
-                Section_ID__isnull=False
-            ).select_related('Course_ID').distinct()
+
 
         courses = [course_junction.Course_ID for course_junction in
                    courses_query] if user_role != 'Supervisor' else courses_query
 
-        if user_role == 'TA':
-            sections = Section.objects.filter(
-                Course_ID__in=courses,
-                assign_user_junction__User_ID=user_id
-            ).distinct()
-        elif user_role == 'Instructor':
+        if user_role != 'Supervisor':
             sections = Section.objects.filter(
                 Course_ID__in=courses,
 

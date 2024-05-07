@@ -624,8 +624,42 @@ class SectionCreate(View):
 
 class SectionEdit(View):
     def get(self, request):
-        return render(request, 'sectionEdit.html', {})
+        courses = Course.objects.all()
+        sections = Section.objects.none()
+        selected_course_id = request.GET.get('course_id')
+        selected_section_id = request.GET.get('section_id')
+        if selected_course_id:
+            sections = Section.objects.filter(Course_ID=selected_course_id)
+
+        selected_section = Section.objects.filter(id=selected_section_id).first() if selected_section_id else None
+        users = User.objects.all()
+
+        assigned_user_ids = []
+        if selected_section:
+            assigned_user_ids = list(selected_section.assign_user_junction_set.values_list('User_ID_id', flat=True))
+
+        context = {
+            'courses': courses,
+            'sections': sections,
+            'selected_course_id': selected_course_id,
+            'selected_section_id': selected_section_id,
+            'selected_section': selected_section,
+            'users': users,
+            'assigned_user_ids': assigned_user_ids
+        }
+        return render(request, 'sectionEdit.html', context)
 
     def post(self, request):
-        return render(request, 'sectionEdit.html', {})
+        user_id = request.session.get('id')
+        if not user_id:
+            return redirect('login')
+        section_id = request.POST.get('section_id')
+        assigned_user_ids = request.POST.getlist('assigned_users')
+        section = Section.objects.get(id=section_id)
 
+        if (SectionClass.editAssignment(section_id, assigned_user_ids, user_id) == True):
+            messages.success(request, "Section updated successfully")
+            return redirect('/sections/')
+        else:
+            messages.error(request, "Failed to update section")
+            return redirect('sectionEdit')

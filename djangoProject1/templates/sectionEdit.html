@@ -2,10 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Sections Page</title>
+    <title>Edit Section</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        select[multiple] {
+            height: 150px;
+            overflow-y: auto;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        
+        .button1 {
+            font-size: 24px;
+            padding: 30px;
+            background-color: white;
+            text-decoration: none;
+            color: dimgray;
+            border: solid 1px black;
+        }
+        .button1:hover {
+            background-color: deepskyblue;        
+        }
+        .buttonbox {
+            width: 50%;
+            height: 75px;
+            padding: 20px;
+            background-color: lightgray;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: solid 1px black;
+        }
+    </style>
 </head>
 <body>
+<div class="buttonbox">
+        <a href="/sections/" class="button1">Cancel</a>
+    </div>
+<div class="form-container">
     <h1>Edit Section</h1>
-    <a href="/sections">cancel</a>
+    <form method="get">
+        <label for="course_id">Select Course:</label>
+<select id="course_id" name="course_id" onchange="this.form.submit()">
+    <option value="">-- Select a Course --</option>
+    {% for course in courses %}
+    <option value="{{ course.id }}" {% if course.id|stringformat:"s" == selected_course_id|stringformat:"s" %}selected{% endif %}>
+        {{ course.Course_Name }}
+    </option>
+    {% endfor %}
+</select>
+    <label for="section_id">Select Section:</label>
+<select id="section_id" name="section_id" onchange="this.form.submit()">
+    <option value="">-- Select a Section --</option>
+    {% for section in sections %}
+    <option value="{{ section.id }}" {% if section.id|stringformat:"s" == selected_section_id|stringformat:"s" %}selected{% endif %}>
+        Section {{ section.Section_Number }}: {{ section.Section_Type }}
+    </option>
+    {% endfor %}
+</select>
+    </form>
+
+    {% if selected_section %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="section_id" value="{{ selected_section.id }}">
+        <label>Assigned Users:</label>
+        <select id="assigned_users" name="assigned_users" multiple>
+    {% for user in users %}
+    <option value="{{ user.id }}" {% if user.id in assigned_user_ids %}selected{% endif %}>
+        {{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }})
+    </option>
+    {% endfor %}
+</select>
+        <button type="submit">Update Section</button>
+    </form>
+    {% else %}
+    <p>Please select a section to edit its details.</p>
+    {% endif %}
+</div>
 </body>
 </html>
