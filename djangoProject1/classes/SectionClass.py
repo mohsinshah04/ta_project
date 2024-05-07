@@ -64,6 +64,10 @@ class SectionClass:
     def editAssignment(self, section_id, assigned_user_ids, user):
         if (user == None):
             return False
+        user_role = User.objects.get(id=user).User_Role.Role_Name
+        if user_role in ['TA']:
+            return False
+
         if section_id:
             section = Section.objects.get(id=section_id)
             course_id = section.Course_ID.id
@@ -123,6 +127,9 @@ class SectionClass:
 
     @classmethod
     def viewUserAssignments(self, user_id, course_id):
+        if(User.objects.filter(id=user_id).exists() == False):
+            return False
+
         user_role = User.objects.get(id=user_id).User_Role.Role_Name
         if user_role in ['Supervisor']:
             courses_query = Course.objects.all() if not course_id else Course.objects.filter(id=course_id)
