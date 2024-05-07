@@ -9,17 +9,30 @@
             background-color: #f4f4f4;
             padding: 20px;
         }
+        .text table {
+            width: 75%;
+            padding-top: 300px;
+            left: 100px;
+            text-align: center;
+            color: dimgray; /* Change the color */
+            font-size: 25px; /* Change the font size */
+        }
+
         table {
-            width: 100%;
+            width: 90%;
             border-collapse: collapse;
+            padding: 10px;
+            margin: 20px auto;
         }
+
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            padding: 20px; 
             text-align: left;
+            border: 1px solid gray;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: lightgray;
         }
         select {
             margin-bottom: 20px;
@@ -47,17 +60,18 @@
             border: solid 1px black;
         }
         .button:hover {
-            background-color: deepskyblue;        
+            background-color: deepskyblue;
         }
     </style>
 </head>
 <body>
     <div class="buttonbox">
-        
+
         <a href="/sectionCreate/" class="button">Create Section</a>
         <a href="/sectionEdit/" class="button">Edit Section</a>
 
         <a href="/courses/" class="button">View Courses</a>
+
     </div>
     <h1>Section Overview</h1>
     <select onchange="window.location.href = '/sections/?course_id=' + this.value;">

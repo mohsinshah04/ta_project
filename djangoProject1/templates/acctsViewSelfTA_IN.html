@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View All Accounts</title>
+    <title>Account</title>
     <style>
         body {
             display: flex;
@@ -91,43 +91,33 @@
     </style>
 </head>
 <body>
-<div class="buttonbox">
-    <a href="/accountEditSelf/" class="button">Edit Your Account</a>
-    <a href="/accountEditOther/" class="button">Edit Other's Accounts</a>
-    <a href="/accountsViewSelf/" class="button">Back</a>
-
-</div>
 <div class="text">
-    <h1>View All Accounts</h1>
+    <h1>Account</h1>
     <form method="get">
-        {% csrf_token %}
         <table>
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Phone Number</th>
                     <th>Address</th>
-                    <th>Role</th>
+                    <th>Phone Number</th>
                 </tr>
             </thead>
             <tbody>
-                {% for name, email, phone_number, address, role in Accounts %}
                 <tr>
                     <td>{{ name }}</td>
                     <td>{{ email }}</td>
-                    <td>{{ phone_number }}</td>
                     <td>{{ address }}</td>
-                    <td>{{ role }}</td>
+                    <td>{{ phone }}</td>
                 </tr>
-                {% endfor %}
             </tbody>
         </table>
     </form>
-    {% if message %}
-        <p class="message">{{ message }}</p>
-    {% endif %}
 </div>
-<a href="/accountsViewSelf" class="backButton">Cancel</a>
+<div class="buttonbox">
+    <a href="/accountsView/" class="button">View All</a>
+    <a href="/accountEditSelf/" class="button">Edit Your</a>
+    <a href="/home" class="button">Home</a>
+</div>
 </body>
 </html>
