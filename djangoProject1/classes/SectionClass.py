@@ -64,7 +64,6 @@ class SectionClass:
     def editAssignment(self, section_id, assigned_user_ids, user):
         if (user == None):
             return False
-
         if section_id:
             section = Section.objects.get(id=section_id)
             course_id = section.Course_ID.id
