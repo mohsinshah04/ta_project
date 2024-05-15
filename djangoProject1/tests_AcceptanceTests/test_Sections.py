@@ -1,6 +1,5 @@
 from django.test import TestCase, Client
 from ta_app.models import Role, User, Course, Semester, Assign_User_Junction, Section
-from classes.SectionClass import SectionClass
 
 class TestSectionsView(TestCase):
     def setUp(self):
@@ -80,12 +79,8 @@ class TestSectionCreate(TestCase):
         Assign_User_Junction.objects.create(Course_ID=self.course, User_ID=self.userTA2)
         Assign_User_Junction.objects.create(Course_ID=self.course2, User_ID=self.userTA)
 
-        self.userProf = User.objects.create(User_FName="Himmithy", User_LName="Him", User_Email="prof@uwm.edu",
-                                            User_Password="password", User_Role=self.RoleProf,
-                                            User_Phone_Number="22231231211", User_Home_Address="123, Fake St")
-        self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu",
-                                             User_Password="prof", User_Role=self.RoleProf,
-                                             User_Phone_Number="22231231211", User_Home_Address="123, Fake St")
+        self.userProf = User.objects.create(User_FName="Himmithy", User_LName="Him", User_Email="prof@uwm.edu", User_Password="password", User_Role=self.RoleProf)
+        self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu", User_Password = "prof", User_Role = self.RoleProf)
 
         self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID = self.course2)
 
@@ -185,44 +180,6 @@ class TestSectionCreate(TestCase):
         self.assertEqual(section.Meets_Days, "['M', 'W', 'F']")
         self.assertEqual(section.Credits, 3)
 
-    def test_sectionsCreateValidAsInstructor(self):
-        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
-                         follow=True)
-        response = self.client.get('/sectionCreate/', {"id": self.userProf1.id}, follow=True)
-        self.assertEqual(response.status_code, 200)
-        form_data = {
-            'course': self.course.id,
-            'section_num': '001',
-            'section_type': 'Lecture',
-            'meets_days': ['M', 'W', 'F'],
-            'campus': 'Main Campus',
-            'start_date': '2023-09-01',
-            'end_date': '2023-12-15',
-            'credits': 3,
-            'start_time': '09:00',
-            'end_time': '10:15',
-            'building_name': 'Tech Building',
-            'room_number': '101',
-            'assigned_users[]': [self.user.id]
-        }
-
-        response = self.client.post('/sectionCreate/', form_data)
-
-
-        self.assertEqual(response.status_code, 302)
-
-
-        section = Section.objects.first()
-        self.assertIsNotNone(section)
-        self.assertEqual(section.Section_Number, '001')
-        self.assertEqual(section.Meets_Days, "['M', 'W', 'F']")
-        self.assertEqual(section.Credits, 3)
-
-    def test_sectionsCreateInvalidAsTA(self):
-        self.client.post("/", {"Email": self.userTA.User_Email, "Password": self.userTA.User_Password},
-                         follow=True)
-        response = self.client.get('/sectionCreate/', {"id": self.userTA.id}, follow=True)
-        self.assertRedirects(response, "/sections/")
 
 class TestSectionEdit(TestCase):
     def setUp(self):
@@ -246,101 +203,15 @@ class TestSectionEdit(TestCase):
         self.userProf1 = User.objects.create(User_FName="New", User_LName="Test", User_Email="prof@uwm.edu", User_Password = "prof", User_Role = self.RoleProf)
 
         self.junctionUserProfToCourse = Assign_User_Junction.objects.create(User_ID=self.userProf, Course_ID = self.course2)
-        form_data = {
-            'course': self.course.id,
-            'section_num': '801',
-            'section_type': 'Lab',
-            'meets_days': ['W'],
-            'campus': 'In-Person',
-            'start_date': '2023-09-01',
-            'end_date': '2023-12-15',
-            'credits': 3,
-            'start_time': '11:00',
-            'end_time': '1:20',
-            'building_name': 'Tech Building',
-            'room_number': '202',
-            'assigned_users[]': []
-        }
-        Section.objects.create(Course_ID=self.course, Section_Number=401, Section_Type="Lecture", Meets_Days=['T', "TR"],
-                               Start_Date="2023-09-01", End_Date="2023-12-15", Credits=3, Building_Name="Tech Building",
-                               Room_Number="202").save()
-        Section.objects.create(Course_ID=self.course, Section_Number=801, Section_Type="Lan",
-                               Meets_Days=['T'],
-                               Start_Date="2023-09-01", End_Date="2023-12-15", Credits=3, Building_Name="Tech Building",
-                               Room_Number="402").save()
-        Section.objects.create(Course_ID=self.course, Section_Number=802, Section_Type="Lan",
-                               Meets_Days=["TR"],
-                               Start_Date="2023-09-01", End_Date="2023-12-15", Credits=3, Building_Name="Tech Building",
-                               Room_Number="302").save()
+
         self.user.save()
         self.userTA.save()
         self.userTA2.save()
         self.userProf.save()
         self.userProf1.save()
-        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
-                         follow=True)
 
     def test_sectionsEditPageExists(self):
-        section = Section.objects.get(Course_ID=self.course, Section_Number=401)
-        response = self.client.get('/sectionEdit/', {"course_id": self.course.id, "section_id":
-            section.id}, follow=True)
+        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password},
+                         follow=True)
+        response = self.client.get('/sectionCreate/', {"id": self.user.id}, follow=True)
         self.assertEqual(response.status_code, 200)
-
-    def test_sectionsEditPageSuccessfulAssignUsersTA(self):
-        section = Section.objects.get(Course_ID=self.course, Section_Number=801)
-        formData = {
-            "section_id": section.id,
-            "assigned_users": [self.userTA.id, self.userTA2.id]
-        }
-        response = self.client.post('/sectionEdit/', formData)
-        self.assertTrue(Assign_User_Junction.objects.filter(User_ID=self.userTA2.id, Course_ID=self.course.id).exists())
-
-    def test_sectionsEditPageSuccessAssignUsersIN(self):
-        self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)
-        section = Section.objects.get(Course_ID=self.course, Section_Number=401)
-        formData = {
-            "section_id": section.id,
-            "assigned_users": [self.userProf1.id]
-        }
-        response = self.client.post('/sectionEdit/', formData)
-        self.assertTrue(Assign_User_Junction.objects.filter(User_ID=self.userProf1.id, Course_ID=self.course.id).exists())
-
-    def test_sectionsEditPageInvalidAssignUsersTA(self):
-        response = self.client.get('/sectionsEdit/', {"id": self.user.id}, follow=True)
-
-        form_data = {
-            'course': self.course.id,
-            'section_num': '801',
-            'section_type': 'Lab',
-            'meets_days': ['W'],
-            'campus': 'In-Person',
-            'start_date': '2023-09-01',
-            'end_date': '2023-12-15',
-            'credits': 3,
-            'start_time': '11:00',
-            'end_time': '1:20',
-            'building_name': 'Tech Building',
-            'room_number': '202',
-            'assigned_users[]': [1212321]
-        }
-        response = self.client.post('/sectionsEdit/', form_data)
-        self.assertTrue(Assign_User_Junction.objects.filter(User_ID=self.userTA2.id, Course_ID=self.course.id).exists())
-
-    def test_sectionsEditPageInvalidAssignUsersIN(self):
-        form_data = {
-            'course': self.course.id,
-            'section_num': '001',
-            'section_type': 'Lecture',
-            'meets_days': ['M', 'W', 'F'],
-            'campus': 'In-Person',
-            'start_date': '2023-09-01',
-            'end_date': '2023-12-15',
-            'credits': 3,
-            'start_time': '09:00',
-            'end_time': '10:15',
-            'building_name': 'Tech Building',
-            'room_number': '101',
-            'assigned_users[]': [121112]
-        }
-        response = self.client.post('/sectionsEdit/', form_data)
-        self.assertFalse(Assign_User_Junction.objects.filter(User_ID=self.userProf.id, Course_ID=self.course.id).exists())

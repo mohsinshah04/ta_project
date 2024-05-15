@@ -626,7 +626,7 @@ class SectionCreate(View):
             return render(request, 'sectionCreate.html', {
                 'error': 'Failed to create section.',
                 'courses': Course.objects.all(),
-                'users': User.objects.filter(is_active=True)
+                'users': User.objects.filter()
             })
 
 

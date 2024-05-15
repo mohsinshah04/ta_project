@@ -1,5 +1,6 @@
 """Currently Skeleton Class for Courses"""
 from ta_app.models import Course, Section, Semester, Assign_User_Junction, User
+
 import re
 class CourseClass:
     def __init__(self):

@@ -3,25 +3,25 @@ from abc import ABC, abstractmethod
 class HandleAssignments(ABC):
 
     @abstractmethod
-    def create_assignment(self, course, course_name, description):
+    def createAssignment(self, course, course_name, description):
         pass
 
     @abstractmethod
-    def edit_assignment(self, course_ID, description):
+    def editAssignment(self, course_ID, description):
         pass
 
     @abstractmethod
-    def user_assignment(self, user_ID, course_ID):
+    def userAssignment(self, user_ID, course_ID):
         pass
 
     @abstractmethod
-    def delete_assignment(self, course_ID):
+    def deleteAssignment(self, course_ID):
         pass
 
     @abstractmethod
-    def view_all_assignments(self, course_ID):
+    def viewAllAssignments(self, course_ID):
         pass
 
     @abstractmethod
-    def view_user_assignments(self, course_ID, user_ID):
+    def viewUserAssignments(self, course_ID, user_ID):
         pass
