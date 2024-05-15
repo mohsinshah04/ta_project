@@ -318,13 +318,13 @@ class TestViewAccount(TestCase):
 
     def test_view_account_TA_to_IN(self):
         # toReturn = MockUser.view_account(self.test_user_in.id, self.test_user_ta.id)
-        self.assertEqual("INVALID", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_SU(self):
         # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
-        self.assertEqual("INVALID", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 
     def test_view_account_IN_to_SU(self):
         # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
-        self.assertEqual("INVALID", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 

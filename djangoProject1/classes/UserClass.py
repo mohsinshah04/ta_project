@@ -56,13 +56,36 @@ class UserObject:
             return False
         if user_id is None or email is None or password is None or phoneNumber is None or address is None or firstName is None or lastName is None:
             return False
-        if email == "" or password == "" or phoneNumber == "" or address == "" or firstName == "" or lastName == "":
-            return False
+        if user_id == own_id:
+            if firstName == "":
+                firstName = user.User_FName
+            if lastName == "":
+                lastName = user.User_LName
+            if email == "":
+                email = user.User_Email
+            if password == "":
+                password = user.User_Password
+            if address == "":
+                address = user.User_Home_Address
+            if phoneNumber == "":
+                phoneNumber = user.User_Phone_Number
         if len(password) < 7 or len(phoneNumber) > 15:
             return False
         if not User.objects.filter(id=user_id).exists():
             return False
         user = User.objects.get(id=user_id)
+        if firstName == "":
+            firstName = user.User_FName
+        if lastName == "":
+            lastName = user.User_LName
+        if email == "":
+            email = user.User_Email
+        if password == "":
+            password = user.User_Password
+        if address == "":
+            address = user.User_Home_Address
+        if phoneNumber == "":
+            phoneNumber = user.User_Phone_Number
         user.User_Email = email
         user.User_Password = password
         user.User_Phone_Number = phoneNumber

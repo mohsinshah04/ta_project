@@ -37,11 +37,13 @@ class LoginPage(View):
 
 class LogOutPage(View):
     def get(self, request):
-        request.session.clear()
+        own_id = request.session.get("id")
+        request.session.pop("id", own_id)
         return render(request, 'logOutPage.html', {})
 
     def post(self, request):
-        request.session.clear()
+        own_id = request.session.get("id")
+        request.session.pop("id", own_id)
         return render(request, 'logOutPage.html', {})
 
 
@@ -49,7 +51,7 @@ class Home(View):
     def get(self, request):
         own_id = request.session.get('id')
         if own_id is None:
-            return redirect('/loginPage')
+            return redirect('/login')
         own_name = User.objects.get(id=own_id).User_FName + " " + User.objects.get(id=own_id).User_LName
         return render(request, 'home.html', {'name': own_name})
 
@@ -68,6 +70,8 @@ class Announcements(View):
 class AccountViewSelf(View):
     def get(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         user = User.objects.get(id=own_id)
         if user.User_Role.Role_Name != "Supervisor":
             return redirect('/accountsViewSelfTA_IN')
@@ -84,6 +88,8 @@ class AccountViewSelf(View):
 class AccountsViewSelfTA_IN(View):
     def get(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         user = User.objects.get(id=own_id)
         name = user.User_FName + " " + user.User_LName
         email = user.User_Email
@@ -95,6 +101,8 @@ class AccountsViewSelfTA_IN(View):
 class AccountsView(View):
     def get(self, request):
         own_id = request.session.get("id")
+        if own_id is None:
+            return redirect('/login')
         own_user = User.objects.get(id=own_id)
         if own_user.User_Role.Role_Name != "Supervisor":
             return redirect("/accountsViewTA_IN")
@@ -126,6 +134,8 @@ class AccountsViewTA_IN(View):
     def get(self, request):
         own_id = request.session.get("id")
         own_user = User.objects.get(id=own_id)
+        if own_id is None:
+            return redirect('/login')
         names = []
         emails = []
         addresses = []
@@ -156,6 +166,8 @@ class AccountCreate(View):
         get_all_info = False
         try:
             own_id = request.session.get("id")
+            if own_id is None:
+                return redirect('/login')
             own_user = User.objects.get(id=own_id)
             if own_user.User_Role.Role_Name != "Supervisor":
                 return render(request, "acctsCreate.html", {"message": "You do not have permission to create users"})
@@ -189,6 +201,8 @@ class AccountCreate(View):
 class AccountEditSelf(View):
     def get(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         user = User.objects.get(id=own_id)
         context = {"fname": user.User_FName,  "lname": user.User_LName, "email": user.User_Email, "password": user.User_Password,
                    "phone": user.User_Phone_Number, "address": user.User_Home_Address}
@@ -198,6 +212,8 @@ class AccountEditSelf(View):
         get_all_info = False
         try:
             own_id = request.session.get('id')
+            if own_id is None:
+                return redirect('/login')
             user_password = request.POST.get('Old Password')
             own_user = User.objects.get(id=own_id)
             if own_user.User_Password != user_password:
@@ -213,18 +229,6 @@ class AccountEditSelf(View):
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
-            if f_name == "":
-                f_name = own_user.User_FName
-            if l_name == "":
-                l_name = own_user.User_LName
-            if email == "":
-                email = own_user.User_Email
-            if password == "":
-                password = own_user.User_Password
-            if address == "":
-                address = own_user.User_Home_Address
-            if phone == "":
-                phone = own_user.User_Phone_Number
 
         except:
             get_all_info = True
@@ -248,6 +252,8 @@ class AccountEditSelf(View):
 class AccountEditOther(View):
     def get(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         own_user = User.objects.get(id=own_id)
         if own_user.User_Role.Role_Name != "Supervisor":
             messages.success(request, "You do not have permission to edit users")
@@ -269,6 +275,8 @@ class AccountEditOther(View):
         get_all_info = False
         try:
             own_id = request.session.get('id')
+            if own_id is None:
+                return redirect('/login')
             user_email = request.POST['User Email']
             if not User.objects.filter(User_Email=user_email).exists():
                 messages.success(request, "Invalid account email: " + user_email)
@@ -288,18 +296,6 @@ class AccountEditOther(View):
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
-            if f_name == "":
-                f_name = user.User_FName
-            if l_name == "":
-                l_name = user.User_LName
-            if email == "":
-                email = user.User_Email
-            if password == "":
-                password = user.User_Password
-            if address == "":
-                address = user.User_Home_Address
-            if phone == "":
-                phone = user.User_Phone_Number
         except:
             get_all_info = True
 
@@ -321,6 +317,8 @@ class AccountEditOther(View):
 class AccountDelete(View):
     def get(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         own_user = User.objects.get(id=own_id)
         if own_user.User_Role.Role_Name != "Supervisor":
             messages.success(request, "You do not have permission to edit users")
@@ -338,6 +336,8 @@ class AccountDelete(View):
 
     def post(self, request):
         own_id = request.session.get('id')
+        if own_id is None:
+            return redirect('/login')
         user_email = request.POST.get('User Email')
         user_password = request.POST.get('User Password')
         if user_password != User.objects.get(id=own_id).User_Password:
@@ -366,8 +366,10 @@ class AccountDelete(View):
 class Courses(View):
     def get(self, request):
         user_id = request.session.get('id')
-        if not User.objects.filter(id=user_id).exists():
-            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+        if user_id is None:
+            return redirect('/login')
+        #if not User.objects.filter(id=user_id).exists():
+            #return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         user = User.objects.get(id=user_id)
         if user.User_Role.Role_Name != "Supervisor":
@@ -417,9 +419,11 @@ class CoursesTA_IN(View):
 class CourseCreate(View):
     def get(self, request):
         user_id = request.session.get('id')
+        if user_id is None:
+            return redirect('/login')
         user = User.objects.filter(id=user_id).first()
-        if not User.objects.filter(id=user_id).exists():
-            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+        #if not User.objects.filter(id=user_id).exists():
+            #return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         if user.User_Role.Role_Name != 'Supervisor':
             return redirect('login')
@@ -476,9 +480,11 @@ class CourseCreate(View):
 class CourseEdit(View):
     def get(self, request):
         user_id = request.session.get('id')
+        if user_id is None:
+            return redirect('/login')
         user = User.objects.filter(id=user_id).first()
-        if not user:
-            return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
+        #if not user:
+            #return render(request, 'loginPage.html', {"message": "Please log in to view this page."})
 
         if user.User_Role.Role_Name != 'Supervisor':
             return redirect('courses')
@@ -550,7 +556,7 @@ class Sections(View):
     def get(self, request):
         user_id = request.session.get('id')
         if not user_id:
-            return redirect('login')
+            return redirect('/login')
         days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
         selected_course_id = request.GET.get('course_id')
         context = SectionClass.viewUserAssignments(user_id, selected_course_id)
@@ -569,6 +575,8 @@ class SectionCreate(View):
         courses = None
         users = None
         if own_user.User_Role.Role_Name != "Supervisor":
+            if own_user.User_Role.Role_Name != "Instructor":
+                return redirect('/sections/')
             assigned_course_ids = Assign_User_Junction.objects.filter(
                 User_ID=user_id
             ).values_list('Course_ID', flat=True).distinct()
@@ -588,7 +596,7 @@ class SectionCreate(View):
     def post(self, request):
         user_id = request.session.get('id')
         if not user_id:
-            return redirect('login')
+            return redirect('/login')
         course_id = request.POST.get('course')
         section_num = request.POST.get('section_num')
         section_type = request.POST.get('section_type')
