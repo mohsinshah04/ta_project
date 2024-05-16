@@ -136,8 +136,10 @@ class CourseClass:
                     continue
                 checkExists.insert(i, junction.User_ID.id)
                 i = i+1
-
-                indDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
+                if junction.User_ID.User_Role.Role_Name == "TA" and junction.User_ID.User_Skill == "Grader":
+                    indDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ", " + junction.User_ID.User_Skill + ")"
+                else:
+                    indDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
                 if not first_user:
                     userDetails += ", "
 
@@ -198,7 +200,10 @@ class CourseClass:
                     continue
                 checkExists.insert(i, junction.User_ID.id)
                 i = i+1
-                userDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
+                if junction.User_ID.User_Role.Role_Name == "TA" and junction.User_ID.User_Skill == "Grader":
+                    userDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ", " + junction.User_ID.User_Skill + ")"
+                else:
+                    userDetail = junction.User_ID.User_FName + " " + junction.User_ID.User_LName + " (" + junction.User_ID.User_Role.Role_Name + ")"
                 if not first_user:
                     userDetails += ", "
                 userDetails += userDetail

@@ -101,6 +101,9 @@
                     <th>Email</th>
                     <th>Address</th>
                     <th>Phone Number</th>
+                    {% if user.User_Role.Role_Name == "TA"%}
+                        <td>Skill</td>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -109,6 +112,9 @@
                     <td>{{ email }}</td>
                     <td>{{ address }}</td>
                     <td>{{ phone }}</td>
+                    {% if user.User_Role.Role_Name == "TA"%}
+                        <td>{{ skill }}</td>
+                    {% endif %}
                 </tr>
             </tbody>
         </table>

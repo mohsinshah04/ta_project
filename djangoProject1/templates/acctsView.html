@@ -109,16 +109,18 @@
                     <th>Phone Number</th>
                     <th>Address</th>
                     <th>Role</th>
+                    <th>Skill</th>
                 </tr>
             </thead>
             <tbody>
-                {% for name, email, phone_number, address, role in Accounts %}
+                {% for name, email, phone_number, address, role, skill in Accounts %}
                 <tr>
                     <td>{{ name }}</td>
                     <td>{{ email }}</td>
                     <td>{{ phone_number }}</td>
                     <td>{{ address }}</td>
                     <td>{{ role }}</td>
+                    <td>{{ skill }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

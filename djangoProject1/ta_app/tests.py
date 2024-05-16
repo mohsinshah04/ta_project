@@ -5,7 +5,7 @@ from tests_AcceptanceTests.test_Accounts import AccountSearchTest, AccountCreati
 from tests_AcceptanceTests.test_Login import TestLogin
 from tests_AcceptanceTests.test_Courses import TestCoursesCreate, TestCoursesEdit, TestCoursesView
 from tests_AcceptanceTests.test_Sections import TestSectionCreate, TestSectionsView, TestSectionEdit
-
+from tests_AcceptanceTests.test_Annoucment import AnnouncementTests
 
 class TestUserClass(TestCase):
     def test_all(self):
@@ -27,6 +27,10 @@ class TestSections(TestCase):
     def test_all(self):
         self.assertTrue(TestSectionCreate, TestSectionsView)
         self.assertTrue(TestSectionEdit)
+
+class TestAnnoucements(TestCase):
+    def test_all(self):
+        self.assertTrue(AnnouncementTests)
 
 
 

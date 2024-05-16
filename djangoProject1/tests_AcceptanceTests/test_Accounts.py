@@ -27,7 +27,7 @@ class AccountSearchTest(TestCase, Client):
                                                 User_FName="Joann",
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
-                                                User_Home_Address="123, Ridgeview Ct")
+                                                User_Home_Address="123, Ridgeview Ct", User_Skill="N/A")
         self.user.save()
         self.test_user_ta.save()
         self.test_user_in.save()
@@ -93,7 +93,7 @@ class AccountCreationTests(TestCase, Client):
         self.test_user_ta = User.objects.create(User_Role=self.test_role_ta, User_Email="TA@uwm.edu", User_FName="Joann",
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
-                                                User_Home_Address="123, Ridgeview Ct")
+                                                User_Home_Address="123, Ridgeview Ct", User_Skill="N/A")
         self.client.post("/", {"Email": self.test_user.User_Email, "Password": self.test_user.User_Password}, follow=True)
 
 
@@ -244,7 +244,7 @@ class AccountsEditOthers(TestCase, Client):
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
                                                 User_Home_Address="123, Ridgeview Ct",
-                                                User_Password="<PASSWORD>")
+                                                User_Password="<PASSWORD>", User_Skill="N/A")
         self.user.save()
         self.test_user_ta.save()
         self.test_user_in.save()
@@ -271,7 +271,7 @@ class AccountsEditOthers(TestCase, Client):
                                                         "Password": self.update_password,
                                                         "Address": self.update_address,
                                                         "Phone Number": self.update_phone_number,
-                                                        "First Name": self.update_FName, "Last Name": self.update_LName})
+                                                        "First Name": self.update_FName, "Last Name": self.update_LName, "Skill": "Grader"})
         self.assertRedirects(response, "/accountEditOther/")
 
     def test_edit_user_not_found(self):
@@ -329,7 +329,7 @@ class AccountsDelete(TestCase, Client):
                                                 User_FName="Joann",
                                                 User_LName="Johnson",
                                                 User_Phone_Number="1+(608)522-2343",
-                                                User_Home_Address="123, Ridgeview Ct")
+                                                User_Home_Address="123, Ridgeview Ct", User_Skill="N/A")
         self.user.save()
         self.test_user_ta.save()
         self.test_user_in.save()
