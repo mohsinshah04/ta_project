@@ -158,7 +158,9 @@ class AccountsViewTA_IN(View):
             phones.append(string[2])
             addresses.append(string[3])
             roles.append(string[4])
-            if string[5] == "null":
+            if string[5] == "null" and string[4] != "TA":
+                string[5] = ""
+            elif string[5] == "null":
                 string[5] = "N/A"
             skills.append(string[5])
 
@@ -615,7 +617,11 @@ class SectionCreate(View):
             ).values_list('User_ID', flat=True).distinct()
             users = User.objects.filter(id__in=assigned_user_ids)
         else:
-            users = User.objects.all()
+            users = []
+            for i in User.objects.all():
+                if i.User_Skill == "Grader":
+                    continue
+                users.append(i)
             courses = Course.objects.all()
 
         days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
@@ -668,7 +674,11 @@ class SectionEdit(View):
             sections = Section.objects.filter(Course_ID=selected_course_id)
 
         selected_section = Section.objects.filter(id=selected_section_id).first() if selected_section_id else None
-        users = User.objects.all()
+        users = []
+        for i in User.objects.all():
+            if i.User_Skill == "Grader":
+                continue
+            users.append(i)
 
         assigned_user_ids = []
         if selected_section:
