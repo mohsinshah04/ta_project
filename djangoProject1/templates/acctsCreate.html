@@ -73,10 +73,6 @@
             background-color: deepskyblue;
         }
 
-        .text-message{
-            vert-align: bottom;
-        }
-
     </style>
 </head>
 <body>
@@ -107,12 +103,10 @@
         <br><input type="password" name="Old Password" class="text-input" required><br>
             <input type="submit" class="input" value="Create User">
     </form>
-    <div class="text-message">
-        {% if message %}
-            <h2>{{ message }}</h2>
-        {% endif %}
-    </div>
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
     <a href="/accountsViewSelf" class="backButton">Cancel</a>
-
+</div>
 </body>
 </html>

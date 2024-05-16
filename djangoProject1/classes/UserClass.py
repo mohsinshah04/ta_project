@@ -70,7 +70,8 @@ class UserObject:
             if phoneNumber == "":
                 phoneNumber = user.User_Phone_Number
             if skill == "":
-                skill = user.User_Skill
+                if user.User_Skill != "null":
+                    skill = user.User_Skill
         if len(password) < 7 or len(phoneNumber) > 15:
             return False
         if not User.objects.filter(id=user_id).exists():

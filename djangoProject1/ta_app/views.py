@@ -185,7 +185,7 @@ class AccountCreate(View):
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
             if User.objects.filter(User_Email=email).exists():
-                return render(request, 'acctsOtherEdit.html', {"message": "The entered email already exists: " + email})
+                return render(request, 'acctsCreate.html', {"message": "The entered email already exists: " + email})
             password = request.POST.get('Password')
             role_name = request.POST.get('Role')
             if role_name != "Supervisor" and role_name != "Instructor" and role_name != "TA":
@@ -309,6 +309,8 @@ class AccountEditOther(View):
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
             skill = request.POST.get('Skill')
+            if skill == None:
+                skill = ""
         except:
             get_all_info = True
 
