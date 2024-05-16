@@ -125,7 +125,7 @@ class AccountsView(View):
             if string[5] == "null" and string[4] != "TA":
                 string[5] = ""
             elif string[5] == "null":
-                string[5] = "N/A"
+                string[5] = "Reg"
             skills.append(string[5])
 
         accounts_list = zip(names, emails, phones, addresses, roles, skills)
@@ -161,7 +161,7 @@ class AccountsViewTA_IN(View):
             if string[5] == "null" and string[4] != "TA":
                 string[5] = ""
             elif string[5] == "null":
-                string[5] = "N/A"
+                string[5] = "Reg"
             skills.append(string[5])
 
         accounts_list = zip(names, emails, phones, addresses, roles, skills)

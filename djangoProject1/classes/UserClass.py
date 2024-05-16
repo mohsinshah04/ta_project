@@ -78,7 +78,7 @@ class UserObject:
         user = User.objects.get(id=user_id)
         if skill != "" and (user.User_Role.Role_Name == "Supervisor" or user.User_Role.Role_Name == "Instructor"):
             return False
-        if (skill != "Grader" and skill != "N/A") and user.User_Role.Role_Name == "TA":
+        if (skill != "Grader" and skill != "Reg") and user.User_Role.Role_Name == "TA":
             return False
         if firstName == "":
             firstName = user.User_FName
