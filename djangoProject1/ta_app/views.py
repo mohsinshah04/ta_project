@@ -17,8 +17,6 @@ class LoginPage(View):
     def get(self,request):
         return render(request,"loginPage.html",{})
     def post(self, request):
-        #if request.session.get('id') is not None:
-            #return render(request,"loginPage.html",{"message": "User already logged in"})
         user_doesnt_exist = False
         bad_password = False
         try:
@@ -27,7 +25,7 @@ class LoginPage(View):
         except:
             user_doesnt_exist = True
         if user_doesnt_exist:
-            return render(request, "loginPage.html", {"message": "Email and password do not exists. Please contact your supervisor to get your account created"})
+            return render(request, "loginPage.html", {"message": "Email and password do not exist. Please contact your supervisor to get your account created"})
         elif bad_password:
             return render(request, "loginPage.html", {"message": "Incorrect Email or Password, please try again."})
         else:
@@ -96,7 +94,7 @@ class AccountsViewSelfTA_IN(View):
         phone = user.User_Phone_Number
         address = user.User_Home_Address
         return render(request, 'acctsViewSelfTA_IN.html',
-                      {"name": name, "email": email, "phone": phone, "address": address})
+                      {"name": name, "email": email, "phone": phone, "address": address, "user": user, "skill": user.User_Skill})
 
 class AccountsView(View):
     def get(self, request):
@@ -111,6 +109,7 @@ class AccountsView(View):
         addresses = []
         phones = []
         roles = []
+        skills = []
         for i in User.objects.iterator():
             if i.id == own_id:
                 continue
@@ -123,10 +122,15 @@ class AccountsView(View):
             phones.append(string[2])
             addresses.append(string[3])
             roles.append(string[4])
+            if string[5] == "null" and string[4] != "TA":
+                string[5] = ""
+            elif string[5] == "null":
+                string[5] = "Reg"
+            skills.append(string[5])
 
-        accounts_list = zip(names, emails, phones, addresses, roles)
+        accounts_list = zip(names, emails, phones, addresses, roles, skills)
 
-        return render(request, 'acctsView.html', {"Accounts": accounts_list})
+        return render(request, 'acctsView.html', {"Accounts": accounts_list, "user": own_user})
     def post(self, request):
         return render(request, 'acctsView.html', {})
 
@@ -141,6 +145,7 @@ class AccountsViewTA_IN(View):
         addresses = []
         phones = []
         roles = []
+        skills = []
         for i in User.objects.iterator():
             if i.id == own_id:
                 continue
@@ -153,8 +158,13 @@ class AccountsViewTA_IN(View):
             phones.append(string[2])
             addresses.append(string[3])
             roles.append(string[4])
+            if string[5] == "null" and string[4] != "TA":
+                string[5] = ""
+            elif string[5] == "null":
+                string[5] = "Reg"
+            skills.append(string[5])
 
-        accounts_list = zip(names, emails, phones, addresses, roles)
+        accounts_list = zip(names, emails, phones, addresses, roles, skills)
 
         return render(request, 'acctsViewTA_IN.html', {"Accounts": accounts_list})
 
@@ -205,7 +215,7 @@ class AccountEditSelf(View):
             return redirect('/login')
         user = User.objects.get(id=own_id)
         context = {"fname": user.User_FName,  "lname": user.User_LName, "email": user.User_Email, "password": user.User_Password,
-                   "phone": user.User_Phone_Number, "address": user.User_Home_Address}
+                   "phone": user.User_Phone_Number, "address": user.User_Home_Address, "skill": user.User_Skill, "user": user}
         return render(request, 'acctsEditSelf.html', context)
 
     def post(self, request):
@@ -219,16 +229,18 @@ class AccountEditSelf(View):
             if own_user.User_Password != user_password:
                 messages.success(request, "Account passwords do not match")
                 return redirect('/accountEditSelf/')
-            user_id = User.objects.get(User_Password=user_password).id
             f_name = request.POST.get('First Name')
             l_name = request.POST.get('Last Name')
             email = request.POST.get('Email')
-            if User.objects.filter(User_Email=email).exists():
+            if User.objects.filter(User_Email=email).exists() and email != own_user.User_Email:
                 messages.success(request, "The entered email already exists: " + email)
                 return redirect('/accountEditSelf/')
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
+            skill = request.POST.get('Skill')
+            if skill == None:
+                skill = ""
 
         except:
             get_all_info = True
@@ -237,7 +249,7 @@ class AccountEditSelf(View):
             messages.success(request, "Please enter all information correctly")
             return redirect('/accountEditSelf/')
 
-        toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
+        toReturn = UserObject.edit_user(own_id, email, password, phone, address, f_name, l_name, skill, own_id)
 
         if not toReturn:
             if len(password) < 7:
@@ -261,14 +273,14 @@ class AccountEditOther(View):
         users = User.objects.all()
         selected_user_id = request.GET.get('user_id')
         selected_user = User.objects.filter(id=selected_user_id).first()
-        context = {"users": users}
+        context = {"users": users, "selected_user": selected_user}
         if selected_user != None:
             if selected_user.id == own_id:
                 return redirect("/accountEditSelf/")
             context = {"users": users, "fname": selected_user.User_FName, "lname": selected_user.User_LName,
                        "email": selected_user.User_Email, "password": selected_user.User_Password,
                        "phone": selected_user.User_Phone_Number,
-                       "address": selected_user.User_Home_Address}
+                       "address": selected_user.User_Home_Address, "selected_user": selected_user, "skill": selected_user.User_Skill}
         return render(request, 'acctsOtherEdit.html', context)
 
     def post(self, request):
@@ -296,6 +308,7 @@ class AccountEditOther(View):
             password = request.POST.get('Password')
             address = request.POST.get('Address')
             phone = request.POST.get('Phone Number')
+            skill = request.POST.get('Skill')
         except:
             get_all_info = True
 
@@ -303,7 +316,7 @@ class AccountEditOther(View):
             messages.success(request, "Please enter all information correctly")
             return redirect("/accountEditOther/")
 
-        toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, own_id)
+        toReturn = UserObject.edit_user(user_id, email, password, phone, address, f_name, l_name, skill, own_id)
 
         if not toReturn:
             if len(password) < 7:
@@ -557,6 +570,8 @@ class Sections(View):
         user_id = request.session.get('id')
         if not user_id:
             return redirect('/login')
+        if User.objects.get(id=user_id).User_Role.Role_Name == 'TA':
+            return redirect('/sectionsTA')
         days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
         selected_course_id = request.GET.get('course_id')
         context = SectionClass.viewUserAssignments(user_id, selected_course_id)
@@ -565,6 +580,21 @@ class Sections(View):
 
     def post(self, request):
         return render(request, 'sectionView.html', {})
+
+
+class SectionsTA(View):
+    def get(self, request):
+        user_id = request.session.get('id')
+        if not user_id:
+            return redirect('/login')
+        days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
+        selected_course_id = request.GET.get('course_id')
+        context = SectionClass.viewUserAssignments(user_id, selected_course_id)
+
+        return render(request, 'sectionsViewTA.html', context)
+
+    def post(self, request):
+        return render(request, 'sectionsViewTA.html', {})
 
 class SectionCreate(View):
     def get(self, request):
@@ -587,7 +617,11 @@ class SectionCreate(View):
             ).values_list('User_ID', flat=True).distinct()
             users = User.objects.filter(id__in=assigned_user_ids)
         else:
-            users = User.objects.all()
+            users = []
+            for i in User.objects.all():
+                if i.User_Skill == "Grader":
+                    continue
+                users.append(i)
             courses = Course.objects.all()
 
         days_of_week = ["M", "T", "W", "TR", "F", "S", "SU"]
@@ -640,7 +674,11 @@ class SectionEdit(View):
             sections = Section.objects.filter(Course_ID=selected_course_id)
 
         selected_section = Section.objects.filter(id=selected_section_id).first() if selected_section_id else None
-        users = User.objects.all()
+        users = []
+        for i in User.objects.all():
+            if i.User_Skill == "Grader":
+                continue
+            users.append(i)
 
         assigned_user_ids = []
         if selected_section:
@@ -666,7 +704,7 @@ class SectionEdit(View):
         section = Section.objects.get(id=section_id)
 
         if (SectionClass.editAssignment(section_id, assigned_user_ids, user_id) == True):
-            messages.success(request, "Section updated successfully")
+            #messages.success(request, "Section updated successfully")
             return redirect('/sections/')
         else:
             messages.error(request, "Failed to update section")

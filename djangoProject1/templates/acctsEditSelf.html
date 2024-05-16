@@ -89,20 +89,24 @@
                     <br>New Password:
                     <br><input type="password" name="Password" class="text-input" value={{ password }}><br>
                     <br>New First Name:     
-                    <br><input type="text" name="First Name" class="text-input" value={{ lname }}><br>
+                    <br><input type="text" name="First Name" class="text-input" value={{ fname }}><br>
                     <br>New Last Name:    
-                    <br><input type="text" name="Last Name" class="text-input" value={{ fname }}><br>
+                    <br><input type="text" name="Last Name" class="text-input" value={{ lname }}><br>
                     <br>New Address:    
                     <br><input type="text" name="Address" class="text-input" value={{ address }}><br>
                     <br>New Phone Number:    
                     <br><input type="text" name="Phone Number" class="text-input" value={{ phone }}><br>
-                    <br>Please enter Your Old Password:    
+                    {% if user.User_Role.Role_Name == "TA" %}
+                        <br>New Skill Info (Grader or Reg):
+                        <br><input type="text" name="Skill" class="text-input" value={{ skill }}><br>
+                    {% endif %}
+                    <br>Please enter Your Old Password:
                     <br><input type="password" name="Old Password" class="text-input" required><br>
                     <input type="submit" class="input" value="Make Changes">
             </form>
-            {% if message %}
-                    <h2 class="text-message">{{ message }}</h2>
-            {% endif %}
+            {% for message in messages %}
+                <h2 class="text-message">{{ message }}</h2>
+            {% endfor %}
             <a href="/accountsViewSelf" class="backButton">Cancel</a>
         </div>
     </body>

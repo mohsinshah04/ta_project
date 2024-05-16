@@ -145,62 +145,65 @@ class TestEditUser(TestCase):
         self.updatePassword = "<PASS124>"
         self.updateAddress = "456, Ridgeview Ct, Portage WI"
         self.updatePhoneNumber = "1+(608)554-2321"
+        self.updateSkillSUorIN = ""
+        self.updateTAGrader = "Grader"
+        self.updateTANA = "N/A"
 
     def test_edit_user(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_su.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_su.id, self.updateSkillSUorIN)
         self.assertTrue(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_su.id))
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user_su.id))
         self.assertTrue(User.objects.filter(id=self.test_user.id, User_Email=self.updateEmail).exists())
 
     def test_edit_user_does_not_exist(self):
-        # toReturn = MockUser.edit_user(1234, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
+        # toReturn = MockUser.edit_user(1234, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(1234, self.updateEmail, self.updatePassword,
-                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user.id))
 
     def test_edit_user_bad_password(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, "HEAVEN", self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, "HEAVEN", self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, "HEAVEN",
-                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user.id))
 
     def test_edit_user_bad_email(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, None, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, None, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, None, self.updatePassword,
-                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user.id))
 
     def test_edit_user_bad_phoneNumber(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                                     "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                                     "123+(312)-123211", self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user.id))
 
     def test_edit_user_bad_fName_lName(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePassword, self.updateAddress, None, None, self.test_user.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePassword, self.updateAddress, None, None, self.test_user.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                        self.updatePassword, self.updateAddress, None, None, self.test_user.id))
+                                        self.updatePassword, self.updateAddress, None, None, self.updateSkillSUorIN, self.test_user.id))
 
     def test_edit_user_instructor(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id))
+                                     self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user_in.id))
 
     def test_edit_user_TA(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id, self.updateSkillSUorIN)
         self.assertFalse(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id))
+                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user_ta.id))
 
     def test_edit_self_TA(self):
-        # toReturn = MockUser.edit_user(self.test_user_ta.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id)
+        # toReturn = MockUser.edit_user(self.test_user_ta.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id, self.updateTAGrader)
         self.assertTrue(UserObject.edit_user(self.test_user_ta.id, self.updateEmail, self.updatePassword,
-                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_ta.id))
+                                    self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateTAGrader, self.test_user_ta.id))
 
     def test_edit_self_IN(self):
-        # toReturn = MockUser.edit_user(self.test_user_in.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id)
+        # toReturn = MockUser.edit_user(self.test_user_in.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id, self.updateSkillSUorIN)
         self.assertTrue(UserObject.edit_user(self.test_user_in.id, self.updateEmail, self.updatePassword,
-                                             self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user_in.id))
+                                             self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user_in.id))
 
     def test_edit_self_SU(self):
-        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id)
+        # toReturn = MockUser.edit_user(self.test_user.id, self.updateEmail, self.updatePassword, self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id, updateSkillSUorIN)
         self.assertTrue(UserObject.edit_user(self.test_user.id, self.updateEmail, self.updatePassword,
-                                             self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.test_user.id))
+                                             self.updatePhoneNumber, self.updateAddress, self.updateFName, self.updateLName, self.updateSkillSUorIN, self.test_user.id))
 
 
 class TestAccountRole(TestCase):
@@ -285,7 +288,7 @@ class TestViewAccount(TestCase):
                             User_Phone_Number="1+(608)532-2343", User_Home_Address="123, Ridgeview Ct")
         self.test_user_ta = User.objects.create(User_Role=self.TAuser_Role, User_Email="TA@uwm.edu",
                             User_FName="Joann", User_LName="Johnson",
-                            User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct")
+                            User_Phone_Number="1+(608)522-2343", User_Home_Address="123, Ridgeview Ct", User_Skill="Grader")
 
 
     def test_user_doesnt_exist(self):
@@ -294,37 +297,37 @@ class TestViewAccount(TestCase):
 
     def test_view_account_SU_to_IN(self):
         # toReturn = MockUser.view_account(1111, self.test_user_su.id)
-        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor: ", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_SU_to_TA(self):
         # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_su.id)
-        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA: Grader", UserObject.view_account(self.test_user_ta.id, self.test_user_su.id))
 
     def test_view_account_SU_to_SU(self):
         # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_su.id)
-        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor: ", UserObject.view_account(self.test_user_su.id, self.test_user_su.id))
 
     def test_view_account_IN_to_TA(self):
         # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_in.id)
-        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA: Grader", UserObject.view_account(self.test_user_ta.id, self.test_user_in.id))
 
     def test_view_account_IN_to_IN(self):
         # toReturn = MockUser.view_account(self.test_user_in.id, self.test_user_su.id)
-        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor: ", UserObject.view_account(self.test_user_in.id, self.test_user_su.id))
 
     def test_view_account_TA_to_TA(self):
         # toReturn = MockUser.view_account(self.test_user_ta.id, self.test_user_ta.id)
-        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
+        self.assertEqual("Joann Johnson: TA@uwm.edu: 1+(608)522-2343: 123, Ridgeview Ct: TA: Grader", UserObject.view_account(self.test_user_ta.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_IN(self):
         # toReturn = MockUser.view_account(self.test_user_in.id, self.test_user_ta.id)
-        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))
+        self.assertEqual("Jose Johnson: Instrc@uwm.edu: 1+(608)532-2343: 123, Ridgeview Ct: Instructor: ", UserObject.view_account(self.test_user_in.id, self.test_user_ta.id))
 
     def test_view_account_TA_to_SU(self):
         # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
-        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor: ", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 
     def test_view_account_IN_to_SU(self):
         # toReturn = MockUser.view_account(self.test_user_su.id, self.test_user_ta.id)
-        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
+        self.assertEqual("John Johnson: Super@uwm.edu: 1+(608)542-2343: 123, Ridgeview Ct: Supervisor: ", UserObject.view_account(self.test_user_su.id, self.test_user_ta.id))
 

@@ -20,7 +20,7 @@ from ta_app.views import (Home, LoginPage, LogOutPage, Announcements,
                           AccountViewSelf, AccountCreate, AccountEditSelf, AccountEditOther,
                           Courses, CourseCreate, CourseEdit, AccountsViewTA_IN,
                           Sections, SectionCreate, SectionEdit, AccountDelete, AccountsView, AccountsViewSelfTA_IN,
-                          CoursesTA_IN)
+                          CoursesTA_IN, SectionsTA)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,6 +42,7 @@ urlpatterns = [
     path('courseCreate/', CourseCreate.as_view(), name='courseCreate'),
     path('courseEdit/', CourseEdit.as_view(), name='courseEdit'),
     path('sections/', Sections.as_view(), name='sections'),
+    path('sectionsTA/', SectionsTA.as_view(), name='sectionsTA'),
     path('sectionCreate/', SectionCreate.as_view(), name='sectionCreate'),
     path('sectionEdit/', SectionEdit.as_view(), name='sectionEdit'),
 

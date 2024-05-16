@@ -58,7 +58,8 @@
             <label for="assignedUsers">Assign Users:</label>
             <select id="assignedUsers" name="assignedUsers" multiple >
             {% for user in users %}
-            <option value="{{ user.id }}">{{ user.User_FName}} {{user.User_LName}} ::::: {{user.User_Role}} </option>
+            <option value="{{ user.id }}">{{ user.User_FName}} {{user.User_LName}} ::::: {{user.User_Role}} 
+                {% if user.User_Skill == "Grader" %} ({{ user.User_Skill }}) {% endif %}</option>
             {% endfor %}
             </select>
         

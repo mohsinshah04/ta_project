@@ -15,6 +15,7 @@ class User(models.Model):
     User_Home_Address = models.CharField(max_length=50, default="null")
     User_Phone_Number = models.CharField(max_length=15, default="null")
     User_Role = models.ForeignKey(Role,on_delete=models.CASCADE)
+    User_Skill = models.CharField(max_length=50, default="")
 
     def __str__(self):
         return ("User FName: " + self.User_FName +

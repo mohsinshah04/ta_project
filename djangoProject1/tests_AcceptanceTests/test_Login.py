@@ -22,11 +22,11 @@ class TestLogin(TestCase, Client):
 
     def test_login_wrong_email(self):
         response = response = self.client.post("/", {"Email": "self.user.User_Email", "Password": self.user.User_Password}, follow=True)
-        self.assertEqual(response.context['message'], "Email and password do not exists. Please contact your supervisor to get your account created")
+        self.assertEqual(response.context['message'], "Email and password do not exist. Please contact your supervisor to get your account created")
 
     def test_login_user_doesnt_exist(self):
         response = response = self.client.post("/", {"Email": "thisUserDoesntExist@uwm.edu", "Password": "thisIsNotAPassowrd"}, follow=True)
-        self.assertEqual(response.context['message'], "Email and password do not exists. Please contact your supervisor to get your account created")
+        self.assertEqual(response.context['message'], "Email and password do not exist. Please contact your supervisor to get your account created")
 
     def test_session_is_active(self):
         response = self.client.post("/", {"Email": self.user.User_Email, "Password": self.user.User_Password}, follow=True)

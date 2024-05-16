@@ -106,7 +106,8 @@
             <select id="assignedUsers" name="assignedUsers" multiple>
                 {% for user in users %}
                 <option value="{{ user.id }}" {% if user.id in assigned_users_ids %}selected{% endif %}>
-                    {{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }})
+                    {{ user.User_FName }} {{ user.User_LName }} ({{ user.User_Role.Role_Name }}) 
+                    {% if user.User_Skill == "Grader" %} ({{ user.User_Skill }}) {% endif %} 
                 </option>
                 {% endfor %}
             </select>

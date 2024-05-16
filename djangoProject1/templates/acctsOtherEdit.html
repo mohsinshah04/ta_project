@@ -115,6 +115,10 @@
             <br><input type="text" name="Address" class="text-input" value={{ address }}><br>
             <br>New Phone Number:    
             <br><input type="text" name="Phone Number" class="text-input" value={{ phone }}><br>
+            {% if selected_user.User_Role.Role_Name == "TA" %}
+                <br>New Skill (Grader or Reg):    
+                <br><input type="text" name="Skill" class="text-input" value={{ skill }}><br>
+            {% endif %}
             <input type="submit" class="input"value="Make Changes">
     </form>
     {% for message in messages %}

@@ -48,13 +48,13 @@ class UserObject:
 
 
     @classmethod
-    def edit_user(cls, user_id, email, password, phoneNumber, address, firstName, lastName, own_id):
+    def edit_user(cls, user_id, email, password, phoneNumber, address, firstName, lastName, skill, own_id):
         if not User.objects.filter(id=own_id).exists():
             return False
         user = User.objects.get(id=own_id)
         if user.User_Role.Role_Name != "Supervisor" and user_id != own_id:
             return False
-        if user_id is None or email is None or password is None or phoneNumber is None or address is None or firstName is None or lastName is None:
+        if user_id is None or email is None or password is None or phoneNumber is None or address is None or firstName is None or lastName is None or skill is None:
             return False
         if user_id == own_id:
             if firstName == "":
@@ -69,11 +69,17 @@ class UserObject:
                 address = user.User_Home_Address
             if phoneNumber == "":
                 phoneNumber = user.User_Phone_Number
+            if skill == "":
+                skill = user.User_Skill
         if len(password) < 7 or len(phoneNumber) > 15:
             return False
         if not User.objects.filter(id=user_id).exists():
             return False
         user = User.objects.get(id=user_id)
+        if skill != "" and (user.User_Role.Role_Name == "Supervisor" or user.User_Role.Role_Name == "Instructor"):
+            return False
+        if (skill != "Grader" and skill != "Reg") and user.User_Role.Role_Name == "TA":
+            return False
         if firstName == "":
             firstName = user.User_FName
         if lastName == "":
@@ -92,6 +98,7 @@ class UserObject:
         user.User_Home_Address = address
         user.User_FName = firstName
         user.User_LName = lastName
+        user.User_Skill = skill
         user.save()
         toReturn = User.objects.filter(User_Email=email).exists()
         return toReturn
@@ -121,4 +128,4 @@ class UserObject:
             return "INVALID"
         user = User.objects.get(id=user_ID)
         return (user.User_FName + " " + user.User_LName + ": " + user.User_Email + ": " + user.User_Phone_Number + ": "
-                + user.User_Home_Address + ": " + user.User_Role.Role_Name)
+                + user.User_Home_Address + ": " + user.User_Role.Role_Name + ": " + user.User_Skill)
